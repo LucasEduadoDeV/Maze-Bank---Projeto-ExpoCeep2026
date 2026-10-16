@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maze Bank - Criar Conta</title>
+    <link rel="stylesheet" href="RegisterMenuStyle.css">
+</head>
+<body>
+
+    <div class="register-container">
+        <!-- Cabeçalho do App -->
+        <header class="bank-header">
+            <div class="logo-area">
+                <div class="logo-box">M</div>
+                <div class="logo-text">
+                    <h1>MAZE BANK</h1>
+                    <p>OF CASTALDI</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Formulário de Cadastro -->
+        <main class="auth-content">
+            <div class="section-title">
+                <h2>Abra sua conta</h2>
+                <p>Preencha os dados abaixo para começar</p>
+            </div>
+
+            <form id="registerForm" class="auth-form" novalidate>
+                <div class="input-group">
+                    <label for="regName">Nome Completo</label>
+                    <input type="text" id="regName" placeholder="Ex: Michael De Santa">
+                    <span class="error-msg" id="errName"></span>
+                </div>
+
+                <!-- E-mail com sufixo fixo @gmail.com -->
+                <div class="input-group">
+                    <label for="regEmail">E-mail</label>
+                    <div class="email-suffix-wrapper">
+                        <input type="text" id="regEmail" placeholder="" autocomplete="off">
+                        <span class="email-suffix">@gmail.com</span>
+                    </div>
+                    <span class="error-msg" id="errEmail"></span>
+                </div>
+
+                <div class="input-group">
+                    <label for="regCpf">CPF</label>
+                    <input type="text" id="regCpf" placeholder="000.000.000-00" maxlength="14">
+                    <span class="error-msg" id="errCpf"></span>
+                </div>
+
+                <div class="input-group">
+                    <label for="regPassword">Senha</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="regPassword" placeholder="">
+                        <button type="button" class="toggle-password" data-target="regPassword" aria-label="Mostrar senha">
+                            <span class="eye-icon">👁️</span>
+                        </button>
+                    </div>
+                    <span class="error-msg" id="errPassword"></span>
+                </div>
+
+                <div class="input-group">
+                    <label for="regConfirmPassword">Confirmar Senha</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="regConfirmPassword" placeholder="">
+                        <button type="button" class="toggle-password" data-target="regConfirmPassword" aria-label="Mostrar confirmação de senha">
+                            <span class="eye-icon">👁️</span>
+                        </button>
+                    </div>
+                    <span class="error-msg" id="errConfirmPassword"></span>
+                </div>
+
+                <button type="submit" class="primary-btn">Cadastrar</button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Já tem uma conta? <a href="/FrontEnd/LoginMenu/LoginMenu.html" id="linkLogin">Fazer Login</a></p>
+            </div>
+        </main>
+    </div>
+
+    <script src="RegisterMenuScript.js"></script>
+</body>
+</html>

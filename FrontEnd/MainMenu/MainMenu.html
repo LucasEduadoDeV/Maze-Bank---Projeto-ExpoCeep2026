@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maze Bank - Home</title>
+    <link rel="stylesheet" href="MainMenuStyle.css">
+</head>
+<body>
+
+    <!-- Painel de apresentação: Oculto no celular, visível no Computador -->
+    <div id="presentationControls" class="toggle-control hidden">
+        <button id="btnToggleLayout">💻 Alternar Visualização</button>
+    </div>
+
+    <!-- Container do App -->
+    <div id="bankApp">
+        
+        <!-- Cabeçalho do Banco -->
+        <header class="bank-header">
+            <div class="logo-area">
+                <span class="logo-box">M</span>
+                <div class="logo-text">
+                    <h1>MAZE BANK</h1>
+                    <p>OF CASTALDI</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- TELA 1: CONTEÚDO PRINCIPAL (INÍCIO) -->
+        <main id="screenInicio" class="app-content">
+            
+            <div class="user-profile">
+                <div class="avatar">👤</div>
+                <div class="welcome-box">
+                    <span class="label">Olá,</span>
+                    <!-- Pronto para receber o nome do usuário do back-end -->
+                    <span id="userName" class="username">...</span>
+                </div>
+            </div>
+
+            <!-- Bloco de Saldo (Pronto para vir tampado) -->
+            <div class="card balance-card">
+                <div class="balance-header">
+                    <p class="card-title">Saldo disponível</p>
+                    <button id="btnHideBalance" class="text-btn">Mostrar</button>
+                </div>
+                <!-- Inicia com o padrão oculto -->
+                <h2 id="balanceText" class="balance-value">••••••</h2>
+            </div>
+
+            <!-- Grade de Ações Rápidas -->
+            <div class="actions-grid">
+                <button class="action-btn">
+                    <div class="icon-circle">❖</div>
+                    <span>Pix</span>
+                </button>
+                <button class="action-btn">
+                    <div class="icon-circle">|||</div>
+                    <span>Pagar</span>
+                </button>
+                <button class="action-btn">
+                    <div class="icon-circle">💳</div>
+                    <span>Cartões</span>
+                </button>
+            </div>
+
+            <!-- Histórico Dinâmico (Dados estáticos removidos) -->
+            <div class="history-section">
+                <h3>Últimas atividades</h3>
+                <div id="historyContainer">
+                    <!-- O back-end irá criar e injetar os itens aqui dentro -->
+                    <p class="empty-state">Nenhuma atividade recente.</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- TELA 2: SEÇÃO DE AJUSTES -->
+        <main id="screenAjustes" class="app-content hidden">
+            <div class="section-title">
+                <h2>Ajustes da Conta</h2>
+                <p>Gerencie suas preferências do Maze Bank</p>
+            </div>
+
+            <!-- Opção única: Dark Mode -->
+            <div class="setting-card">
+                <div class="setting-info">
+                    <span class="setting-icon">🌙</span>
+                    <div>
+                        <h4>Modo Escuro</h4>
+                        <p>Altere a aparência do aplicativo</p>
+                    </div>
+                </div>
+                <button id="btnDarkMode" class="toggle-switch">Ativar</button>
+            </div>
+        </main>
+
+        <!-- Barra de Navegação Inferior -->
+        <nav class="bottom-nav">
+            <a href="#" id="navInicio" class="nav-item active"><span>Início</span></a>
+            <a href="#" id="navExtrato" class="nav-item"><span>Extrato</span></a>
+            <a href="#" id="navAjustes" class="nav-item"><span>Ajustes</span></a>
+        </nav>
+
+    </div>
+
+    <script src="MainMenuScript.js"></script>
+</body>
+</html>
