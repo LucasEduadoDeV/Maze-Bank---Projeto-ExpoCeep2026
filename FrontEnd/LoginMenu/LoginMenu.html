@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maze Bank - Entrar na Conta</title>
+    <link rel="stylesheet" href="LoginMenuStyle.css">
+</head>
+<body>
+
+    <div class="login-container">
+        <!-- Cabeçalho do App -->
+        <header class="bank-header">
+            <div class="logo-area">
+                <div class="logo-box">M</div>
+                <div class="logo-text">
+                    <h1>MAZE BANK</h1>
+                    <p>OF LOS SANTOS</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Formulário de Login -->
+        <main class="auth-content">
+            <div class="section-title">
+                <h2>Bem-vindo de volta</h2>
+                <p>Acesse sua conta para continuar</p>
+            </div>
+
+            <form id="loginForm" class="auth-form" novalidate>
+                <!-- E-mail com sufixo fixo @gmail.com -->
+                <div class="input-group">
+                    <label for="loginEmail">E-mail</label>
+                    <div class="email-suffix-wrapper">
+                        <input type="text" id="loginEmail" placeholder="" autocomplete="off">
+                        <span class="email-suffix">@gmail.com</span>
+                    </div>
+                    <span class="error-msg" id="errEmail"></span>
+                </div>
+
+                <div class="input-group">
+                    <label for="loginPassword">Senha</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="loginPassword" placeholder="">
+                        <button type="button" class="toggle-password" data-target="loginPassword" aria-label="Mostrar senha">
+                            <span class="eye-icon">👁️</span>
+                        </button>
+                    </div>
+                    <span class="error-msg" id="errPassword"></span>
+                </div>
+
+                <button type="submit" class="primary-btn">Entrar</button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Não tem uma conta? <a href="register.html" id="linkRegister">Cadastre-se</a></p>
+            </div>
+        </main>
+    </div>
+
+    <script src="LoginMenuScript.js"></script>
+</body>
+</html>
