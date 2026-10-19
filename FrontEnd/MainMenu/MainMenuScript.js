@@ -1,3 +1,5 @@
+import { readSessionStorage } from "../js/auth.js";
+
 // ====== MAPEAMENTO DOS COMPONENTES ======
 const bankApp = document.getElementById('bankApp');
 const presentationControls = document.getElementById('presentationControls');
@@ -13,11 +15,15 @@ const screenAjustes = document.getElementById('screenAjustes');
 const btnHideBalance = document.getElementById('btnHideBalance');
 const balanceText = document.getElementById('balanceText');
 const btnDarkMode = document.getElementById('btnDarkMode');
+const nameText = document.getElementById('userName');
+
+const URL = 'http://localhost:3000/me';
 
 // 🔒 REQUISITO: O saldo já inicia tampado por padrão (true)
 let isBalanceHidden = true;
 // Deixei essa variável pronta: no back-end você substituirá essa string pelo dado vindo do banco de dados
-let actualBalance = "R$ 0,00"; 
+let actualName = "Carregando..."
+let actualBalance = "Carregando..."; 
 
 
 // ====== 1. SISTEMA DE NAVEGAÇÃO ENTRE ABAS ======
@@ -89,3 +95,66 @@ btnDarkMode.addEventListener('click', () => {
         btnDarkMode.style.backgroundColor = "";
     }
 });
+
+const formatadorNumero = new Intl.NumberFormat('pt-BR', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
+});
+
+function formatadorNome(fullName) {
+    const firstName = fullName.split(' ')[0];
+
+    return capitalizar(firstName);
+}
+
+function capitalizar(firstName) {
+    if (!firstName) {
+        return "";
+    }
+    return firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+}
+
+async function requestGetMe() {
+    let token = readSessionStorage();
+
+    if (!token) {
+    window.alert("Nenhum usuário logado. Redirecionando...");
+    window.location.href = "/FrontEnd/LoginMenu/LoginMenu.html";
+    return;
+}
+
+    try{
+        const response = await fetch(URL, {
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+        });
+
+        if (response.status === 401) {
+            sessionStorage.clear();
+            window.location.href = "/FrontEnd/LoginMenu/LoginMenu.html";
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error("Usuário não encontrado");
+        }
+
+        const data = await response.json();
+        const { Usuário } = data;
+
+        const saldoNumero = parseFloat(Usuário.balance) || 0;
+        const balanceFormated = formatadorNumero.format(saldoNumero);
+        const finalName = formatadorNome(Usuário.name);
+
+        nameText.textContent = finalName;
+        actualBalance = balanceFormated;
+    }
+    catch (err) {
+        console.error('Erro na requisição:', err);
+    }
+}
+
+requestGetMe();

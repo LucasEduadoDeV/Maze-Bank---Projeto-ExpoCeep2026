@@ -1,3 +1,5 @@
+import { setTokenIntoSessionStorage } from "../js/auth.js";
+
 document.addEventListener('DOMContentLoaded', () => {
 
     const URL = 'http://localhost:3000/login'
@@ -85,7 +87,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
             });
 
-            
+            const data = await response.json();
+    
+            if (!response.ok) {
+                if (data.field === 'email') {
+                    setFieldError(inputEmail, 'errEmail', data.message, emailWrapper);
+                    return;
+                }
+
+                if (data.field === 'password') {
+                    setFieldError(inputPassword, 'errPassword', data.message);
+                    return;
+                }
+
+                const validationMessage = data.errors
+                    ?.map(error => error.message)
+                    .join('\n');
+                throw new Error(validationMessage || data.message || 'Erro ao criar conta');
+            }
+
+            setTokenIntoSessionStorage(data.token);
+            window.location.href = "/FrontEnd/MainMenu/MainMenu.html";
         }
         catch (err) {
             console.error('Erro na requisição:', err);

@@ -3,6 +3,7 @@ import { Prisma } from "../generated/prisma/client";
 import { AppError } from "../errors/AppError";
 //Repository
 import { registerRepository } from "../repositories/register.repository";
+
 export async function makePasswordHash(password: string) {
     const hash = await bcrypt.hash(password, 10);
 
@@ -10,7 +11,8 @@ export async function makePasswordHash(password: string) {
 }
 export async function validateErrors(name: string, email: string, cpf: string, passwordHash: string) {
     try {
-        await registerRepository(name, email, cpf, passwordHash);
+        const result = await registerRepository(name, email, cpf, passwordHash);
+        return result;
     } catch (error: unknown) {
         if (
         error instanceof Prisma.PrismaClientKnownRequestError &&
@@ -32,7 +34,6 @@ export async function validateErrors(name: string, email: string, cpf: string, p
         if (constraint.includes("cpf")) {
             throw new AppError("Este CPF já está cadastrado.", 409, "cpf");
         }
-        throw new AppError("E-mail ou CPF já cadastrado.", 409);
     }
   throw error;
 }}
