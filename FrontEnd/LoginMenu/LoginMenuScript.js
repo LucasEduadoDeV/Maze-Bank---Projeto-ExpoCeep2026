@@ -1,5 +1,3 @@
-import { setTokenIntoSessionStorage } from "../js/auth.js";
-
 document.addEventListener('DOMContentLoaded', () => {
 
     const URL = 'http://localhost:3000/login'
@@ -77,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const response = await fetch(URL, {
-                method: 'POST',
+                method: 'POST', credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -106,7 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(validationMessage || data.message || 'Erro ao criar conta');
             }
 
-            setTokenIntoSessionStorage(data.token);
             window.location.href = "/FrontEnd/MainMenu/MainMenu.html";
         }
         catch (err) {

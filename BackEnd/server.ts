@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser"
 //Routes
 import RegisterRoutes from "./src/routes/register.routes";
 import LoginRoutes from "./src/routes/login.routes";
@@ -8,11 +9,12 @@ import MeRoutes from "./src/routes/me.routes";
 import { errorHandler } from "./src/middlewares/erroHandler";
 const app = express();
 app.use(cors({
-  origin: 'http://127.0.0.1:5500',
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'] // Garante que o OPTIONS seja aceito
+  origin: 'http://localhost:5500',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true 
 }));
 app.use(express.json());
+app.use(cookieParser())
 app.use("/register", RegisterRoutes);
 app.use("/login", LoginRoutes);
 app.use("/me", MeRoutes);

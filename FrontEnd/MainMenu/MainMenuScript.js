@@ -1,5 +1,3 @@
-import { readSessionStorage } from "../js/auth.js";
-
 // ====== MAPEAMENTO DOS COMPONENTES ======
 const bankApp = document.getElementById('bankApp');
 const presentationControls = document.getElementById('presentationControls');
@@ -115,27 +113,17 @@ function capitalizar(firstName) {
 }
 
 async function requestGetMe() {
-    let token = readSessionStorage();
-
-    if (!token) {
-    window.alert("Nenhum usuário logado. Redirecionando...");
-    window.location.href = "/FrontEnd/LoginMenu/LoginMenu.html";
-    return;
-}
 
     try{
         const response = await fetch(URL, {
-            method: 'GET',
+            method: 'GET', credentials: 'include',
             headers: {
                 'Content-type': 'application/json',
-                'Authorization': `Bearer ${token}`
             },
         });
 
         if (response.status === 401) {
-            sessionStorage.clear();
             window.location.href = "/FrontEnd/LoginMenu/LoginMenu.html";
-            return;
         }
 
         if (!response.ok) {

@@ -15,7 +15,16 @@ export async function loginController(req: Request, res: Response, next: NextFun
         }
         await comparePasswordHash(password, user?.passwordHash!);
         const token = await signToken(user);
-        res.status(200).json({Result: `Login Feito Com Sucesso`, token: token});
+
+        res.cookie('__user__token__', token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax",
+            maxAge: 60 * 60 * 1000,
+            path: "/",
+        })
+
+        res.status(200).json(`Login Feito Com Sucesso`);
     }
     catch (err) {
         return next(err);

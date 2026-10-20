@@ -11,3 +11,13 @@ export async function getPasswordHash(email: string) {
     })
     return result;
 }
+
+export async function emailAlreadyExists(email: string) {
+    const result = await prisma.user.findUnique({
+        where:{ email },
+        select: {
+            email: true
+        }
+    })
+    return result;
+}
