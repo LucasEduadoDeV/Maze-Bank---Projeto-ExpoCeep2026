@@ -44,6 +44,12 @@ export function auth(req: Request, res: Response, next: NextFunction) {
     }
     
     if (error instanceof jwt.JsonWebTokenError) {
+      res.clearCookie("__user__token__", {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+        path: "/",
+      });
       return res.status(401).json({ message: "Token inválido ou expirado" });
     }
 

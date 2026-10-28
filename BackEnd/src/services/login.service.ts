@@ -24,7 +24,7 @@ export async function signToken(user: AccessTokenPayload): Promise<string> {
             sub: user.id,
         },
         secret,
-        { expiresIn: "1m" }
+        { expiresIn: "30m" }
     );
     return token;
 }
