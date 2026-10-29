@@ -261,6 +261,7 @@ button { font: inherit; }
 }
 
 @media (max-width: 380px) {
+  body { min-width: 0; }
   .topbar { padding-inline: 12px; }
   .breadcrumb { gap: 5px; font-size: 9px; }
   .topbar-actions { gap: 5px; }

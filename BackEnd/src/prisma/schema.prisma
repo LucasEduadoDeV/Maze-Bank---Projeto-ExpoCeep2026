@@ -17,5 +17,24 @@ model User {
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
+  transactionsSent     Transaction[] @relation("SenderRelation")
+  transactionsReceived Transaction[] @relation("ReceiverRelation")
+
   @@map("users")
+}
+
+model Transaction {
+  id           String   @id @default(uuid()) @db.Uuid
+  amount       Decimal  @db.Decimal(15, 2) @default(0)
+  cpf          String
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  senderId     String   @map("sender_id") @db.Uuid
+  sender       User     @relation("SenderRelation", fields: [senderId], references: [id])
+
+  receiverId   String   @map("receiver_id") @db.Uuid
+  receiver     User     @relation("ReceiverRelation", fields: [receiverId], references: [id])
+
+
+  @@map("transactions")
 }

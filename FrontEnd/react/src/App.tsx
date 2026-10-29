@@ -26,8 +26,9 @@ import './MainMenu.css'
 import LandingPage from './LandingPage'
 import RegisterPage from './RegisterPage'
 import LoginPage from './LoginPage'
+import PixPage from './PixPage'
 
-type Tab = 'home' | 'statement' | 'settings'
+type Tab = 'home' | 'statement' | 'settings' | 'pix'
 
 const navigation = [
   { id: 'home', label: 'Visão geral', icon: LayoutDashboard },
@@ -87,6 +88,7 @@ function App() {
     style: 'currency',
     currency: 'BRL',
   })
+  const activeLabel = activeTab === 'pix' ? 'Pix' : navigation.find((item) => item.id === activeTab)?.label
   function showComingSoon(feature: string) {
     setNotice(`${feature} estará disponível em breve.`)
     window.setTimeout(() => setNotice(''), 3800)
@@ -104,7 +106,7 @@ function App() {
         <nav className="side-nav" aria-label="Navegação principal">
           {navigation.map(({ id, label, icon: Icon }) => (
             <button
-              className={`side-link${activeTab === id ? ' active' : ''}`}
+              className={`side-link${activeTab === id || (activeTab === 'pix' && id === 'home') ? ' active' : ''}`}
               key={id}
               onClick={() => setActiveTab(id)}
               type="button"
@@ -132,7 +134,7 @@ function App() {
 
       <div className="main-column">
         <header className="topbar">
-          <div className="breadcrumb"><span>Conta</span><ChevronRight size={14} /><strong>{navigation.find((item) => item.id === activeTab)?.label}</strong></div>
+          <div className="breadcrumb"><span>Conta</span><ChevronRight size={14} /><strong>{activeLabel}</strong></div>
           <div className="topbar-actions">
             <span className="account-status"><i /> Conta ativa</span>
             <button className="icon-button preview-toggle" type="button" title={previewMode ? 'Sair da visualização compacta' : 'Visualizar como celular'} aria-label={previewMode ? 'Sair da visualização compacta' : 'Visualizar como celular'} onClick={() => setPreviewMode(!previewMode)}>
@@ -173,7 +175,7 @@ function App() {
               <section className="quick-section">
                 <div className="section-heading"><div><h2>Atalhos</h2><p>O que você quer fazer?</p></div></div>
                 <div className="quick-actions">
-                  <button className="quick-action" type="button" onClick={() => showComingSoon('Pix')}><span className="quick-icon pix-icon"><QrCode size={20} /></span><span><strong>Fazer um Pix</strong><small>Envie dinheiro em segundos</small></span><ChevronRight size={17} /></button>
+                  <button className="quick-action" type="button" onClick={() => setActiveTab('pix')}><span className="quick-icon pix-icon"><QrCode size={20} /></span><span><strong>Fazer um Pix</strong><small>Envie dinheiro em segundos</small></span><ChevronRight size={17} /></button>
                   <button className="quick-action" type="button" onClick={() => showComingSoon('Pagamentos')}><span className="quick-icon pay-icon"><ArrowUpRight size={20} /></span><span><strong>Pagar uma conta</strong><small>Boletos e contas do dia a dia</small></span><ChevronRight size={17} /></button>
                   <button className="quick-action" type="button" onClick={() => showComingSoon('Depósitos')}><span className="quick-icon deposit-icon"><Plus size={20} /></span><span><strong>Adicionar dinheiro</strong><small>Veja formas de depositar</small></span><ChevronRight size={17} /></button>
                 </div>
@@ -185,6 +187,8 @@ function App() {
               </section>
             </>
           )}
+
+          {activeTab === 'pix' && <PixPage onBack={() => setActiveTab('home')} />}
 
           {activeTab === 'statement' && (
             <section className="subpage">
@@ -209,7 +213,7 @@ function App() {
       </div>
 
       <nav className="mobile-nav" aria-label="Navegação principal">
-        {navigation.map(({ id, label, icon: Icon }) => <button className={activeTab === id ? 'active' : ''} key={id} onClick={() => setActiveTab(id)} type="button"><Icon size={19} /><span>{label}</span></button>)}
+        {navigation.map(({ id, label, icon: Icon }) => <button className={activeTab === id || (activeTab === 'pix' && id === 'home') ? 'active' : ''} key={id} onClick={() => setActiveTab(id)} type="button"><Icon size={19} /><span>{label}</span></button>)}
       </nav>
       {notice && <div className="toast" role="status">{notice}</div>}
     </div>

@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser"
 import RegisterRoutes from "./src/routes/register.routes";
 import LoginRoutes from "./src/routes/login.routes";
 import MeRoutes from "./src/routes/me.routes";
+import TransactionRoutes from "./src/routes/transaction.routes"
 //Middlewares
 import { errorHandler } from "./src/middlewares/erroHandler";
 const app = express();
@@ -18,6 +19,7 @@ app.use(cookieParser())
 app.use("/register", RegisterRoutes);
 app.use("/login", LoginRoutes);
 app.use("/me", MeRoutes);
+app.use("/transaction", TransactionRoutes);
 app.use(errorHandler);
 app.listen(3000, () => {
     console.log(`Server Rodando Na Porta 3000`);
