@@ -7,12 +7,12 @@ import { checkIfUserHaveMoney } from "../services/transaction.service";
 import { transaction } from "../repositories/transaction.repository";
 
 export async function transactionController(req: Request, res: Response, next: NextFunction) {
-    const { cpf, amount } = req.body;
+    const { cpf, amount, description } = req.body;
     const id = req.user?.userId
 
     try {
     await checkIfUserHaveMoney(id!, amount);
-    const result = await transaction(id!, cpf, amount);
+    const result = await transaction(id!, cpf, amount, description);
     res.status(201).json(result);
     }
     catch (err) {

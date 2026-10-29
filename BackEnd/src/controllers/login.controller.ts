@@ -24,7 +24,7 @@ export async function loginController(req: Request, res: Response, next: NextFun
             path: "/",
         })
 
-        res.status(200).json(`Login Feito Com Sucesso`);
+        res.status(200).json(`Login feito com sucesso`);    
     }
     catch (err) {
         return next(err);

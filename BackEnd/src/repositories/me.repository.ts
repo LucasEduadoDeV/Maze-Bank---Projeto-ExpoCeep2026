@@ -14,3 +14,19 @@ export async function getCredentials(id: string) {
     })
     return user;
 }
+
+export async function getThreeLastActivities(id: string) {
+    const activities = await prisma.transaction.findMany({
+        where: {
+            OR: [
+                { senderId: id },
+                { receiverId: id },
+            ]
+        },
+        take: 3,
+        orderBy: {
+            createdAt: 'asc'
+        }
+    })
+    return activities;
+}

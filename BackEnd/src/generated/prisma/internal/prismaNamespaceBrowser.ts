@@ -90,6 +90,8 @@ export const TransactionScalarFieldEnum = {
   amount: 'amount',
   cpf: 'cpf',
   createdAt: 'createdAt',
+  description: 'description',
+  type: 'type',
   senderId: 'senderId',
   receiverId: 'receiverId'
 } as const

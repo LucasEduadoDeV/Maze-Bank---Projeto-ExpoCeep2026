@@ -25,6 +25,12 @@ export interface LoginPayload {
   password: string
 }
 
+export interface PixTransferPayload {
+  cpf: string
+  amount: number
+  description: string
+}
+
 export async function getMe(): Promise<AccountUser> {
   const response = await fetch('/me', {
     method: 'GET',
@@ -67,6 +73,23 @@ export async function loginAccount(payload: LoginPayload): Promise<void> {
     const data = (await response.json()) as ApiErrorResponse
     throw Object.assign(new Error(data.message ?? 'Não foi possível acessar sua conta.'), {
       field: data.field ?? data.errors?.[0]?.path?.[0],
+    })
+  }
+}
+
+export async function createPixTransfer(payload: PixTransferPayload): Promise<void> {
+  const response = await fetch('/api/transaction', {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+
+  const data = await response.json().catch(() => ({})) as ApiErrorResponse
+  if (!response.ok) {
+    throw Object.assign(new Error(data.message ?? 'Não foi possível realizar o Pix.'), {
+      statusCode: response.status,
+      field: data.field,
     })
   }
 }

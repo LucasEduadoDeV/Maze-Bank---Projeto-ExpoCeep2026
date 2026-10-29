@@ -28,6 +28,7 @@ export async function transaction(
   senderId: string,
   receiverCpf: string,
   amount: Decimal,
+  description: string
 ) {
   return prisma.$transaction(async (tx) => {
     const receiver = await tx.user.findUnique({
@@ -70,6 +71,7 @@ export async function transaction(
         receiverId: receiver.id,
         cpf: receiverCpf,
         amount,
+        description
       },
     });
   });

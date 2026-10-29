@@ -39,6 +39,8 @@ export type TransactionMinAggregateOutputType = {
   amount: runtime.Decimal | null
   cpf: string | null
   createdAt: Date | null
+  description: string | null
+  type: string | null
   senderId: string | null
   receiverId: string | null
 }
@@ -48,6 +50,8 @@ export type TransactionMaxAggregateOutputType = {
   amount: runtime.Decimal | null
   cpf: string | null
   createdAt: Date | null
+  description: string | null
+  type: string | null
   senderId: string | null
   receiverId: string | null
 }
@@ -57,6 +61,8 @@ export type TransactionCountAggregateOutputType = {
   amount: number
   cpf: number
   createdAt: number
+  description: number
+  type: number
   senderId: number
   receiverId: number
   _all: number
@@ -76,6 +82,8 @@ export type TransactionMinAggregateInputType = {
   amount?: true
   cpf?: true
   createdAt?: true
+  description?: true
+  type?: true
   senderId?: true
   receiverId?: true
 }
@@ -85,6 +93,8 @@ export type TransactionMaxAggregateInputType = {
   amount?: true
   cpf?: true
   createdAt?: true
+  description?: true
+  type?: true
   senderId?: true
   receiverId?: true
 }
@@ -94,6 +104,8 @@ export type TransactionCountAggregateInputType = {
   amount?: true
   cpf?: true
   createdAt?: true
+  description?: true
+  type?: true
   senderId?: true
   receiverId?: true
   _all?: true
@@ -190,6 +202,8 @@ export type TransactionGroupByOutputType = {
   amount: runtime.Decimal
   cpf: string
   createdAt: Date
+  description: string
+  type: string
   senderId: string
   receiverId: string
   _count: TransactionCountAggregateOutputType | null
@@ -222,6 +236,8 @@ export type TransactionWhereInput = {
   amount?: Prisma.DecimalFilter<"Transaction"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   cpf?: Prisma.StringFilter<"Transaction"> | string
   createdAt?: Prisma.DateTimeFilter<"Transaction"> | Date | string
+  description?: Prisma.StringFilter<"Transaction"> | string
+  type?: Prisma.StringFilter<"Transaction"> | string
   senderId?: Prisma.UuidFilter<"Transaction"> | string
   receiverId?: Prisma.UuidFilter<"Transaction"> | string
   sender?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -233,6 +249,8 @@ export type TransactionOrderByWithRelationInput = {
   amount?: Prisma.SortOrder
   cpf?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   senderId?: Prisma.SortOrder
   receiverId?: Prisma.SortOrder
   sender?: Prisma.UserOrderByWithRelationInput
@@ -247,6 +265,8 @@ export type TransactionWhereUniqueInput = Prisma.AtLeast<{
   amount?: Prisma.DecimalFilter<"Transaction"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   cpf?: Prisma.StringFilter<"Transaction"> | string
   createdAt?: Prisma.DateTimeFilter<"Transaction"> | Date | string
+  description?: Prisma.StringFilter<"Transaction"> | string
+  type?: Prisma.StringFilter<"Transaction"> | string
   senderId?: Prisma.UuidFilter<"Transaction"> | string
   receiverId?: Prisma.UuidFilter<"Transaction"> | string
   sender?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -258,6 +278,8 @@ export type TransactionOrderByWithAggregationInput = {
   amount?: Prisma.SortOrder
   cpf?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   senderId?: Prisma.SortOrder
   receiverId?: Prisma.SortOrder
   _count?: Prisma.TransactionCountOrderByAggregateInput
@@ -275,6 +297,8 @@ export type TransactionScalarWhereWithAggregatesInput = {
   amount?: Prisma.DecimalWithAggregatesFilter<"Transaction"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   cpf?: Prisma.StringWithAggregatesFilter<"Transaction"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Transaction"> | Date | string
+  description?: Prisma.StringWithAggregatesFilter<"Transaction"> | string
+  type?: Prisma.StringWithAggregatesFilter<"Transaction"> | string
   senderId?: Prisma.UuidWithAggregatesFilter<"Transaction"> | string
   receiverId?: Prisma.UuidWithAggregatesFilter<"Transaction"> | string
 }
@@ -284,6 +308,8 @@ export type TransactionCreateInput = {
   amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   cpf: string
   createdAt?: Date | string
+  description: string
+  type?: string
   sender: Prisma.UserCreateNestedOneWithoutTransactionsSentInput
   receiver: Prisma.UserCreateNestedOneWithoutTransactionsReceivedInput
 }
@@ -293,6 +319,8 @@ export type TransactionUncheckedCreateInput = {
   amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   cpf: string
   createdAt?: Date | string
+  description: string
+  type?: string
   senderId: string
   receiverId: string
 }
@@ -302,6 +330,8 @@ export type TransactionUpdateInput = {
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   cpf?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   sender?: Prisma.UserUpdateOneRequiredWithoutTransactionsSentNestedInput
   receiver?: Prisma.UserUpdateOneRequiredWithoutTransactionsReceivedNestedInput
 }
@@ -311,6 +341,8 @@ export type TransactionUncheckedUpdateInput = {
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   cpf?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   senderId?: Prisma.StringFieldUpdateOperationsInput | string
   receiverId?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -320,6 +352,8 @@ export type TransactionCreateManyInput = {
   amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   cpf: string
   createdAt?: Date | string
+  description: string
+  type?: string
   senderId: string
   receiverId: string
 }
@@ -329,6 +363,8 @@ export type TransactionUpdateManyMutationInput = {
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   cpf?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type TransactionUncheckedUpdateManyInput = {
@@ -336,6 +372,8 @@ export type TransactionUncheckedUpdateManyInput = {
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   cpf?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   senderId?: Prisma.StringFieldUpdateOperationsInput | string
   receiverId?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -355,6 +393,8 @@ export type TransactionCountOrderByAggregateInput = {
   amount?: Prisma.SortOrder
   cpf?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   senderId?: Prisma.SortOrder
   receiverId?: Prisma.SortOrder
 }
@@ -368,6 +408,8 @@ export type TransactionMaxOrderByAggregateInput = {
   amount?: Prisma.SortOrder
   cpf?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   senderId?: Prisma.SortOrder
   receiverId?: Prisma.SortOrder
 }
@@ -377,6 +419,8 @@ export type TransactionMinOrderByAggregateInput = {
   amount?: Prisma.SortOrder
   cpf?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   senderId?: Prisma.SortOrder
   receiverId?: Prisma.SortOrder
 }
@@ -474,6 +518,8 @@ export type TransactionCreateWithoutSenderInput = {
   amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   cpf: string
   createdAt?: Date | string
+  description: string
+  type?: string
   receiver: Prisma.UserCreateNestedOneWithoutTransactionsReceivedInput
 }
 
@@ -482,6 +528,8 @@ export type TransactionUncheckedCreateWithoutSenderInput = {
   amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   cpf: string
   createdAt?: Date | string
+  description: string
+  type?: string
   receiverId: string
 }
 
@@ -500,6 +548,8 @@ export type TransactionCreateWithoutReceiverInput = {
   amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   cpf: string
   createdAt?: Date | string
+  description: string
+  type?: string
   sender: Prisma.UserCreateNestedOneWithoutTransactionsSentInput
 }
 
@@ -508,6 +558,8 @@ export type TransactionUncheckedCreateWithoutReceiverInput = {
   amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   cpf: string
   createdAt?: Date | string
+  description: string
+  type?: string
   senderId: string
 }
 
@@ -545,6 +597,8 @@ export type TransactionScalarWhereInput = {
   amount?: Prisma.DecimalFilter<"Transaction"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   cpf?: Prisma.StringFilter<"Transaction"> | string
   createdAt?: Prisma.DateTimeFilter<"Transaction"> | Date | string
+  description?: Prisma.StringFilter<"Transaction"> | string
+  type?: Prisma.StringFilter<"Transaction"> | string
   senderId?: Prisma.UuidFilter<"Transaction"> | string
   receiverId?: Prisma.UuidFilter<"Transaction"> | string
 }
@@ -570,6 +624,8 @@ export type TransactionCreateManySenderInput = {
   amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   cpf: string
   createdAt?: Date | string
+  description: string
+  type?: string
   receiverId: string
 }
 
@@ -578,6 +634,8 @@ export type TransactionCreateManyReceiverInput = {
   amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   cpf: string
   createdAt?: Date | string
+  description: string
+  type?: string
   senderId: string
 }
 
@@ -586,6 +644,8 @@ export type TransactionUpdateWithoutSenderInput = {
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   cpf?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   receiver?: Prisma.UserUpdateOneRequiredWithoutTransactionsReceivedNestedInput
 }
 
@@ -594,6 +654,8 @@ export type TransactionUncheckedUpdateWithoutSenderInput = {
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   cpf?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   receiverId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -602,6 +664,8 @@ export type TransactionUncheckedUpdateManyWithoutSenderInput = {
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   cpf?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   receiverId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -610,6 +674,8 @@ export type TransactionUpdateWithoutReceiverInput = {
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   cpf?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   sender?: Prisma.UserUpdateOneRequiredWithoutTransactionsSentNestedInput
 }
 
@@ -618,6 +684,8 @@ export type TransactionUncheckedUpdateWithoutReceiverInput = {
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   cpf?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   senderId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -626,6 +694,8 @@ export type TransactionUncheckedUpdateManyWithoutReceiverInput = {
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   cpf?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   senderId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -636,6 +706,8 @@ export type TransactionSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   amount?: boolean
   cpf?: boolean
   createdAt?: boolean
+  description?: boolean
+  type?: boolean
   senderId?: boolean
   receiverId?: boolean
   sender?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -647,6 +719,8 @@ export type TransactionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   amount?: boolean
   cpf?: boolean
   createdAt?: boolean
+  description?: boolean
+  type?: boolean
   senderId?: boolean
   receiverId?: boolean
   sender?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -658,6 +732,8 @@ export type TransactionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   amount?: boolean
   cpf?: boolean
   createdAt?: boolean
+  description?: boolean
+  type?: boolean
   senderId?: boolean
   receiverId?: boolean
   sender?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -669,11 +745,13 @@ export type TransactionSelectScalar = {
   amount?: boolean
   cpf?: boolean
   createdAt?: boolean
+  description?: boolean
+  type?: boolean
   senderId?: boolean
   receiverId?: boolean
 }
 
-export type TransactionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "amount" | "cpf" | "createdAt" | "senderId" | "receiverId", ExtArgs["result"]["transaction"]>
+export type TransactionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "amount" | "cpf" | "createdAt" | "description" | "type" | "senderId" | "receiverId", ExtArgs["result"]["transaction"]>
 export type TransactionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sender?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   receiver?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -698,6 +776,8 @@ export type $TransactionPayload<ExtArgs extends runtime.Types.Extensions.Interna
     amount: runtime.Decimal
     cpf: string
     createdAt: Date
+    description: string
+    type: string
     senderId: string
     receiverId: string
   }, ExtArgs["result"]["transaction"]>
@@ -1129,6 +1209,8 @@ export interface TransactionFieldRefs {
   readonly amount: Prisma.FieldRef<"Transaction", 'Decimal'>
   readonly cpf: Prisma.FieldRef<"Transaction", 'String'>
   readonly createdAt: Prisma.FieldRef<"Transaction", 'DateTime'>
+  readonly description: Prisma.FieldRef<"Transaction", 'String'>
+  readonly type: Prisma.FieldRef<"Transaction", 'String'>
   readonly senderId: Prisma.FieldRef<"Transaction", 'String'>
   readonly receiverId: Prisma.FieldRef<"Transaction", 'String'>
 }

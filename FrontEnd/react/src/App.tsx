@@ -94,6 +94,12 @@ function App() {
     window.setTimeout(() => setNotice(''), 3800)
   }
 
+  async function refreshAccount() {
+    const account = await getMe()
+    setUser(account)
+    setLoadError('')
+  }
+
   const dashboard = (
     <div className={`bank-app${darkMode ? ' theme-dark' : ''}${previewMode ? ' preview-mode' : ''}`}>
       <aside className="sidebar">
@@ -188,7 +194,7 @@ function App() {
             </>
           )}
 
-          {activeTab === 'pix' && <PixPage onBack={() => setActiveTab('home')} />}
+          {activeTab === 'pix' && <PixPage onBack={() => setActiveTab('home')} onTransferComplete={refreshAccount} />}
 
           {activeTab === 'statement' && (
             <section className="subpage">

@@ -28,6 +28,8 @@ model Transaction {
   amount       Decimal  @db.Decimal(15, 2) @default(0)
   cpf          String
   createdAt    DateTime @default(now()) @map("created_at")
+  description  String   @db.Char(200)
+  type         String   @default("transaction") 
 
   senderId     String   @map("sender_id") @db.Uuid
   sender       User     @relation("SenderRelation", fields: [senderId], references: [id])

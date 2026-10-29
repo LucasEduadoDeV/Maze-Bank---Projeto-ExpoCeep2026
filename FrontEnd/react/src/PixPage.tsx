@@ -1,9 +1,12 @@
 import { useState, type FormEvent } from 'react'
 import { ArrowLeft, ArrowRight, Check, Clock3, Info, KeyRound, QrCode, ShieldCheck, UserRound, Wallet } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { createPixTransfer } from './services/api'
 import './PixPage.css'
 
 interface PixPageProps {
   onBack: () => void
+  onTransferComplete: () => Promise<void>
 }
 
 type PixErrors = { cpf?: string; amount?: string }
@@ -31,12 +34,18 @@ function maskCpf(value: string) {
   return `•••.•••.•••-${digits.slice(-2)}`
 }
 
-function PixPage({ onBack }: PixPageProps) {
+function PixPage({ onBack, onTransferComplete }: PixPageProps) {
+  const navigate = useNavigate()
   const [step, setStep] = useState<'details' | 'review'>('details')
   const [cpf, setCpf] = useState('')
   const [amount, setAmount] = useState('')
   const [description, setDescription] = useState('')
   const [errors, setErrors] = useState<PixErrors>({})
+  const [requestError, setRequestError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [transferComplete, setTransferComplete] = useState(false)
+  const [balanceRefreshError, setBalanceRefreshError] = useState('')
+  const [refreshingBalance, setRefreshingBalance] = useState(false)
 
   const numericAmount = parseAmount(amount)
 
@@ -47,6 +56,51 @@ function PixPage({ onBack }: PixPageProps) {
     if (numericAmount <= 0) nextErrors.amount = 'Informe um valor maior que R$ 0,00.'
     setErrors(nextErrors)
     if (Object.keys(nextErrors).length === 0) setStep('review')
+  }
+
+  async function handleSendTransfer() {
+    setRequestError('')
+    setSubmitting(true)
+    try {
+      await createPixTransfer({
+        cpf: cpf.replace(/\D/g, ''),
+        amount: numericAmount,
+        description: description.trim(),
+      })
+      setTransferComplete(true)
+      await refreshAccountBalance()
+    } catch (error) {
+      const statusCode = error instanceof Error && 'statusCode' in error
+        ? Number(error.statusCode)
+        : 0
+      if (statusCode === 401) {
+        navigate('/login', { replace: true, state: { sessionExpired: true } })
+        return
+      }
+
+      const field = error instanceof Error && 'field' in error ? String(error.field) : ''
+      const message = error instanceof Error ? error.message : 'Não foi possível realizar o Pix.'
+      if (field === 'cpf' || field === 'amount') {
+        setErrors((previous) => ({ ...previous, [field]: message }))
+        setStep('details')
+      } else {
+        setRequestError(message)
+      }
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  async function refreshAccountBalance() {
+    setBalanceRefreshError('')
+    setRefreshingBalance(true)
+    try {
+      await onTransferComplete()
+    } catch {
+      setBalanceRefreshError('Pix confirmado, mas não foi possível atualizar o saldo agora.')
+    } finally {
+      setRefreshingBalance(false)
+    }
   }
 
   return (
@@ -66,7 +120,21 @@ function PixPage({ onBack }: PixPageProps) {
         <span className={`pix-progress-step${step === 'review' ? ' current' : ''}`}><i>2</i><b>Revisão</b></span>
       </div>
 
-      {step === 'details' ? (
+      {transferComplete ? (
+        <section className="pix-complete-panel" aria-live="polite">
+          <span className="pix-complete-icon"><Check size={25} /></span>
+          <span className="pix-side-label">TRANSFERÊNCIA CONFIRMADA</span>
+          <h2>Pix enviado com sucesso.</h2>
+          <p>O Maze Bank confirmou a transferência para a chave CPF informada.</p>
+          <div className="pix-complete-summary">
+            <div><span>Valor enviado</span><strong>{formatCurrency(numericAmount)}</strong></div>
+            <div><span>CPF destinatário</span><strong>{maskCpf(cpf)}</strong></div>
+            {description.trim() && <div><span>Descrição</span><strong>{description.trim()}</strong></div>}
+          </div>
+          {balanceRefreshError && <div className="pix-refresh-warning" role="alert"><span>{balanceRefreshError}</span><button type="button" disabled={refreshingBalance} onClick={refreshAccountBalance}>{refreshingBalance ? 'Atualizando...' : 'Tentar atualizar saldo'}</button></div>}
+          <button className="pix-continue" type="button" onClick={onBack}>Voltar ao início <ArrowRight size={17} /></button>
+        </section>
+      ) : step === 'details' ? (
         <div className="pix-layout">
           <form className="pix-form-panel pix-form" onSubmit={handleContinue} noValidate>
             <div className="pix-panel-heading">
@@ -101,7 +169,7 @@ function PixPage({ onBack }: PixPageProps) {
             <h2>Confira antes de enviar.</h2>
             <p>Na próxima etapa você revisa os dados. O nome do destinatário só será confirmado quando a consulta ao backend estiver conectada.</p>
             <div className="pix-note-divider" />
-            <div className="pix-demo-note"><Info size={15} /><span>Esta é uma transferência demonstrativa. Nenhum dinheiro real será movimentado nesta etapa.</span></div>
+            <div className="pix-demo-note"><Info size={15} /><span>Esta é uma transferência demonstrativa dentro do Maze Bank.</span></div>
           </aside>
         </div>
       ) : (
@@ -124,14 +192,15 @@ function PixPage({ onBack }: PixPageProps) {
             <span className="pix-pending-icon"><Clock3 size={19} /></span>
             <span className="pix-side-label">AGUARDANDO BACKEND</span>
             <h2>O Pix ainda não foi enviado.</h2>
-            <p>Quando o endpoint de transferência estiver pronto, esta etapa poderá confirmar o destinatário e concluir a operação.</p>
-            <div className="pix-demo-note"><Info size={15} /><span>Nenhuma transferência foi realizada. Seus dados continuam nesta tela para revisão.</span></div>
-            <button className="pix-confirm-disabled" type="button" disabled><Wallet size={16} /> Confirmar e enviar Pix</button>
+            <p>Confira os dados antes de confirmar. A transferência será registrada pela sua conta Maze Bank.</p>
+            <div className="pix-demo-note"><Info size={15} /><span>Projeto demonstrativo. O saldo será atualizado apenas após confirmação do servidor.</span></div>
+            {requestError && <div className="pix-request-error" role="alert">{requestError}</div>}
+            <button className="pix-confirm-button" type="button" disabled={submitting} onClick={handleSendTransfer}><Wallet size={16} /> {submitting ? 'Enviando Pix...' : 'Confirmar e enviar Pix'}</button>
           </aside>
         </div>
       )}
 
-      <footer className="pix-page-footer"><span><ShieldCheck size={14} /> Maze Bank · Ambiente demonstrativo</span><span>As transferências ainda não estão habilitadas.</span></footer>
+      <footer className="pix-page-footer"><span><ShieldCheck size={14} /> Maze Bank · Ambiente demonstrativo</span><span>{transferComplete ? 'Transferência confirmada pelo servidor.' : 'Confirmação disponível após revisar os dados.'}</span></footer>
     </section>
   )
 }
