@@ -25,7 +25,7 @@ export async function getThreeLastActivities(id: string) {
         },
         take: 3,
         orderBy: {
-            createdAt: 'asc'
+            createdAt: 'desc'
         }
     })
     return activities;
