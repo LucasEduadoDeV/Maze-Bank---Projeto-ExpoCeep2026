@@ -1,0 +1,20 @@
+---
+description: Projeto escolar Maze Bank — você no backend, agente no React
+alwaysApply: true
+---
+
+# Maze Bank (ExpoCeep 2026)
+
+Projeto escolar. Objetivos de entrega: API sólida, Docker e deploy na AWS.
+
+## Divisão
+
+- O usuário é responsável pelo **backend** (Express, Prisma, PostgreSQL, auth, testes, Docker, AWS) e quer aprender nessa camada.
+- O agente é responsável pelo **frontend React** (telas, consumo da API, CSS, Vite). Não peça ao usuário para implementar React.
+
+## Como trabalhar
+
+- Explique decisões de backend de forma didática, com arquivos concretos.
+- No frontend, implemente direto. Não ensine React a menos que o usuário pergunte.
+- O contrato atual de `GET /me` usa as chaves `Usuário` e `Ativadades` (grafia do backend). O React deve consumir essas chaves.
+- Não altere o backend só para facilitar o frontend, salvo se o usuário pedir ou se o contrato estiver quebrado.

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import {
+  ArrowDownLeft,
   ArrowUpRight,
   Bell,
   ChevronRight,
@@ -21,7 +22,7 @@ import {
   Wallet,
 } from 'lucide-react'
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
-import { getMe, type AccountUser } from './services/api'
+import { getMe, type AccountUser, type Activity } from './services/api'
 import './MainMenu.css'
 import LandingPage from './LandingPage'
 import RegisterPage from './RegisterPage'
@@ -46,6 +47,7 @@ function App() {
   const location = useLocation()
   const navigate = useNavigate()
   const [user, setUser] = useState<AccountUser | null>(null)
+  const [activities, setActivities] = useState<Activity[]>([])
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
   const [activeTab, setActiveTab] = useState<Tab>('home')
@@ -60,8 +62,11 @@ function App() {
     let active = true
 
     getMe()
-      .then((account) => {
-        if (active) setUser(account)
+      .then((data) => {
+        if (active) {
+          setUser(data.user)
+          setActivities(data.activities)
+        }
       })
       .catch((error: unknown) => {
         if (!active) return
@@ -95,8 +100,9 @@ function App() {
   }
 
   async function refreshAccount() {
-    const account = await getMe()
-    setUser(account)
+    const data = await getMe()
+    setUser(data.user)
+    setActivities(data.activities)
     setLoadError('')
   }
 
@@ -189,7 +195,46 @@ function App() {
 
               <section className="activity-section">
                 <div className="section-heading activity-heading"><div><h2>Atividade recente</h2><p>Suas movimentações mais recentes</p></div><button className="text-link" type="button" onClick={() => setActiveTab('statement')}>Ver tudo <ArrowUpRight size={15} /></button></div>
-                <div className="activity-empty"><span className="empty-icon"><Gauge size={21} /></span><div><strong>Nenhuma atividade por aqui</strong><p>Quando houver movimentações, elas aparecerão nesta lista.</p></div></div>
+                {activities.length === 0 ? (
+                  <div className="activity-empty"><span className="empty-icon"><Gauge size={21} /></span><div><strong>Nenhuma atividade por aqui</strong><p>Quando houver movimentações, elas aparecerão nesta lista.</p></div></div>
+                ) : (
+                  <div className="activity-list">
+                    {activities.map((item) => {
+                      const isOutgoing = user?.id ? item.senderId === user.id : true
+                      const formattedAmount = Number(item.amount).toLocaleString('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL',
+                      })
+                      const formattedDate = new Intl.DateTimeFormat('pt-BR', {
+                        day: '2-digit',
+                        month: 'short',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      }).format(new Date(item.createdAt))
+
+                      return (
+                        <article key={item.id} className="activity-item">
+                          <span className={`activity-item-icon ${isOutgoing ? 'sent' : 'received'}`}>
+                            {isOutgoing ? <ArrowUpRight size={18} /> : <ArrowDownLeft size={18} />}
+                          </span>
+                          <div className="activity-item-details">
+                            <strong className="activity-item-title">
+                              {item.description || (isOutgoing ? 'Transferência enviada' : 'Transferência recebida')}
+                            </strong>
+                            <span className="activity-item-meta">
+                              <span>Pix</span>
+                              <span>•</span>
+                              <time dateTime={item.createdAt}>{formattedDate}</time>
+                            </span>
+                          </div>
+                          <span className={`activity-item-amount ${isOutgoing ? 'sent' : 'received'}`}>
+                            {isOutgoing ? `- ${formattedAmount}` : `+ ${formattedAmount}`}
+                          </span>
+                        </article>
+                      )
+                    })}
+                  </div>
+                )}
               </section>
             </>
           )}

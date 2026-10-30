@@ -9,13 +9,18 @@ import TransactionRoutes from "./src/routes/transaction.routes"
 //Middlewares
 import { errorHandler } from "./src/middlewares/erroHandler";
 const app = express();
+//Swagger
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './src/config/swagger'
+
 app.use(cors({
   origin: 'http://localhost:5500',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true 
+  credentials: true
 }));
 app.use(express.json());
 app.use(cookieParser())
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/register", RegisterRoutes);
 app.use("/login", LoginRoutes);
 app.use("/me", MeRoutes);

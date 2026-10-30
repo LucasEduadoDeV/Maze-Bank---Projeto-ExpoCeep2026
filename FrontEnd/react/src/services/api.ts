@@ -1,10 +1,30 @@
 export interface AccountUser {
+  id?: string
   name: string
   balance: number | string
+  email?: string
+  createdAt?: string
+}
+
+export interface Activity {
+  id: string
+  amount: number | string
+  cpf: string
+  createdAt: string
+  description: string
+  type: string
+  senderId: string
+  receiverId: string
+}
+
+export interface DashboardData {
+  user: AccountUser
+  activities: Activity[]
 }
 
 interface GetMeResponse {
   Usuário: AccountUser
+  Ativadades?: Activity[]
 }
 
 export interface RegisterPayload {
@@ -31,7 +51,7 @@ export interface PixTransferPayload {
   description: string
 }
 
-export async function getMe(): Promise<AccountUser> {
+export async function getMe(): Promise<DashboardData> {
   const response = await fetch('/me', {
     method: 'GET',
     credentials: 'include',
@@ -42,7 +62,10 @@ export async function getMe(): Promise<AccountUser> {
   if (!response.ok) throw new Error('ACCOUNT_REQUEST_FAILED')
 
   const data = (await response.json()) as GetMeResponse
-  return data['Usuário']
+  return {
+    user: data['Usuário'],
+    activities: data['Ativadades'] ?? [],
+  }
 }
 
 export async function registerAccount(payload: RegisterPayload): Promise<void> {
