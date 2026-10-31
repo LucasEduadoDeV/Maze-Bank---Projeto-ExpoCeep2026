@@ -52,7 +52,8 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
-  Transaction: 'Transaction'
+  Transaction: 'Transaction',
+  CreditCards: 'CreditCards'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -97,6 +98,20 @@ export const TransactionScalarFieldEnum = {
 } as const
 
 export type TransactionScalarFieldEnum = (typeof TransactionScalarFieldEnum)[keyof typeof TransactionScalarFieldEnum]
+
+
+export const CreditCardsScalarFieldEnum = {
+  idCard: 'idCard',
+  cardNumber: 'cardNumber',
+  cvv: 'cvv',
+  validateDate: 'validateDate',
+  totalLimit: 'totalLimit',
+  freeLimit: 'freeLimit',
+  status: 'status',
+  userId: 'userId'
+} as const
+
+export type CreditCardsScalarFieldEnum = (typeof CreditCardsScalarFieldEnum)[keyof typeof CreditCardsScalarFieldEnum]
 
 
 export const SortOrder = {

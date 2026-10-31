@@ -22,7 +22,11 @@ export async function getThreeLastActivities(id: string) {
                 { senderId: id },
                 { receiverId: id },
             ]
-        },
+      },
+      include: {
+        sender: { select: { name: true } },
+        receiver: { select: { name: true } }
+      },
         take: 3,
         orderBy: {
             createdAt: 'desc'

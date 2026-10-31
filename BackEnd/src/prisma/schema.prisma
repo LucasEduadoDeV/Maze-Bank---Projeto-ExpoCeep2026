@@ -20,6 +20,8 @@ model User {
   transactionsSent     Transaction[] @relation("SenderRelation")
   transactionsReceived Transaction[] @relation("ReceiverRelation")
 
+  cardUser     CreditCards[] @relation("UserRelation")
+
   @@map("users")
 }
 
@@ -39,4 +41,25 @@ model Transaction {
 
 
   @@map("transactions")
+}
+
+enum StatusCartao {
+  ATIVO
+  BLOQUEADO
+}
+
+model CreditCards {
+  idCard       String   @map("id_card") @id @default(uuid()) @db.Uuid
+  cardNumber   String   @map("card_number") @unique
+  cvv          Int      @db.Integer
+  validateDate    String    @map("validate_date")
+  totalLimit   Decimal    @map("total_limit") @db.Decimal(10,2)
+  freeLimit    Decimal    @map("free_limit") @db.Decimal(10,2)
+  status       StatusCartao     @default(ATIVO)
+
+  userId       String     @map("user_id") @db.Uuid
+  user         User       @relation("UserRelation", fields: [userId], references: [id])
+
+
+  @@map("cards")
 }

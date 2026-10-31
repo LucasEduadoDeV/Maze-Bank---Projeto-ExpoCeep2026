@@ -76,3 +76,51 @@ export async function transaction(
     });
   });
 }
+
+export async function getPaginatedTransactionsRepository(userId: string, page: number, limit: number) {
+  const skip = (page - 1) * limit;
+
+  const [transactions, totalItems] = await Promise.all([
+    prisma.transaction.findMany({
+      where: {
+        OR: [
+          { senderId: userId },
+          { receiverId: userId }
+        ]
+      },
+      skip,
+      take: limit,
+      orderBy: { createdAt: "desc" },
+      include: {
+        sender: {
+          select: { name: true, cpf: true }
+        },
+        receiver: {
+          select: { name: true, cpf: true }
+        }
+      }
+    }),
+    prisma.transaction.count({
+      where: {
+        OR: [
+          { senderId: userId },
+          { receiverId: userId }
+        ]
+      }
+    })
+  ]);
+
+  const totalPages = Math.ceil(totalItems / limit);
+
+  return {
+    data: transactions,
+    meta: {
+      page,
+      limit,
+      totalItems,
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPrevPage: page > 1
+    }
+  };
+}

@@ -51,3 +51,8 @@ export type User = Prisma.UserModel
  * 
  */
 export type Transaction = Prisma.TransactionModel
+/**
+ * Model CreditCards
+ * 
+ */
+export type CreditCards = Prisma.CreditCardsModel

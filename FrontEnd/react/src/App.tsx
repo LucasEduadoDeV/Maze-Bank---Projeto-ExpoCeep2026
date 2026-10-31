@@ -22,14 +22,15 @@ import {
   Wallet,
 } from 'lucide-react'
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
-import { getMe, type AccountUser, type Activity } from './services/api'
+import { getMe, getStatement, type AccountUser, type Activity, type PaginationMeta } from './services/api'
 import './MainMenu.css'
 import LandingPage from './LandingPage'
 import RegisterPage from './RegisterPage'
 import LoginPage from './LoginPage'
 import PixPage from './PixPage'
+import CardsPage from './CardsPage'
 
-type Tab = 'home' | 'statement' | 'settings' | 'pix'
+type Tab = 'home' | 'statement' | 'settings' | 'pix' | 'cards'
 
 const navigation = [
   { id: 'home', label: 'Visão geral', icon: LayoutDashboard },
@@ -55,6 +56,40 @@ function App() {
   const [darkMode, setDarkMode] = useState(false)
   const [previewMode, setPreviewMode] = useState(false)
   const [notice, setNotice] = useState('')
+
+  // Statement pagination state
+  const [statementData, setStatementData] = useState<Activity[]>([])
+  const [statementMeta, setStatementMeta] = useState<PaginationMeta | null>(null)
+  const [statementPage, setStatementPage] = useState(1)
+  const [statementLoading, setStatementLoading] = useState(false)
+
+  useEffect(() => {
+    if (location.pathname !== '/dashboard' || activeTab !== 'statement') return
+
+    let active = true
+    setStatementLoading(true)
+
+    getStatement(statementPage, 10)
+      .then((res) => {
+        if (active) {
+          setStatementData(res.data)
+          setStatementMeta(res.meta)
+        }
+      })
+      .catch((error: unknown) => {
+        if (!active) return
+        if (error instanceof Error && error.message === 'UNAUTHORIZED') {
+          navigate('/login', { replace: true, state: { sessionExpired: true } })
+        }
+      })
+      .finally(() => {
+        if (active) setStatementLoading(false)
+      })
+
+    return () => {
+      active = false
+    }
+  }, [location.pathname, activeTab, statementPage, navigate])
 
   useEffect(() => {
     if (location.pathname !== '/dashboard') return
@@ -93,7 +128,7 @@ function App() {
     style: 'currency',
     currency: 'BRL',
   })
-  const activeLabel = activeTab === 'pix' ? 'Pix' : navigation.find((item) => item.id === activeTab)?.label
+  const activeLabel = activeTab === 'pix' ? 'Pix' : activeTab === 'cards' ? 'Cartões' : navigation.find((item) => item.id === activeTab)?.label
   function showComingSoon(feature: string) {
     setNotice(`${feature} estará disponível em breve.`)
     window.setTimeout(() => setNotice(''), 3800)
@@ -177,7 +212,7 @@ function App() {
                   <span className="balance-watermark" aria-hidden="true">M</span>
                 </article>
                 <article className="account-card">
-                  <div className="account-card-heading"><span className="account-card-icon"><CreditCard size={19} /></span><button type="button" aria-label="Mais opções do cartão" onClick={() => showComingSoon('Cartões')}><MoreHorizontal size={20} /></button></div>
+                  <div className="account-card-heading"><span className="account-card-icon"><CreditCard size={19} /></span><button type="button" aria-label="Mais opções do cartão" onClick={() => setActiveTab('cards')}><MoreHorizontal size={20} /></button></div>
                   <span className="account-card-label">CARTÃO PRINCIPAL</span>
                   <strong className="account-card-number">•••• &nbsp;•••• &nbsp;•••• &nbsp;••••</strong>
                   <div className="account-card-footer"><span>MAZE BANK</span><span className="card-chip" aria-label="Chip do cartão"><i /><i /><i /><i /></span></div>
@@ -225,6 +260,16 @@ function App() {
                               <span>Pix</span>
                               <span>•</span>
                               <time dateTime={item.createdAt}>{formattedDate}</time>
+                              {(isOutgoing ? item.receiver?.name : item.sender?.name) && (
+                                <>
+                                  <span>|</span>
+                                  <span>
+                                    {isOutgoing
+                                      ? `Para: ${item.receiver?.name}`
+                                      : `De: ${item.sender?.name}`}
+                                  </span>
+                                </>
+                              )}
                             </span>
                           </div>
                           <span className={`activity-item-amount ${isOutgoing ? 'sent' : 'received'}`}>
@@ -241,10 +286,106 @@ function App() {
 
           {activeTab === 'pix' && <PixPage onBack={() => setActiveTab('home')} onTransferComplete={refreshAccount} />}
 
+          {activeTab === 'cards' && <CardsPage onBack={() => setActiveTab('home')} />}
+
           {activeTab === 'statement' && (
             <section className="subpage">
-              <div className="page-heading"><div><span className="eyebrow">SUA CONTA</span><h1>Extrato</h1><p>Acompanhe entradas e saídas da sua conta.</p></div></div>
-              <div className="empty-page"><span className="empty-icon"><FileClock size={22} /></span><h2>Seu extrato está começando</h2><p>As movimentações aparecerão aqui quando os recursos de transferência e pagamento estiverem disponíveis.</p></div>
+              <div className="page-heading">
+                <div>
+                  <span className="eyebrow">SUA CONTA</span>
+                  <h1>Extrato</h1>
+                  <p>Acompanhe todas as entradas e saídas da sua conta.</p>
+                </div>
+              </div>
+
+              {statementLoading && statementData.length === 0 ? (
+                <div className="empty-page">
+                  <span className="empty-icon"><FileClock size={22} /></span>
+                  <h2>Carregando extrato...</h2>
+                </div>
+              ) : statementData.length === 0 ? (
+                <div className="empty-page">
+                  <span className="empty-icon"><FileClock size={22} /></span>
+                  <h2>Seu extrato está começando</h2>
+                  <p>As movimentações aparecerão aqui quando você realizar ou receber transferências.</p>
+                </div>
+              ) : (
+                <div className="statement-container">
+                  <div className="activity-list" style={{ marginBottom: '20px' }}>
+                    {statementData.map((item) => {
+                      const isOutgoing = user?.id ? item.senderId === user.id : true
+                      const formattedAmount = Number(item.amount).toLocaleString('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL',
+                      })
+                      const formattedDate = new Intl.DateTimeFormat('pt-BR', {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      }).format(new Date(item.createdAt))
+
+                      return (
+                        <article key={item.id} className="activity-item">
+                          <span className={`activity-item-icon ${isOutgoing ? 'sent' : 'received'}`}>
+                            {isOutgoing ? <ArrowUpRight size={18} /> : <ArrowDownLeft size={18} />}
+                          </span>
+                          <div className="activity-item-details">
+                            <strong className="activity-item-title">
+                              {item.description || (isOutgoing ? 'Transferência enviada' : 'Transferência recebida')}
+                            </strong>
+                            <span className="activity-item-meta">
+                              <span>Pix</span>
+                              <span>•</span>
+                              <time dateTime={item.createdAt}>{formattedDate}</time>
+                              {(isOutgoing ? item.receiver?.name : item.sender?.name) && (
+                                <>
+                                  <span>|</span>
+                                  <span>
+                                    {isOutgoing
+                                      ? `Para: ${item.receiver?.name}`
+                                      : `De: ${item.sender?.name}`}
+                                  </span>
+                                </>
+                              )}
+                            </span>
+                          </div>
+                          <span className={`activity-item-amount ${isOutgoing ? 'sent' : 'received'}`}>
+                            {isOutgoing ? `- ${formattedAmount}` : `+ ${formattedAmount}`}
+                          </span>
+                        </article>
+                      )
+                    })}
+                  </div>
+
+                  {statementMeta && statementMeta.totalPages > 1 && (
+                    <div className="pagination-controls" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: '6px' }}>
+                      <button
+                        className="quiet-button"
+                        type="button"
+                        disabled={!statementMeta.hasPrevPage || statementLoading}
+                        onClick={() => setStatementPage((prev) => Math.max(1, prev - 1))}
+                        style={{ opacity: !statementMeta.hasPrevPage ? 0.5 : 1, cursor: !statementMeta.hasPrevPage ? 'not-allowed' : 'pointer' }}
+                      >
+                        Anterior
+                      </button>
+                      <span style={{ fontSize: '11px', color: 'var(--muted)', fontWeight: 600 }}>
+                        Página {statementMeta.page} de {statementMeta.totalPages} ({statementMeta.totalItems} transações)
+                      </span>
+                      <button
+                        className="quiet-button"
+                        type="button"
+                        disabled={!statementMeta.hasNextPage || statementLoading}
+                        onClick={() => setStatementPage((prev) => prev + 1)}
+                        style={{ opacity: !statementMeta.hasNextPage ? 0.5 : 1, cursor: !statementMeta.hasNextPage ? 'not-allowed' : 'pointer' }}
+                      >
+                        Próxima
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
             </section>
           )}
 

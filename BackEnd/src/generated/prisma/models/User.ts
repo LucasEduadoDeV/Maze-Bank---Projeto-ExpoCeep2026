@@ -242,6 +242,7 @@ export type UserWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   transactionsSent?: Prisma.TransactionListRelationFilter
   transactionsReceived?: Prisma.TransactionListRelationFilter
+  cardUser?: Prisma.CreditCardsListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -255,6 +256,7 @@ export type UserOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   transactionsSent?: Prisma.TransactionOrderByRelationAggregateInput
   transactionsReceived?: Prisma.TransactionOrderByRelationAggregateInput
+  cardUser?: Prisma.CreditCardsOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -271,6 +273,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   transactionsSent?: Prisma.TransactionListRelationFilter
   transactionsReceived?: Prisma.TransactionListRelationFilter
+  cardUser?: Prisma.CreditCardsListRelationFilter
 }, "id" | "email" | "cpf">
 
 export type UserOrderByWithAggregationInput = {
@@ -314,6 +317,7 @@ export type UserCreateInput = {
   updatedAt?: Date | string
   transactionsSent?: Prisma.TransactionCreateNestedManyWithoutSenderInput
   transactionsReceived?: Prisma.TransactionCreateNestedManyWithoutReceiverInput
+  cardUser?: Prisma.CreditCardsCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -327,6 +331,7 @@ export type UserUncheckedCreateInput = {
   updatedAt?: Date | string
   transactionsSent?: Prisma.TransactionUncheckedCreateNestedManyWithoutSenderInput
   transactionsReceived?: Prisma.TransactionUncheckedCreateNestedManyWithoutReceiverInput
+  cardUser?: Prisma.CreditCardsUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -340,6 +345,7 @@ export type UserUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   transactionsSent?: Prisma.TransactionUpdateManyWithoutSenderNestedInput
   transactionsReceived?: Prisma.TransactionUpdateManyWithoutReceiverNestedInput
+  cardUser?: Prisma.CreditCardsUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -353,6 +359,7 @@ export type UserUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   transactionsSent?: Prisma.TransactionUncheckedUpdateManyWithoutSenderNestedInput
   transactionsReceived?: Prisma.TransactionUncheckedUpdateManyWithoutReceiverNestedInput
+  cardUser?: Prisma.CreditCardsUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -478,6 +485,20 @@ export type UserUpdateOneRequiredWithoutTransactionsReceivedNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTransactionsReceivedInput, Prisma.UserUpdateWithoutTransactionsReceivedInput>, Prisma.UserUncheckedUpdateWithoutTransactionsReceivedInput>
 }
 
+export type UserCreateNestedOneWithoutCardUserInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCardUserInput, Prisma.UserUncheckedCreateWithoutCardUserInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCardUserInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCardUserNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCardUserInput, Prisma.UserUncheckedCreateWithoutCardUserInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCardUserInput
+  upsert?: Prisma.UserUpsertWithoutCardUserInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCardUserInput, Prisma.UserUpdateWithoutCardUserInput>, Prisma.UserUncheckedUpdateWithoutCardUserInput>
+}
+
 export type UserCreateWithoutTransactionsSentInput = {
   id?: string
   name: string
@@ -488,6 +509,7 @@ export type UserCreateWithoutTransactionsSentInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   transactionsReceived?: Prisma.TransactionCreateNestedManyWithoutReceiverInput
+  cardUser?: Prisma.CreditCardsCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTransactionsSentInput = {
@@ -500,6 +522,7 @@ export type UserUncheckedCreateWithoutTransactionsSentInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   transactionsReceived?: Prisma.TransactionUncheckedCreateNestedManyWithoutReceiverInput
+  cardUser?: Prisma.CreditCardsUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTransactionsSentInput = {
@@ -517,6 +540,7 @@ export type UserCreateWithoutTransactionsReceivedInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   transactionsSent?: Prisma.TransactionCreateNestedManyWithoutSenderInput
+  cardUser?: Prisma.CreditCardsCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTransactionsReceivedInput = {
@@ -529,6 +553,7 @@ export type UserUncheckedCreateWithoutTransactionsReceivedInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   transactionsSent?: Prisma.TransactionUncheckedCreateNestedManyWithoutSenderInput
+  cardUser?: Prisma.CreditCardsUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTransactionsReceivedInput = {
@@ -557,6 +582,7 @@ export type UserUpdateWithoutTransactionsSentInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   transactionsReceived?: Prisma.TransactionUpdateManyWithoutReceiverNestedInput
+  cardUser?: Prisma.CreditCardsUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTransactionsSentInput = {
@@ -569,6 +595,7 @@ export type UserUncheckedUpdateWithoutTransactionsSentInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   transactionsReceived?: Prisma.TransactionUncheckedUpdateManyWithoutReceiverNestedInput
+  cardUser?: Prisma.CreditCardsUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutTransactionsReceivedInput = {
@@ -592,6 +619,7 @@ export type UserUpdateWithoutTransactionsReceivedInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   transactionsSent?: Prisma.TransactionUpdateManyWithoutSenderNestedInput
+  cardUser?: Prisma.CreditCardsUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTransactionsReceivedInput = {
@@ -604,6 +632,75 @@ export type UserUncheckedUpdateWithoutTransactionsReceivedInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   transactionsSent?: Prisma.TransactionUncheckedUpdateManyWithoutSenderNestedInput
+  cardUser?: Prisma.CreditCardsUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutCardUserInput = {
+  id?: string
+  name: string
+  email: string
+  cpf: string
+  balance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  passwordHash: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  transactionsSent?: Prisma.TransactionCreateNestedManyWithoutSenderInput
+  transactionsReceived?: Prisma.TransactionCreateNestedManyWithoutReceiverInput
+}
+
+export type UserUncheckedCreateWithoutCardUserInput = {
+  id?: string
+  name: string
+  email: string
+  cpf: string
+  balance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  passwordHash: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  transactionsSent?: Prisma.TransactionUncheckedCreateNestedManyWithoutSenderInput
+  transactionsReceived?: Prisma.TransactionUncheckedCreateNestedManyWithoutReceiverInput
+}
+
+export type UserCreateOrConnectWithoutCardUserInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCardUserInput, Prisma.UserUncheckedCreateWithoutCardUserInput>
+}
+
+export type UserUpsertWithoutCardUserInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCardUserInput, Prisma.UserUncheckedUpdateWithoutCardUserInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCardUserInput, Prisma.UserUncheckedCreateWithoutCardUserInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCardUserInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCardUserInput, Prisma.UserUncheckedUpdateWithoutCardUserInput>
+}
+
+export type UserUpdateWithoutCardUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  cpf?: Prisma.StringFieldUpdateOperationsInput | string
+  balance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  transactionsSent?: Prisma.TransactionUpdateManyWithoutSenderNestedInput
+  transactionsReceived?: Prisma.TransactionUpdateManyWithoutReceiverNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCardUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  cpf?: Prisma.StringFieldUpdateOperationsInput | string
+  balance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  transactionsSent?: Prisma.TransactionUncheckedUpdateManyWithoutSenderNestedInput
+  transactionsReceived?: Prisma.TransactionUncheckedUpdateManyWithoutReceiverNestedInput
 }
 
 
@@ -614,11 +711,13 @@ export type UserUncheckedUpdateWithoutTransactionsReceivedInput = {
 export type UserCountOutputType = {
   transactionsSent: number
   transactionsReceived: number
+  cardUser: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   transactionsSent?: boolean | UserCountOutputTypeCountTransactionsSentArgs
   transactionsReceived?: boolean | UserCountOutputTypeCountTransactionsReceivedArgs
+  cardUser?: boolean | UserCountOutputTypeCountCardUserArgs
 }
 
 /**
@@ -645,6 +744,13 @@ export type UserCountOutputTypeCountTransactionsReceivedArgs<ExtArgs extends run
   where?: Prisma.TransactionWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCardUserArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CreditCardsWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -657,6 +763,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   updatedAt?: boolean
   transactionsSent?: boolean | Prisma.User$transactionsSentArgs<ExtArgs>
   transactionsReceived?: boolean | Prisma.User$transactionsReceivedArgs<ExtArgs>
+  cardUser?: boolean | Prisma.User$cardUserArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -697,6 +804,7 @@ export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   transactionsSent?: boolean | Prisma.User$transactionsSentArgs<ExtArgs>
   transactionsReceived?: boolean | Prisma.User$transactionsReceivedArgs<ExtArgs>
+  cardUser?: boolean | Prisma.User$cardUserArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -707,6 +815,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     transactionsSent: Prisma.$TransactionPayload<ExtArgs>[]
     transactionsReceived: Prisma.$TransactionPayload<ExtArgs>[]
+    cardUser: Prisma.$CreditCardsPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1113,6 +1222,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   transactionsSent<T extends Prisma.User$transactionsSentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$transactionsSentArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   transactionsReceived<T extends Prisma.User$transactionsReceivedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$transactionsReceivedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  cardUser<T extends Prisma.User$cardUserArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$cardUserArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CreditCardsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1588,6 +1698,30 @@ export type User$transactionsReceivedArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   distinct?: Prisma.TransactionScalarFieldEnum | Prisma.TransactionScalarFieldEnum[]
+}
+
+/**
+ * User.cardUser
+ */
+export type User$cardUserArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CreditCards
+   */
+  select?: Prisma.CreditCardsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CreditCards
+   */
+  omit?: Prisma.CreditCardsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CreditCardsInclude<ExtArgs> | null
+  where?: Prisma.CreditCardsWhereInput
+  orderBy?: Prisma.CreditCardsOrderByWithRelationInput | Prisma.CreditCardsOrderByWithRelationInput[]
+  cursor?: Prisma.CreditCardsWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CreditCardsScalarFieldEnum | Prisma.CreditCardsScalarFieldEnum[]
 }
 
 /**

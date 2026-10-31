@@ -6,6 +6,10 @@ export interface AccountUser {
   createdAt?: string
 }
 
+export interface ActivityUser {
+  name: string
+}
+
 export interface Activity {
   id: string
   amount: number | string
@@ -15,6 +19,8 @@ export interface Activity {
   type: string
   senderId: string
   receiverId: string
+  sender?: ActivityUser
+  receiver?: ActivityUser
 }
 
 export interface DashboardData {
@@ -115,4 +121,31 @@ export async function createPixTransfer(payload: PixTransferPayload): Promise<vo
       field: data.field,
     })
   }
+}
+
+export interface PaginationMeta {
+  page: number
+  limit: number
+  totalItems: number
+  totalPages: number
+  hasNextPage: boolean
+  hasPrevPage: boolean
+}
+
+export interface StatementResponse {
+  data: Activity[]
+  meta: PaginationMeta
+}
+
+export async function getStatement(page = 1, limit = 10): Promise<StatementResponse> {
+  const response = await fetch(`/api/transaction?page=${page}&limit=${limit}`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+  })
+
+  if (response.status === 401) throw new Error('UNAUTHORIZED')
+  if (!response.ok) throw new Error('STATEMENT_REQUEST_FAILED')
+
+  return (await response.json()) as StatementResponse
 }
