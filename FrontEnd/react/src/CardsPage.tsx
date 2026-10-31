@@ -1,6 +1,19 @@
-import { useState } from 'react'
-import { ArrowLeft, Plus, CreditCard, Shield, Lock, Trash2, CheckCircle2 } from 'lucide-react'
-import './PixPage.css' // Reutilizamos estilos limpos de formulários/páginas
+import { useEffect, useState, type FormEvent } from 'react'
+import {
+  ArrowLeft,
+  ArrowUpRight,
+  Check,
+  CheckCircle2,
+  CreditCard,
+  LockKeyhole,
+  Plus,
+  Shield,
+  ShieldCheck,
+  Sparkles,
+  Trash2,
+  X,
+} from 'lucide-react'
+import './CardsPage.css'
 
 interface CardsPageProps {
   onBack: () => void
@@ -16,51 +29,73 @@ interface CardItem {
   status: 'active' | 'blocked'
 }
 
-export default function CardsPage({ onBack }: CardsPageProps) {
-  const [cards, setCards] = useState<CardItem[]>([
-    {
-      id: '1',
-      name: 'Cartão Principal',
-      number: '•••• •••• •••• 4289',
-      expiry: '08/29',
-      limit: 'R$ 5.000,00',
-      type: 'physical',
-      status: 'active',
-    },
-    {
-      id: '2',
-      name: 'Maze Digital',
-      number: '•••• •••• •••• 8812',
-      expiry: '12/31',
-      limit: 'R$ 1.200,00',
-      type: 'virtual',
-      status: 'active',
-    },
-    {
-      id: '3',
-      name: 'Cartão Viagem',
-      number: '•••• •••• •••• 9934',
-      expiry: '05/30',
-      limit: 'R$ 3.500,00',
-      type: 'virtual',
-      status: 'active',
-    },
-  ])
+const initialCards: CardItem[] = [
+  {
+    id: '1',
+    name: 'Cartão Principal',
+    number: '•••• •••• •••• 4289',
+    expiry: '08/29',
+    limit: 'R$ 5.000,00',
+    type: 'physical',
+    status: 'active',
+  },
+  {
+    id: '2',
+    name: 'Maze Digital',
+    number: '•••• •••• •••• 8812',
+    expiry: '12/31',
+    limit: 'R$ 1.200,00',
+    type: 'virtual',
+    status: 'active',
+  },
+  {
+    id: '3',
+    name: 'Cartão Viagem',
+    number: '•••• •••• •••• 9934',
+    expiry: '05/30',
+    limit: 'R$ 3.500,00',
+    type: 'virtual',
+    status: 'active',
+  },
+]
 
+const CARD_LIMIT = 3
+
+export default function CardsPage({ onBack }: CardsPageProps) {
+  const [cards, setCards] = useState<CardItem[]>(initialCards)
   const [showNewModal, setShowNewModal] = useState(false)
   const [cardName, setCardName] = useState('')
   const [cardLimit, setCardLimit] = useState('2500')
   const [cardType, setCardType] = useState<'virtual' | 'physical'>('virtual')
   const [successMsg, setSuccessMsg] = useState('')
+  const activeCards = cards.filter((card) => card.status === 'active').length
+  const hasReachedLimit = cards.length >= CARD_LIMIT
 
-  function handleCreateCard(e: React.FormEvent) {
-    e.preventDefault()
-    if (cards.length >= 3) {
-      setSuccessMsg('Limite máximo de 3 cartões atingido para teste.')
+  useEffect(() => {
+    if (!showNewModal) return
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') setShowNewModal(false)
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [showNewModal])
+
+  function showMessage(message: string) {
+    setSuccessMsg(message)
+    window.setTimeout(() => setSuccessMsg(''), 4000)
+  }
+
+  function handleCreateCard(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+
+    if (hasReachedLimit) {
+      showMessage('Você já atingiu o limite de 3 cartões.')
       setShowNewModal(false)
-      setTimeout(() => setSuccessMsg(''), 4000)
       return
     }
+
     const randomDigits = Math.floor(1000 + Math.random() * 9000)
     const newCard: CardItem = {
       id: Date.now().toString(),
@@ -72,142 +107,258 @@ export default function CardsPage({ onBack }: CardsPageProps) {
       status: 'active',
     }
 
-    setCards([newCard, ...cards])
+    setCards((currentCards) => [newCard, ...currentCards])
     setShowNewModal(false)
     setCardName('')
-    setSuccessMsg('Cartão criado com sucesso!')
-    setTimeout(() => setSuccessMsg(''), 4000)
+    showMessage('Cartão criado com sucesso!')
   }
 
   function toggleBlock(id: string) {
-    setCards(cards.map(c => c.id === id ? { ...c, status: c.status === 'active' ? 'blocked' : 'active' } : c))
+    setCards((currentCards) =>
+      currentCards.map((card) =>
+        card.id === id
+          ? { ...card, status: card.status === 'active' ? 'blocked' : 'active' }
+          : card,
+      ),
+    )
   }
 
   function removeCard(id: string) {
-    setCards(cards.filter(c => c.id !== id))
+    setCards((currentCards) => currentCards.filter((card) => card.id !== id))
   }
 
-  const cardThemes = [
-    { bg: 'linear-gradient(135deg, #1f2937 0%, #111827 100%)', border: 'rgba(255, 255, 255, 0.1)' },
-    { bg: 'linear-gradient(135deg, #064e3b 0%, #022c22 100%)', border: 'rgba(129, 199, 166, 0.2)' },
-    { bg: 'linear-gradient(135deg, #7f1d1d 0%, #450a0a 100%)', border: 'rgba(248, 113, 113, 0.2)' },
-  ]
-
   return (
-    <section className="subpage">
-      <div className="page-heading">
-        <div>
-          <button className="quiet-button" onClick={onBack} style={{ marginBottom: '12px' }}>
-            <ArrowLeft size={16} /> Voltar à visão geral
-          </button>
-          <span className="eyebrow">MEUS CARTÕES</span>
-          <h1>Gerencie seus cartões</h1>
-          <p>Visualize seus cartões ou solicite um novo (máximo de 3 cartões).</p>
-        </div>
-        <button className="quiet-button" style={{ padding: '8px 14px', background: 'var(--red)', color: 'white', border: 0, borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, fontSize: '11px' }} onClick={() => setShowNewModal(true)}>
-          <Plus size={16} /> Novo Cartão
+    <section className="cards-page" aria-labelledby="cards-title">
+      <header className="cards-page-header">
+        <button className="cards-back-button" onClick={onBack} type="button">
+          <ArrowLeft size={16} />
+          <span>Visão geral</span>
         </button>
-      </div>
+
+        <div className="cards-heading-row">
+          <div className="cards-heading-copy">
+            <span className="cards-eyebrow"><span /> SUA CARTEIRA MAZE</span>
+            <h1 id="cards-title">Seus cartões,<br className="cards-title-break" /> do seu jeito.</h1>
+            <p>Mais controle para cada compra, em qualquer lugar.</p>
+          </div>
+
+          <div className="cards-heading-action">
+            <span className="cards-limit-label">
+              <CreditCard size={14} />
+              {cards.length} de {CARD_LIMIT} cartões
+            </span>
+            <button
+              className="cards-create-button"
+              onClick={() => setShowNewModal(true)}
+              type="button"
+              disabled={hasReachedLimit}
+            >
+              <Plus size={17} />
+              Novo cartão
+            </button>
+          </div>
+        </div>
+      </header>
 
       {successMsg && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 16px', background: '#eefcf5', border: '1px solid #b4e6cb', color: '#1b633e', borderRadius: '6px', marginBottom: '20px', fontSize: '12px', fontWeight: 600 }}>
-          <CheckCircle2 size={18} /> {successMsg}
+        <div className="cards-toast" role="status">
+          <CheckCircle2 size={18} />
+          <span>{successMsg}</span>
+          <button onClick={() => setSuccessMsg('')} type="button" aria-label="Fechar aviso">
+            <X size={15} />
+          </button>
         </div>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', marginBottom: '30px' }}>
-        {cards.map((card, index) => {
-          const theme = cardThemes[index % cardThemes.length]
-          return (
-            <div key={card.id} style={{ background: card.status === 'blocked' ? '#333' : theme.bg, color: '#fff', borderRadius: '14px', padding: '22px 24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '190px', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.15)', position: 'relative', overflow: 'hidden', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }} onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 16px 32px -6px rgba(0,0,0,0.25)' }} onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(0,0,0,0.15)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <div>
-                  <span style={{ fontSize: '9px', textTransform: 'uppercase', letterSpacing: '1px', opacity: 0.7, fontWeight: 700 }}>{card.type === 'virtual' ? 'Virtual' : 'Físico'}</span>
-                  <h3 style={{ margin: '2px 0 0', fontSize: '14px', fontWeight: 700 }}>{card.name}</h3>
-                </div>
-                <CreditCard size={20} style={{ opacity: 0.8 }} />
-              </div>
-
-              <div style={{ margin: '12px 0 16px' }}>
-                <div style={{ fontSize: '15px', fontFamily: 'monospace', letterSpacing: '1.5px', opacity: card.status === 'blocked' ? 0.4 : 1 }}>{card.number}</div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', fontSize: '11px', opacity: 0.8 }}>
-                  <span>Exp: {card.expiry}</span>
-                  <span>Lim: {card.limit}</span>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                <span style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '4px', background: card.status === 'active' ? 'rgba(40,167,69,0.2)' : 'rgba(220,53,69,0.2)', color: card.status === 'active' ? '#4cd964' : '#ff6b6b', fontWeight: 700 }}>
-                  {card.status === 'active' ? 'ATIVO' : 'BLOQUEADO'}
-                </span>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <button onClick={() => toggleBlock(card.id)} title={card.status === 'active' ? 'Bloquear cartão' : 'Desbloquear cartão'} style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', padding: '5px', borderRadius: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-                    {card.status === 'active' ? <Lock size={12} /> : <Shield size={12} />}
-                  </button>
-                  <button onClick={() => removeCard(card.id)} title="Excluir cartão" style={{ background: 'transparent', border: '1px solid rgba(220,53,69,0.4)', color: '#ff6b6b', padding: '5px', borderRadius: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-                    <Trash2 size={12} />
-                  </button>
-                </div>
-              </div>
-            </div>
-          )
-        })}
+      <div className="cards-overview" aria-label="Resumo dos cartões">
+        <div className="cards-overview-item">
+          <span className="cards-overview-icon"><CreditCard size={17} /></span>
+          <span><strong>{cards.length.toString().padStart(2, '0')}</strong><small>cartões na carteira</small></span>
+        </div>
+        <span className="cards-overview-divider" />
+        <div className="cards-overview-item">
+          <span className="cards-overview-icon cards-overview-icon-green"><ShieldCheck size={17} /></span>
+          <span><strong>{activeCards.toString().padStart(2, '0')}</strong><small>cartões ativos</small></span>
+        </div>
+        <span className="cards-overview-divider" />
+        <div className="cards-overview-note">
+          <Sparkles size={16} />
+          <span>Segurança em primeiro lugar.<br /><strong>Você controla cada cartão.</strong></span>
+        </div>
       </div>
 
-      {showNewModal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', display: 'grid', placeItems: 'center', zIndex: 50, padding: '20px', animation: 'fadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1)' }}>
-          <div style={{ background: 'var(--surface)', padding: '28px', borderRadius: '14px', width: '100%', maxWidth: '420px', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.2)', animation: 'scaleUp 0.25s cubic-bezier(0.4, 0, 0.2, 1)' }}>
-            <h2 style={{ margin: '0 0 8px', fontSize: '18px', fontWeight: 700 }}>Solicitar Novo Cartão</h2>
-            <p style={{ margin: '0 0 20px', color: 'var(--muted)', fontSize: '12px' }}>Escolha o tipo e o apelido para o seu novo cartão Maze Bank.</p>
-            
-            <form onSubmit={handleCreateCard} style={{ display: 'grid', gap: '16px' }}>
-              <div>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, marginBottom: '6px' }}>Apelido do Cartão</label>
-                <input
-                  type="text"
-                  placeholder="Ex: Assinaturas, Viagem, Compras"
-                  value={cardName}
-                  onChange={(e) => setCardName(e.target.value)}
-                  style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--line)', borderRadius: '6px', fontSize: '12px', background: 'var(--surface-soft)', color: 'var(--ink)' }}
-                  required
-                />
+      <div className="cards-section-heading">
+        <div>
+          <span className="cards-section-kicker">VISÃO GERAL</span>
+          <h2>Minha carteira</h2>
+        </div>
+        <span className="cards-section-count">{cards.length} {cards.length === 1 ? 'cartão' : 'cartões'}</span>
+      </div>
+
+      {cards.length > 0 ? (
+        <div className="cards-grid">
+          {cards.map((card, index) => (
+            <article
+              className={`wallet-card${card.status === 'blocked' ? ' is-blocked' : ''}`}
+              key={card.id}
+              style={{ animationDelay: `${index * 70}ms` }}
+            >
+              <div className={`wallet-card-face wallet-card-theme-${index % 3}`}>
+                <div className="wallet-card-orbit wallet-card-orbit-one" />
+                <div className="wallet-card-orbit wallet-card-orbit-two" />
+                <div className="wallet-card-top">
+                  <span className="wallet-card-brand"><span className="wallet-card-mark">M</span> MAZE BANK</span>
+                  <span className="wallet-card-kind">{card.type === 'virtual' ? 'VIRTUAL' : 'FÍSICO'}</span>
+                </div>
+
+                <div className="wallet-card-chip" aria-hidden="true">
+                  <span /><span /><span /><span />
+                </div>
+
+                <div className="wallet-card-number">{card.number}</div>
+                <div className="wallet-card-bottom">
+                  <span className="wallet-card-owner">{card.name}</span>
+                  <span className="wallet-card-expiry"><small>VALIDADE</small>{card.expiry}</span>
+                  <span className="wallet-card-contactless" aria-label="Pagamento por aproximação"><span /><span /><span /></span>
+                </div>
+                {card.status === 'blocked' && (
+                  <div className="wallet-card-blocked">
+                    <LockKeyhole size={15} /> Cartão bloqueado
+                  </div>
+                )}
               </div>
 
-              <div>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, marginBottom: '6px' }}>Tipo de Cartão</label>
-                <select
-                  value={cardType}
-                  onChange={(e) => setCardType(e.target.value as 'virtual' | 'physical')}
-                  style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--line)', borderRadius: '6px', fontSize: '12px', background: 'var(--surface-soft)', color: 'var(--ink)' }}
+              <div className="wallet-card-details">
+                <div className="wallet-card-limit">
+                  <span>Limite disponível</span>
+                  <strong>{card.limit}</strong>
+                </div>
+                <span className={`wallet-card-status${card.status === 'blocked' ? ' status-blocked' : ''}`}>
+                  <i /> {card.status === 'active' ? 'Ativo' : 'Bloqueado'}
+                </span>
+              </div>
+
+              <div className="wallet-card-actions">
+                <button
+                  className="wallet-card-action"
+                  onClick={() => toggleBlock(card.id)}
+                  type="button"
+                  aria-label={card.status === 'active' ? `Bloquear ${card.name}` : `Desbloquear ${card.name}`}
                 >
-                  <option value="virtual">Cartão Virtual (Recomendado para internet)</option>
-                  <option value="physical">Cartão Físico (Enviado para sua casa)</option>
-                </select>
+                  {card.status === 'active' ? <LockKeyhole size={15} /> : <Shield size={15} />}
+                  {card.status === 'active' ? 'Bloquear cartão' : 'Desbloquear'}
+                </button>
+                <button
+                  className="wallet-card-delete"
+                  onClick={() => removeCard(card.id)}
+                  type="button"
+                  aria-label={`Excluir ${card.name}`}
+                >
+                  <Trash2 size={15} />
+                </button>
               </div>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div className="cards-empty">
+          <span><CreditCard size={23} /></span>
+          <h3>Sua carteira está vazia</h3>
+          <p>Crie seu primeiro cartão para começar a organizar suas compras.</p>
+          <button className="cards-create-button" onClick={() => setShowNewModal(true)} type="button">
+            <Plus size={17} /> Criar meu primeiro cartão
+          </button>
+        </div>
+      )}
 
-              <div>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, marginBottom: '6px' }}>Limite Desejado (R$)</label>
+      <aside className="cards-security-note">
+        <span className="cards-security-icon"><ShieldCheck size={19} /></span>
+        <span className="cards-security-copy">
+          <strong>Mais tranquilidade para você</strong>
+          <small>Bloqueie seu cartão a qualquer momento. Seus dados completos permanecem protegidos.</small>
+        </span>
+        <ArrowUpRight size={17} className="cards-security-arrow" />
+      </aside>
+
+      {showNewModal && (
+        <div
+          className="cards-modal-backdrop"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setShowNewModal(false)
+          }}
+        >
+          <section
+            aria-labelledby="cards-modal-title"
+            aria-modal="true"
+            className="cards-modal"
+            role="dialog"
+          >
+            <div className="cards-modal-heading">
+              <span className="cards-modal-icon"><CreditCard size={19} /></span>
+              <button
+                className="cards-modal-close"
+                onClick={() => setShowNewModal(false)}
+                type="button"
+                aria-label="Fechar"
+              >
+                <X size={18} />
+              </button>
+              <span className="cards-eyebrow"><span /> NOVO CARTÃO</span>
+              <h2 id="cards-modal-title">Do que você precisa?</h2>
+              <p>Personalize seu novo cartão Maze Bank.</p>
+            </div>
+
+            <form className="cards-form" onSubmit={handleCreateCard}>
+              <label className="cards-field">
+                <span>Nome do cartão</span>
                 <input
-                  type="number"
-                  value={cardLimit}
-                  onChange={(e) => setCardLimit(e.target.value)}
-                  style={{ width: '100%', padding: '10px 12px', border: '1px solid var(--line)', borderRadius: '6px', fontSize: '12px', background: 'var(--surface-soft)', color: 'var(--ink)' }}
-                  min="100"
-                  max="50000"
+                  autoFocus
+                  maxLength={32}
+                  onChange={(event) => setCardName(event.target.value)}
+                  placeholder="Ex.: Viagem, assinaturas..."
                   required
+                  value={cardName}
                 />
-              </div>
+              </label>
 
-              <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                <button type="button" onClick={() => setShowNewModal(false)} style={{ flex: 1, padding: '10px', border: '1px solid var(--line)', background: 'transparent', borderRadius: '6px', fontWeight: 600, cursor: 'pointer' }}>
+              <label className="cards-field">
+                <span>Tipo de cartão</span>
+                <select
+                  onChange={(event) => setCardType(event.target.value as 'virtual' | 'physical')}
+                  value={cardType}
+                >
+                  <option value="virtual">Virtual — compras online</option>
+                  <option value="physical">Físico — para o dia a dia</option>
+                </select>
+              </label>
+
+              <label className="cards-field">
+                <span>Limite desejado</span>
+                <span className="cards-currency-field">
+                  <span>R$</span>
+                  <input
+                    max="50000"
+                    min="100"
+                    onChange={(event) => setCardLimit(event.target.value)}
+                    required
+                    type="number"
+                    value={cardLimit}
+                  />
+                </span>
+                <small>Escolha um valor entre R$ 100 e R$ 50.000.</small>
+              </label>
+
+              <div className="cards-modal-actions">
+                <button className="cards-cancel-button" onClick={() => setShowNewModal(false)} type="button">
                   Cancelar
                 </button>
-                <button type="submit" style={{ flex: 1, padding: '10px', border: 0, background: 'var(--red)', color: 'white', borderRadius: '6px', fontWeight: 600, cursor: 'pointer' }}>
-                  Criar Cartão
+                <button className="cards-submit-button" type="submit">
+                  <Check size={16} /> Criar cartão
                 </button>
               </div>
+              <div className="cards-modal-footnote"><ShieldCheck size={14} /> Seus dados estão protegidos.</div>
             </form>
-          </div>
+          </section>
         </div>
       )}
     </section>
