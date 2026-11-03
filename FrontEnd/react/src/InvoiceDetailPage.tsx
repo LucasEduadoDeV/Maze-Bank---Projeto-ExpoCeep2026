@@ -44,7 +44,7 @@ export default function InvoiceDetailPage({ invoice, balance, onBack, onDeleted,
   const [paymentResult, setPaymentResult] = useState<{ amountPaid: number; invoicePaid: boolean; cardLimitRestored: number } | null>(null)
   const [paidDuringSession, setPaidDuringSession] = useState(0)
   const paidBillsTotal = invoice.items.reduce((total, item) => total + item.amount, 0)
-  const additionalAmount = Math.max(0, invoice.totalAmount - paidBillsTotal)
+  const predictedAmount = invoice.totalPredicted
   const totalPaid = Math.min(invoice.totalAmount, invoice.totalPaid + paidDuringSession)
   const remainingAmount = Math.max(0, invoice.totalAmount - totalPaid)
   const isPaid = invoice.status === 'Paga' || remainingAmount === 0 || paymentResult?.invoicePaid === true
@@ -143,7 +143,7 @@ export default function InvoiceDetailPage({ invoice, balance, onBack, onDeleted,
           </div>
 
           <div className="invoice-total-block">
-            <span>VALOR TOTAL DA FATURA</span>
+            <span>VALOR COBRÁVEL DA FATURA</span>
             <strong>{formatInvoiceCurrency(invoice.totalAmount)}</strong>
             <p><CalendarDays size={15} /> Vencimento em <strong>{formatInvoiceDate(invoice.dueDate, true)}</strong></p>
           </div>
@@ -187,20 +187,20 @@ export default function InvoiceDetailPage({ invoice, balance, onBack, onDeleted,
               <div className="invoice-detail-empty">Esta fatura não possui contas pagas vinculadas.</div>
             )}
 
-            {additionalAmount > 0 && (
+            {predictedAmount > 0 && (
               <div className="invoice-purchase invoice-purchase-additional">
                 <span className="invoice-purchase-icon"><ReceiptText size={17} /></span>
                 <div className="invoice-purchase-info">
-                  <strong>Valor adicional informado</strong>
-                  <span>Valor previsto ao criar a fatura</span>
+                  <strong>Valor previsto</strong>
+                  <span>Estimativa de gastos; não entra no valor a pagar</span>
                 </div>
-                <time>Inclusão</time>
-                <b>{formatInvoiceCurrency(additionalAmount)}</b>
+                <time>Planejamento</time>
+                <b>{formatInvoiceCurrency(predictedAmount)}</b>
               </div>
             )}
 
             <div className="invoice-total-row">
-              <span>Total da fatura</span>
+              <span>Total a pagar (gastos reais)</span>
               <strong>{formatInvoiceCurrency(invoice.totalAmount)}</strong>
             </div>
           </div>
@@ -231,14 +231,14 @@ export default function InvoiceDetailPage({ invoice, balance, onBack, onDeleted,
               <span>Contas pagas</span>
               <strong>{formatInvoiceCurrency(paidBillsTotal)}</strong>
             </div>
-            {additionalAmount > 0 && (
+            {predictedAmount > 0 && (
               <div className="invoice-limit-available invoice-composition-row">
-                <span>Valor adicional</span>
-                <strong>{formatInvoiceCurrency(additionalAmount)}</strong>
+                <span>Valor previsto (não cobrável)</span>
+                <strong>{formatInvoiceCurrency(predictedAmount)}</strong>
               </div>
             )}
             <div className="invoice-limit-available invoice-composition-row">
-              <span>Total</span>
+              <span>Total cobrável</span>
               <strong>{formatInvoiceCurrency(invoice.totalAmount)}</strong>
             </div>
             {totalPaid > 0 && (
@@ -279,7 +279,7 @@ export default function InvoiceDetailPage({ invoice, balance, onBack, onDeleted,
             </div>
           )}
 
-          {!isPaid && !isCancelled && (
+          {!isPaid && !isCancelled && remainingAmount > 0 && (
             <button
               className="invoice-pay-button"
               onClick={() => {

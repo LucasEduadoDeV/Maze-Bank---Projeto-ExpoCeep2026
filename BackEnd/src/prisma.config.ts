@@ -4,10 +4,14 @@ import { defineConfig } from "prisma/config";
 
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
-const { DB_HOST, DB_PORT = "5432", DB_DATABASE, DB_USER, DB_PASSWORD } = process.env;
-if (!DB_HOST || !DB_DATABASE || !DB_USER || !DB_PASSWORD) {
-  throw new Error("Configure DB_HOST, DB_DATABASE, DB_USER e DB_PASSWORD no .env.");
-}
+const {
+  DB_HOST = "localhost",
+  DB_PORT = "5432",
+  DB_DATABASE = "placeholder",
+  DB_USER = "placeholder",
+  DB_PASSWORD = "placeholder"
+} = process.env;
+
 const datasourceUrl = new URL("postgresql://localhost");
 datasourceUrl.hostname = DB_HOST;
 datasourceUrl.port = DB_PORT;

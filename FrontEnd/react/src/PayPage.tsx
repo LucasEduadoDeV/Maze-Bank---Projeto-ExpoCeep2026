@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import {
+  AlertCircle,
   ArrowLeft,
   ArrowRight,
   CalendarDays,
@@ -55,6 +56,7 @@ export default function PayPage({ bill, cards, mainCardId, balance, onBack, onOp
   const [showPassword, setShowPassword] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [paymentComplete, setPaymentComplete] = useState(false)
+  const [paymentResultOpen, setPaymentResultOpen] = useState(false)
   const [cardPickerOpen, setCardPickerOpen] = useState(false)
   const [confirmingDelete, setConfirmingDelete] = useState(false)
   const [deleting, setDeleting] = useState(false)
@@ -77,13 +79,15 @@ export default function PayPage({ bill, cards, mainCardId, balance, onBack, onOp
   const canDelete = bill.status === 'PAGO' || bill.status === 'FATURADO'
 
   useEffect(() => {
-    if (!confirmingDelete) return
+    if (!confirmingDelete && !paymentResultOpen) return
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape' && !deleting) setConfirmingDelete(false)
+      if (event.key !== 'Escape') return
+      if (confirmingDelete && !deleting) setConfirmingDelete(false)
+      if (paymentResultOpen && !submitting) setPaymentResultOpen(false)
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [confirmingDelete, deleting])
+  }, [confirmingDelete, deleting, paymentResultOpen, submitting])
 
   async function handleDeleteBill() {
     if (deleting || !canDelete) return
@@ -115,6 +119,7 @@ export default function PayPage({ bill, cards, mainCardId, balance, onBack, onOp
     ) return
 
     setPaymentError('')
+    setPaymentResultOpen(false)
     setSubmitting(true)
     try {
       if (paymentMethod === 'balance') {
@@ -124,6 +129,7 @@ export default function PayPage({ bill, cards, mainCardId, balance, onBack, onOp
         await payBillWithCard(selectedCard.id, bill.id, password)
       }
       setPaymentComplete(true)
+      setPaymentResultOpen(true)
       onPaymentComplete(bill.id, paymentMethod, bill.amount, paymentMethod === 'card' ? selectedCard?.id : undefined)
     } catch (error) {
       const statusCode = error instanceof Error && 'statusCode' in error
@@ -135,6 +141,7 @@ export default function PayPage({ bill, cards, mainCardId, balance, onBack, onOp
         return
       }
       setPaymentError(error instanceof Error ? error.message : 'Não foi possível pagar esta conta.')
+      setPaymentResultOpen(true)
     } finally {
       setPassword('')
       setSubmitting(false)
@@ -191,7 +198,7 @@ export default function PayPage({ bill, cards, mainCardId, balance, onBack, onOp
                 <strong>{bill.title}</strong>
                 <small>{bill.company}</small>
               </div>
-              <span className="pay-example-tag">{statusLabel}</span>
+              <span className={`pay-example-tag pay-example-tag-${bill.status.toLowerCase()}`}>{statusLabel}</span>
             </div>
 
             <div className="pay-bill-details">
@@ -335,22 +342,6 @@ export default function PayPage({ bill, cards, mainCardId, balance, onBack, onOp
             ) : null}
           </section>
 
-          {paymentError && (
-            <div className="pay-request-error" role="alert">
-              <Info size={17} />
-              <span>{paymentError}</span>
-            </div>
-          )}
-
-          {paymentComplete && (
-            <div className="pay-review-notice" role="status">
-              <CheckCircle2 size={17} />
-              <span>{paymentMethod === 'balance'
-                ? 'Pagamento confirmado com o saldo da sua conta.'
-                : `Pagamento confirmado com o cartão final ${selectedCard?.lastFour}.`}</span>
-            </div>
-          )}
-
           {!paymentComplete && isPayable && (
             <label className="pay-field pay-password-field" htmlFor="pay-account-password">
               Senha da conta
@@ -400,7 +391,7 @@ export default function PayPage({ bill, cards, mainCardId, balance, onBack, onOp
         <aside className="pay-summary" aria-label={`Resumo da conta ${bill.title}`}>
           <div className="pay-summary-heading">
             <span>RESUMO DA CONTA</span>
-            <span className="pay-summary-status"><i /> {statusLabel}</span>
+            <span className={`pay-summary-status pay-summary-status-${bill.status.toLowerCase()}`}><i /> {statusLabel}</span>
           </div>
           <div className="pay-summary-company">
             <span className={`pay-summary-icon-${bill.category}`}><BillIcon size={19} /></span>
@@ -433,6 +424,57 @@ export default function PayPage({ bill, cards, mainCardId, balance, onBack, onOp
           )}
         </aside>
       </div>
+
+      {paymentResultOpen && createPortal(
+        <div
+          className="pay-result-backdrop"
+          onClick={(event) => {
+            if (event.target === event.currentTarget && !submitting) setPaymentResultOpen(false)
+          }}
+        >
+          <section
+            aria-labelledby="pay-result-title"
+            aria-modal="true"
+            className={`pay-result-modal${paymentComplete ? ' pay-result-modal-success' : ' pay-result-modal-error'}`}
+            role="dialog"
+          >
+            {!submitting && (
+              <button
+                aria-label="Fechar resultado do pagamento"
+                className="pay-result-close"
+                onClick={() => setPaymentResultOpen(false)}
+                type="button"
+              >
+                <X size={18} />
+              </button>
+            )}
+            <span className="pay-result-icon">
+              {paymentComplete
+                ? <CheckCircle2 size={31} strokeWidth={2.2} />
+                : <AlertCircle size={30} strokeWidth={2.2} />}
+            </span>
+            <span className="pay-result-eyebrow">{paymentComplete ? 'PAGAMENTO CONCLUÍDO' : 'STATUS DO PAGAMENTO'}</span>
+            <h2 id="pay-result-title">{paymentComplete ? 'Conta paga!' : 'Pagamento não confirmado'}</h2>
+            <p>
+              {paymentComplete
+                ? `Pagamento de ${formatCurrency(bill.amount)} realizado ${paymentMethod === 'balance'
+                  ? 'com o saldo da conta.'
+                  : `com o cartão final ${selectedCard?.lastFour ?? ''}.`}`
+                : `${paymentError} Confira o status da conta antes de tentar novamente.`}
+            </p>
+            {paymentComplete && <span className="pay-result-status"><Check size={14} /> PAGO</span>}
+            <button
+              className={`pay-result-action${paymentComplete ? ' is-success' : ' is-error'}`}
+              disabled={submitting}
+              onClick={() => setPaymentResultOpen(false)}
+              type="button"
+            >
+              {paymentComplete ? 'Entendi' : 'Fechar'}
+            </button>
+          </section>
+        </div>,
+        getModalRoot(),
+      )}
 
       {confirmingDelete && createPortal(
         <div className="pay-delete-backdrop">

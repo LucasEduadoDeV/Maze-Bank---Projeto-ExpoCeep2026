@@ -5,13 +5,12 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --exec tsx BackEnd/server.ts",
+    "dev": "nodemon --exec tsx server.ts",
     "test": "vitest",
-    "db:generate": "prisma generate --config BackEnd/src/prisma.config.ts",
-    "db:migrate": "prisma migrate dev --config BackEnd/src/prisma.config.ts"
+    "db:generate": "prisma generate --config src/prisma.config.ts",
+    "db:migrate": "prisma migrate dev --config src/prisma.config.ts"
   },
   "devDependencies": {
-    "@prisma/client": "^7.10.1",
     "@types/bcrypt": "^6.0.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
@@ -25,9 +24,11 @@
     "prisma": "^7.10.1",
     "swagger": "^0.7.5",
     "tsx": "^4.23.15",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.3"
   },
   "dependencies": {
+    "@prisma/client": "^7.10.1",
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/orm-postgres": "^8.0.0-rc.22",
     "bcrypt": "^6.0.0",
@@ -36,11 +37,9 @@
     "dotenv": "^18.0.7",
     "express": "^5.3.0",
     "jsonwebtoken": "^9.0.3",
-    "lucide-react": "^1.63.0",
     "pg": "^8.23.1",
     "swagger-jsdoc": "^6.3.0",
     "swagger-ui-express": "^5.0.1",
-    "vitest": "^5.0.3",
     "zod": "^4.6.5"
   }
 }

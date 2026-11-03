@@ -1,4 +1,8 @@
-import "dotenv/config";
+import dotenv from "dotenv";
+import path from "node:path"
+
+dotenv.config({ path: path.resolve(process.cwd(), "../.env") })
+
 import { Pool } from "pg";
 
 const port = Number(process.env.DB_PORT ?? 5432);

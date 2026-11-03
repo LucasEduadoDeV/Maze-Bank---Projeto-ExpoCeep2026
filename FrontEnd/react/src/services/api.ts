@@ -76,6 +76,7 @@ export interface CreatedInvoice {
   invoiceId: string
   invoiceName: string
   totalAmount: number
+  totalPredicted: number
 }
 
 export interface InvoiceItem {
@@ -95,6 +96,7 @@ export interface AccountInvoice {
   id: string
   name: string
   totalAmount: number
+  totalPredicted: number
   totalPaid: number
   dueDate: string
   createdAt: string
@@ -320,7 +322,7 @@ export async function createInvoice(cardId: string, payload: CreateInvoicePayloa
 
   const data = await response.json().catch(() => ({})) as {
     message?: unknown
-    invoice?: { invoiceId?: unknown; invoiceName?: unknown; totalAmount?: unknown }
+    invoice?: { invoiceId?: unknown; invoiceName?: unknown; totalAmount?: unknown; totalPredicted?: unknown }
   }
   if (response.status === 401) throw new Error('UNAUTHORIZED')
   if (!response.ok) {
@@ -330,12 +332,17 @@ export async function createInvoice(cardId: string, payload: CreateInvoicePayloa
   const totalAmount = typeof invoice?.totalAmount === 'number' || typeof invoice?.totalAmount === 'string'
     ? Number(invoice.totalAmount)
     : Number.NaN
+  const totalPredicted = typeof invoice?.totalPredicted === 'number' || typeof invoice?.totalPredicted === 'string'
+    ? Number(invoice.totalPredicted)
+    : Number.NaN
   if (
     data.message !== 'Fatura criada.'
     || typeof invoice?.invoiceId !== 'string'
     || typeof invoice.invoiceName !== 'string'
     || !Number.isFinite(totalAmount)
     || totalAmount < 0
+    || !Number.isFinite(totalPredicted)
+    || totalPredicted < 0
   ) {
     throw new Error('A resposta do servidor ao criar a fatura é inválida.')
   }
@@ -344,6 +351,7 @@ export async function createInvoice(cardId: string, payload: CreateInvoicePayloa
     invoiceId: invoice.invoiceId,
     invoiceName: invoice.invoiceName,
     totalAmount,
+    totalPredicted,
   }
 }
 
@@ -444,6 +452,7 @@ function parseInvoice(value: unknown): AccountInvoice {
 
   const invoice = value as Record<string, unknown>
   const totalAmount = Number(invoice.totalAmount)
+  const totalPredicted = Number(invoice.totalPredicted ?? 0)
   const totalPaid = Number(invoice.totalPaid ?? 0)
   let card: InvoiceCard | null = null
   if (invoice.card !== null && invoice.card !== undefined) {
@@ -484,6 +493,8 @@ function parseInvoice(value: unknown): AccountInvoice {
     || typeof invoice.invoiceName !== 'string'
     || !Number.isFinite(totalAmount)
     || totalAmount < 0
+    || !Number.isFinite(totalPredicted)
+    || totalPredicted < 0
     || !Number.isFinite(totalPaid)
     || totalPaid < 0
     || typeof invoice.dueDate !== 'string'
@@ -500,6 +511,7 @@ function parseInvoice(value: unknown): AccountInvoice {
     id: invoice.invoiceId,
     name: invoice.invoiceName,
     totalAmount,
+    totalPredicted,
     totalPaid,
     dueDate: invoice.dueDate,
     createdAt: invoice.createdAt,

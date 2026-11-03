@@ -6,7 +6,7 @@ export async function createInvoiceRepository(
   userId: string,
   cardId: string,
   invoiceName: string,
-  predictedValue: Decimal,
+  totalPredicted: Decimal,
   dueDate: Date,
 ) {
   return prisma.$transaction(async (transaction) => {
@@ -23,7 +23,7 @@ export async function createInvoiceRepository(
 
     const totalAmount = paidBills.reduce(
       (total, bill) => total.add(bill.value),
-      predictedValue,
+      new Decimal(0),
     )
 
     if (totalAmount.greaterThan(99999999.99)) {
@@ -34,6 +34,8 @@ export async function createInvoiceRepository(
       data: {
         invoiceName,
         totalAmount,
+        totalPredicted,
+        status: totalAmount.isZero() ? "PAGO" : "EM_ABERTO",
         dueDate,
         cardId,
         itens: paidBills.map(({ billId, billName, biller, description, value }) => ({
@@ -94,16 +96,28 @@ export async function getPaginatedInvoicesRepository(userId: string, page: numbe
   const totalPages = Math.ceil(totalItems / limit);
 
   return {
-    data: invoices.map(({ card, ...invoice }) => ({
-      ...invoice,
-      card: card
-        ? {
-            id: card.idCard,
-            name: card.name,
-            lastFour: card.cardNumber.slice(-4),
-          }
-        : null,
-    })),
+    data: invoices.map(({ card, ...invoice }) => {
+      const actualAmount = getInvoiceItemsTotal(invoice.itens)
+      const totalPaid = invoice.totalPaid.greaterThan(actualAmount) ? actualAmount : invoice.totalPaid
+      return {
+        ...invoice,
+        totalAmount: actualAmount,
+        totalPredicted: getEffectivePredictedAmount(invoice.totalAmount, invoice.totalPredicted, actualAmount),
+        totalPaid,
+        status: invoice.status === "CANCELADO"
+          ? invoice.status
+          : actualAmount.isZero() || totalPaid.greaterThanOrEqualTo(actualAmount)
+            ? "PAGO"
+            : invoice.status,
+        card: card
+          ? {
+              id: card.idCard,
+              name: card.name,
+              lastFour: card.cardNumber.slice(-4),
+            }
+          : null,
+      }
+    }),
     meta: {
       page,
       limit,
@@ -126,17 +140,21 @@ export async function payInvoiceWithAccountBalanceRepository(invoiceId: string, 
   return prisma.$transaction(async (tx) => {
     const invoice = await tx.invoices.findFirst({
       where: { invoiceId, userId },
-      select: { totalAmount: true, totalPaid: true, status: true, cardId: true },
+      select: { totalPaid: true, itens: true, status: true, cardId: true },
     })
 
     if (!invoice) {
       throw new AppError("Fatura não encontrada.", 404)
     }
-    if (invoice.status === "PAGO" || invoice.totalPaid.greaterThanOrEqualTo(invoice.totalAmount)) {
-      throw new AppError("A fatura já foi paga.", 409)
-    }
     if (invoice.status === "CANCELADO") {
       throw new AppError("Esta fatura foi cancelada.", 409)
+    }
+    const actualAmount = getInvoiceItemsTotal(invoice.itens)
+    if (actualAmount.isZero()) {
+      throw new AppError("Esta fatura não possui gastos reais para pagar.", 409)
+    }
+    if (invoice.status === "PAGO" || invoice.totalPaid.greaterThanOrEqualTo(actualAmount)) {
+      throw new AppError("A fatura já foi paga.", 409)
     }
 
     const user = await tx.user.findUnique({
@@ -150,7 +168,7 @@ export async function payInvoiceWithAccountBalanceRepository(invoiceId: string, 
       throw new AppError("Saldo insuficiente.", 402)
     }
 
-    const remainingAmount = invoice.totalAmount.sub(invoice.totalPaid)
+    const remainingAmount = actualAmount.sub(invoice.totalPaid)
     const amountPaid = user.balance.lessThan(remainingAmount) ? user.balance : remainingAmount
     const debit = await tx.user.updateMany({
       where: { id: userId, balance: { gte: amountPaid } },
@@ -206,4 +224,33 @@ export async function payInvoiceWithAccountBalanceRepository(invoiceId: string, 
 
     return { amountPaid, invoicePaid, cardLimitRestored }
   })
+}
+
+function getInvoiceItemsTotal(items: unknown): Decimal {
+  if (!Array.isArray(items)) {
+    throw new AppError("O detalhamento da fatura é inválido.", 500)
+  }
+
+  return items.reduce((total, item) => {
+    if (!item || typeof item !== "object" || Array.isArray(item)) {
+      throw new AppError("O detalhamento da fatura é inválido.", 500)
+    }
+
+    if (!("value" in item)) {
+      throw new AppError("O detalhamento da fatura é inválido.", 500)
+    }
+
+    const value = item.value
+    if (typeof value !== "number" || !Number.isFinite(value) || value < 0) {
+      throw new AppError("O detalhamento da fatura é inválido.", 500)
+    }
+
+    return total.add(new Decimal(value))
+  }, new Decimal(0))
+}
+
+function getEffectivePredictedAmount(totalAmount: Decimal, totalPredicted: Decimal, actualAmount: Decimal): Decimal {
+  const legacyPredicted = totalAmount.sub(actualAmount)
+  const nonNegativeLegacyPredicted = legacyPredicted.greaterThan(0) ? legacyPredicted : new Decimal(0)
+  return totalPredicted.greaterThan(nonNegativeLegacyPredicted) ? totalPredicted : nonNegativeLegacyPredicted
 }

@@ -118,6 +118,7 @@ model Invoices {
   invoiceId    String   @map("invoice_id") @id @default(uuid()) @db.Uuid
   invoiceName  String   @map("invoice_name") @db.VarChar(30)
   totalAmount  Decimal  @db.Decimal(10,2)
+  totalPredicted  Decimal   @db.Decimal(10,2) @default(0.00)
   totalPaid    Decimal  @db.Decimal(10,2) @default(0.00)
   dueDate      DateTime   @map("due_date")
   itens        Json

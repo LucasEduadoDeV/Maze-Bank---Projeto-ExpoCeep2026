@@ -78,12 +78,12 @@ export default function SimulateInvoicePage({ cards, cardsLoading, cardsError, o
       <header className="invoice-heading">
         <span className="invoice-eyebrow"><span /> PLANEJAMENTO DO CARTÃO</span>
         <h1 id="invoice-simulator-title">Simular Fatura</h1>
-        <p>Simule uma fatura com o valor adicional informado e as contas já pagas no cartão selecionado.</p>
+        <p>Planeje seus gastos futuros e confira as contas já pagas no cartão selecionado.</p>
       </header>
 
       <div className="invoice-demo-banner" role="note">
         <ShieldCheck size={18} />
-        <p><strong>Atenção:</strong> ao criar, a fatura será registrada e as contas já pagas nesse cartão serão incluídas nela.</p>
+        <p><strong>Importante:</strong> apenas contas já pagas entram no valor cobrável. O valor previsto fica separado e não pode ser pago.</p>
       </div>
 
       <div className="invoice-simulation-layout">
@@ -136,7 +136,7 @@ export default function SimulateInvoicePage({ cards, cardsLoading, cardsError, o
           </fieldset>
 
           <label className="invoice-simulation-field">
-            <span>Valor adicional na fatura</span>
+            <span>Valor previsto de gastos</span>
             <span className="invoice-simulation-currency">
               <span>R$</span>
               <input
@@ -164,7 +164,7 @@ export default function SimulateInvoicePage({ cards, cardsLoading, cardsError, o
                 onInput={(event) => event.currentTarget.setCustomValidity('')}
               />
             </span>
-            <small>Opcional. Será somado às contas já pagas nesse cartão; sem valor, a fatura considera apenas esses gastos.</small>
+            <small>Opcional. Usado apenas para planejamento; não será somado ao valor cobrável da fatura.</small>
           </label>
 
           <button className="invoice-simulation-submit" type="submit" disabled={!selectedCard || isSubmitting}>

@@ -142,6 +142,7 @@ export const InvoicesScalarFieldEnum = {
   invoiceId: 'invoiceId',
   invoiceName: 'invoiceName',
   totalAmount: 'totalAmount',
+  totalPredicted: 'totalPredicted',
   totalPaid: 'totalPaid',
   dueDate: 'dueDate',
   itens: 'itens',
