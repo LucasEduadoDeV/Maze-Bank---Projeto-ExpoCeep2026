@@ -43,6 +43,7 @@ export type UserMinAggregateOutputType = {
   passwordHash: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  theme: $Enums.UserThemes | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -54,6 +55,7 @@ export type UserMaxAggregateOutputType = {
   passwordHash: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  theme: $Enums.UserThemes | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -65,6 +67,7 @@ export type UserCountAggregateOutputType = {
   passwordHash: number
   createdAt: number
   updatedAt: number
+  theme: number
   _all: number
 }
 
@@ -86,6 +89,7 @@ export type UserMinAggregateInputType = {
   passwordHash?: true
   createdAt?: true
   updatedAt?: true
+  theme?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -97,6 +101,7 @@ export type UserMaxAggregateInputType = {
   passwordHash?: true
   createdAt?: true
   updatedAt?: true
+  theme?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -108,6 +113,7 @@ export type UserCountAggregateInputType = {
   passwordHash?: true
   createdAt?: true
   updatedAt?: true
+  theme?: true
   _all?: true
 }
 
@@ -206,6 +212,7 @@ export type UserGroupByOutputType = {
   passwordHash: string
   createdAt: Date
   updatedAt: Date
+  theme: $Enums.UserThemes
   _count: UserCountAggregateOutputType | null
   _avg: UserAvgAggregateOutputType | null
   _sum: UserSumAggregateOutputType | null
@@ -240,9 +247,12 @@ export type UserWhereInput = {
   passwordHash?: Prisma.StringFilter<"User"> | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  theme?: Prisma.EnumUserThemesFilter<"User"> | $Enums.UserThemes
   transactionsSent?: Prisma.TransactionListRelationFilter
   transactionsReceived?: Prisma.TransactionListRelationFilter
   cardUser?: Prisma.CreditCardsListRelationFilter
+  billUser?: Prisma.BillsListRelationFilter
+  invoiceUser?: Prisma.InvoicesListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -254,9 +264,12 @@ export type UserOrderByWithRelationInput = {
   passwordHash?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
   transactionsSent?: Prisma.TransactionOrderByRelationAggregateInput
   transactionsReceived?: Prisma.TransactionOrderByRelationAggregateInput
   cardUser?: Prisma.CreditCardsOrderByRelationAggregateInput
+  billUser?: Prisma.BillsOrderByRelationAggregateInput
+  invoiceUser?: Prisma.InvoicesOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -271,9 +284,12 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   passwordHash?: Prisma.StringFilter<"User"> | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  theme?: Prisma.EnumUserThemesFilter<"User"> | $Enums.UserThemes
   transactionsSent?: Prisma.TransactionListRelationFilter
   transactionsReceived?: Prisma.TransactionListRelationFilter
   cardUser?: Prisma.CreditCardsListRelationFilter
+  billUser?: Prisma.BillsListRelationFilter
+  invoiceUser?: Prisma.InvoicesListRelationFilter
 }, "id" | "email" | "cpf">
 
 export type UserOrderByWithAggregationInput = {
@@ -285,6 +301,7 @@ export type UserOrderByWithAggregationInput = {
   passwordHash?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -304,6 +321,7 @@ export type UserScalarWhereWithAggregatesInput = {
   passwordHash?: Prisma.StringWithAggregatesFilter<"User"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
+  theme?: Prisma.EnumUserThemesWithAggregatesFilter<"User"> | $Enums.UserThemes
 }
 
 export type UserCreateInput = {
@@ -315,9 +333,12 @@ export type UserCreateInput = {
   passwordHash: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  theme?: $Enums.UserThemes
   transactionsSent?: Prisma.TransactionCreateNestedManyWithoutSenderInput
   transactionsReceived?: Prisma.TransactionCreateNestedManyWithoutReceiverInput
   cardUser?: Prisma.CreditCardsCreateNestedManyWithoutUserInput
+  billUser?: Prisma.BillsCreateNestedManyWithoutUserInput
+  invoiceUser?: Prisma.InvoicesCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -329,9 +350,12 @@ export type UserUncheckedCreateInput = {
   passwordHash: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  theme?: $Enums.UserThemes
   transactionsSent?: Prisma.TransactionUncheckedCreateNestedManyWithoutSenderInput
   transactionsReceived?: Prisma.TransactionUncheckedCreateNestedManyWithoutReceiverInput
   cardUser?: Prisma.CreditCardsUncheckedCreateNestedManyWithoutUserInput
+  billUser?: Prisma.BillsUncheckedCreateNestedManyWithoutUserInput
+  invoiceUser?: Prisma.InvoicesUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -343,9 +367,12 @@ export type UserUpdateInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  theme?: Prisma.EnumUserThemesFieldUpdateOperationsInput | $Enums.UserThemes
   transactionsSent?: Prisma.TransactionUpdateManyWithoutSenderNestedInput
   transactionsReceived?: Prisma.TransactionUpdateManyWithoutReceiverNestedInput
   cardUser?: Prisma.CreditCardsUpdateManyWithoutUserNestedInput
+  billUser?: Prisma.BillsUpdateManyWithoutUserNestedInput
+  invoiceUser?: Prisma.InvoicesUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -357,9 +384,12 @@ export type UserUncheckedUpdateInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  theme?: Prisma.EnumUserThemesFieldUpdateOperationsInput | $Enums.UserThemes
   transactionsSent?: Prisma.TransactionUncheckedUpdateManyWithoutSenderNestedInput
   transactionsReceived?: Prisma.TransactionUncheckedUpdateManyWithoutReceiverNestedInput
   cardUser?: Prisma.CreditCardsUncheckedUpdateManyWithoutUserNestedInput
+  billUser?: Prisma.BillsUncheckedUpdateManyWithoutUserNestedInput
+  invoiceUser?: Prisma.InvoicesUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -371,6 +401,7 @@ export type UserCreateManyInput = {
   passwordHash: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  theme?: $Enums.UserThemes
 }
 
 export type UserUpdateManyMutationInput = {
@@ -382,6 +413,7 @@ export type UserUpdateManyMutationInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  theme?: Prisma.EnumUserThemesFieldUpdateOperationsInput | $Enums.UserThemes
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -393,6 +425,7 @@ export type UserUncheckedUpdateManyInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  theme?: Prisma.EnumUserThemesFieldUpdateOperationsInput | $Enums.UserThemes
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -404,6 +437,7 @@ export type UserCountOrderByAggregateInput = {
   passwordHash?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
 }
 
 export type UserAvgOrderByAggregateInput = {
@@ -419,6 +453,7 @@ export type UserMaxOrderByAggregateInput = {
   passwordHash?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -430,6 +465,7 @@ export type UserMinOrderByAggregateInput = {
   passwordHash?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
 }
 
 export type UserSumOrderByAggregateInput = {
@@ -455,6 +491,10 @@ export type DecimalFieldUpdateOperationsInput = {
 
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
+}
+
+export type EnumUserThemesFieldUpdateOperationsInput = {
+  set?: $Enums.UserThemes
 }
 
 export type UserCreateNestedOneWithoutTransactionsSentInput = {
@@ -499,6 +539,34 @@ export type UserUpdateOneRequiredWithoutCardUserNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCardUserInput, Prisma.UserUpdateWithoutCardUserInput>, Prisma.UserUncheckedUpdateWithoutCardUserInput>
 }
 
+export type UserCreateNestedOneWithoutBillUserInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBillUserInput, Prisma.UserUncheckedCreateWithoutBillUserInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBillUserInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutBillUserNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBillUserInput, Prisma.UserUncheckedCreateWithoutBillUserInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBillUserInput
+  upsert?: Prisma.UserUpsertWithoutBillUserInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBillUserInput, Prisma.UserUpdateWithoutBillUserInput>, Prisma.UserUncheckedUpdateWithoutBillUserInput>
+}
+
+export type UserCreateNestedOneWithoutInvoiceUserInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutInvoiceUserInput, Prisma.UserUncheckedCreateWithoutInvoiceUserInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutInvoiceUserInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutInvoiceUserNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutInvoiceUserInput, Prisma.UserUncheckedCreateWithoutInvoiceUserInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutInvoiceUserInput
+  upsert?: Prisma.UserUpsertWithoutInvoiceUserInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutInvoiceUserInput, Prisma.UserUpdateWithoutInvoiceUserInput>, Prisma.UserUncheckedUpdateWithoutInvoiceUserInput>
+}
+
 export type UserCreateWithoutTransactionsSentInput = {
   id?: string
   name: string
@@ -508,8 +576,11 @@ export type UserCreateWithoutTransactionsSentInput = {
   passwordHash: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  theme?: $Enums.UserThemes
   transactionsReceived?: Prisma.TransactionCreateNestedManyWithoutReceiverInput
   cardUser?: Prisma.CreditCardsCreateNestedManyWithoutUserInput
+  billUser?: Prisma.BillsCreateNestedManyWithoutUserInput
+  invoiceUser?: Prisma.InvoicesCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTransactionsSentInput = {
@@ -521,8 +592,11 @@ export type UserUncheckedCreateWithoutTransactionsSentInput = {
   passwordHash: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  theme?: $Enums.UserThemes
   transactionsReceived?: Prisma.TransactionUncheckedCreateNestedManyWithoutReceiverInput
   cardUser?: Prisma.CreditCardsUncheckedCreateNestedManyWithoutUserInput
+  billUser?: Prisma.BillsUncheckedCreateNestedManyWithoutUserInput
+  invoiceUser?: Prisma.InvoicesUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTransactionsSentInput = {
@@ -539,8 +613,11 @@ export type UserCreateWithoutTransactionsReceivedInput = {
   passwordHash: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  theme?: $Enums.UserThemes
   transactionsSent?: Prisma.TransactionCreateNestedManyWithoutSenderInput
   cardUser?: Prisma.CreditCardsCreateNestedManyWithoutUserInput
+  billUser?: Prisma.BillsCreateNestedManyWithoutUserInput
+  invoiceUser?: Prisma.InvoicesCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTransactionsReceivedInput = {
@@ -552,8 +629,11 @@ export type UserUncheckedCreateWithoutTransactionsReceivedInput = {
   passwordHash: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  theme?: $Enums.UserThemes
   transactionsSent?: Prisma.TransactionUncheckedCreateNestedManyWithoutSenderInput
   cardUser?: Prisma.CreditCardsUncheckedCreateNestedManyWithoutUserInput
+  billUser?: Prisma.BillsUncheckedCreateNestedManyWithoutUserInput
+  invoiceUser?: Prisma.InvoicesUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTransactionsReceivedInput = {
@@ -581,8 +661,11 @@ export type UserUpdateWithoutTransactionsSentInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  theme?: Prisma.EnumUserThemesFieldUpdateOperationsInput | $Enums.UserThemes
   transactionsReceived?: Prisma.TransactionUpdateManyWithoutReceiverNestedInput
   cardUser?: Prisma.CreditCardsUpdateManyWithoutUserNestedInput
+  billUser?: Prisma.BillsUpdateManyWithoutUserNestedInput
+  invoiceUser?: Prisma.InvoicesUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTransactionsSentInput = {
@@ -594,8 +677,11 @@ export type UserUncheckedUpdateWithoutTransactionsSentInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  theme?: Prisma.EnumUserThemesFieldUpdateOperationsInput | $Enums.UserThemes
   transactionsReceived?: Prisma.TransactionUncheckedUpdateManyWithoutReceiverNestedInput
   cardUser?: Prisma.CreditCardsUncheckedUpdateManyWithoutUserNestedInput
+  billUser?: Prisma.BillsUncheckedUpdateManyWithoutUserNestedInput
+  invoiceUser?: Prisma.InvoicesUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutTransactionsReceivedInput = {
@@ -618,8 +704,11 @@ export type UserUpdateWithoutTransactionsReceivedInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  theme?: Prisma.EnumUserThemesFieldUpdateOperationsInput | $Enums.UserThemes
   transactionsSent?: Prisma.TransactionUpdateManyWithoutSenderNestedInput
   cardUser?: Prisma.CreditCardsUpdateManyWithoutUserNestedInput
+  billUser?: Prisma.BillsUpdateManyWithoutUserNestedInput
+  invoiceUser?: Prisma.InvoicesUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTransactionsReceivedInput = {
@@ -631,8 +720,11 @@ export type UserUncheckedUpdateWithoutTransactionsReceivedInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  theme?: Prisma.EnumUserThemesFieldUpdateOperationsInput | $Enums.UserThemes
   transactionsSent?: Prisma.TransactionUncheckedUpdateManyWithoutSenderNestedInput
   cardUser?: Prisma.CreditCardsUncheckedUpdateManyWithoutUserNestedInput
+  billUser?: Prisma.BillsUncheckedUpdateManyWithoutUserNestedInput
+  invoiceUser?: Prisma.InvoicesUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCardUserInput = {
@@ -644,8 +736,11 @@ export type UserCreateWithoutCardUserInput = {
   passwordHash: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  theme?: $Enums.UserThemes
   transactionsSent?: Prisma.TransactionCreateNestedManyWithoutSenderInput
   transactionsReceived?: Prisma.TransactionCreateNestedManyWithoutReceiverInput
+  billUser?: Prisma.BillsCreateNestedManyWithoutUserInput
+  invoiceUser?: Prisma.InvoicesCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCardUserInput = {
@@ -657,8 +752,11 @@ export type UserUncheckedCreateWithoutCardUserInput = {
   passwordHash: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  theme?: $Enums.UserThemes
   transactionsSent?: Prisma.TransactionUncheckedCreateNestedManyWithoutSenderInput
   transactionsReceived?: Prisma.TransactionUncheckedCreateNestedManyWithoutReceiverInput
+  billUser?: Prisma.BillsUncheckedCreateNestedManyWithoutUserInput
+  invoiceUser?: Prisma.InvoicesUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCardUserInput = {
@@ -686,8 +784,11 @@ export type UserUpdateWithoutCardUserInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  theme?: Prisma.EnumUserThemesFieldUpdateOperationsInput | $Enums.UserThemes
   transactionsSent?: Prisma.TransactionUpdateManyWithoutSenderNestedInput
   transactionsReceived?: Prisma.TransactionUpdateManyWithoutReceiverNestedInput
+  billUser?: Prisma.BillsUpdateManyWithoutUserNestedInput
+  invoiceUser?: Prisma.InvoicesUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCardUserInput = {
@@ -699,8 +800,171 @@ export type UserUncheckedUpdateWithoutCardUserInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  theme?: Prisma.EnumUserThemesFieldUpdateOperationsInput | $Enums.UserThemes
   transactionsSent?: Prisma.TransactionUncheckedUpdateManyWithoutSenderNestedInput
   transactionsReceived?: Prisma.TransactionUncheckedUpdateManyWithoutReceiverNestedInput
+  billUser?: Prisma.BillsUncheckedUpdateManyWithoutUserNestedInput
+  invoiceUser?: Prisma.InvoicesUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutBillUserInput = {
+  id?: string
+  name: string
+  email: string
+  cpf: string
+  balance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  passwordHash: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  theme?: $Enums.UserThemes
+  transactionsSent?: Prisma.TransactionCreateNestedManyWithoutSenderInput
+  transactionsReceived?: Prisma.TransactionCreateNestedManyWithoutReceiverInput
+  cardUser?: Prisma.CreditCardsCreateNestedManyWithoutUserInput
+  invoiceUser?: Prisma.InvoicesCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutBillUserInput = {
+  id?: string
+  name: string
+  email: string
+  cpf: string
+  balance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  passwordHash: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  theme?: $Enums.UserThemes
+  transactionsSent?: Prisma.TransactionUncheckedCreateNestedManyWithoutSenderInput
+  transactionsReceived?: Prisma.TransactionUncheckedCreateNestedManyWithoutReceiverInput
+  cardUser?: Prisma.CreditCardsUncheckedCreateNestedManyWithoutUserInput
+  invoiceUser?: Prisma.InvoicesUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutBillUserInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutBillUserInput, Prisma.UserUncheckedCreateWithoutBillUserInput>
+}
+
+export type UserUpsertWithoutBillUserInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutBillUserInput, Prisma.UserUncheckedUpdateWithoutBillUserInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutBillUserInput, Prisma.UserUncheckedCreateWithoutBillUserInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutBillUserInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutBillUserInput, Prisma.UserUncheckedUpdateWithoutBillUserInput>
+}
+
+export type UserUpdateWithoutBillUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  cpf?: Prisma.StringFieldUpdateOperationsInput | string
+  balance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  theme?: Prisma.EnumUserThemesFieldUpdateOperationsInput | $Enums.UserThemes
+  transactionsSent?: Prisma.TransactionUpdateManyWithoutSenderNestedInput
+  transactionsReceived?: Prisma.TransactionUpdateManyWithoutReceiverNestedInput
+  cardUser?: Prisma.CreditCardsUpdateManyWithoutUserNestedInput
+  invoiceUser?: Prisma.InvoicesUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutBillUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  cpf?: Prisma.StringFieldUpdateOperationsInput | string
+  balance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  theme?: Prisma.EnumUserThemesFieldUpdateOperationsInput | $Enums.UserThemes
+  transactionsSent?: Prisma.TransactionUncheckedUpdateManyWithoutSenderNestedInput
+  transactionsReceived?: Prisma.TransactionUncheckedUpdateManyWithoutReceiverNestedInput
+  cardUser?: Prisma.CreditCardsUncheckedUpdateManyWithoutUserNestedInput
+  invoiceUser?: Prisma.InvoicesUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutInvoiceUserInput = {
+  id?: string
+  name: string
+  email: string
+  cpf: string
+  balance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  passwordHash: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  theme?: $Enums.UserThemes
+  transactionsSent?: Prisma.TransactionCreateNestedManyWithoutSenderInput
+  transactionsReceived?: Prisma.TransactionCreateNestedManyWithoutReceiverInput
+  cardUser?: Prisma.CreditCardsCreateNestedManyWithoutUserInput
+  billUser?: Prisma.BillsCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutInvoiceUserInput = {
+  id?: string
+  name: string
+  email: string
+  cpf: string
+  balance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  passwordHash: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  theme?: $Enums.UserThemes
+  transactionsSent?: Prisma.TransactionUncheckedCreateNestedManyWithoutSenderInput
+  transactionsReceived?: Prisma.TransactionUncheckedCreateNestedManyWithoutReceiverInput
+  cardUser?: Prisma.CreditCardsUncheckedCreateNestedManyWithoutUserInput
+  billUser?: Prisma.BillsUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutInvoiceUserInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutInvoiceUserInput, Prisma.UserUncheckedCreateWithoutInvoiceUserInput>
+}
+
+export type UserUpsertWithoutInvoiceUserInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutInvoiceUserInput, Prisma.UserUncheckedUpdateWithoutInvoiceUserInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutInvoiceUserInput, Prisma.UserUncheckedCreateWithoutInvoiceUserInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutInvoiceUserInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutInvoiceUserInput, Prisma.UserUncheckedUpdateWithoutInvoiceUserInput>
+}
+
+export type UserUpdateWithoutInvoiceUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  cpf?: Prisma.StringFieldUpdateOperationsInput | string
+  balance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  theme?: Prisma.EnumUserThemesFieldUpdateOperationsInput | $Enums.UserThemes
+  transactionsSent?: Prisma.TransactionUpdateManyWithoutSenderNestedInput
+  transactionsReceived?: Prisma.TransactionUpdateManyWithoutReceiverNestedInput
+  cardUser?: Prisma.CreditCardsUpdateManyWithoutUserNestedInput
+  billUser?: Prisma.BillsUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutInvoiceUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  cpf?: Prisma.StringFieldUpdateOperationsInput | string
+  balance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  theme?: Prisma.EnumUserThemesFieldUpdateOperationsInput | $Enums.UserThemes
+  transactionsSent?: Prisma.TransactionUncheckedUpdateManyWithoutSenderNestedInput
+  transactionsReceived?: Prisma.TransactionUncheckedUpdateManyWithoutReceiverNestedInput
+  cardUser?: Prisma.CreditCardsUncheckedUpdateManyWithoutUserNestedInput
+  billUser?: Prisma.BillsUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -712,12 +976,16 @@ export type UserCountOutputType = {
   transactionsSent: number
   transactionsReceived: number
   cardUser: number
+  billUser: number
+  invoiceUser: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   transactionsSent?: boolean | UserCountOutputTypeCountTransactionsSentArgs
   transactionsReceived?: boolean | UserCountOutputTypeCountTransactionsReceivedArgs
   cardUser?: boolean | UserCountOutputTypeCountCardUserArgs
+  billUser?: boolean | UserCountOutputTypeCountBillUserArgs
+  invoiceUser?: boolean | UserCountOutputTypeCountInvoiceUserArgs
 }
 
 /**
@@ -751,6 +1019,20 @@ export type UserCountOutputTypeCountCardUserArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.CreditCardsWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountBillUserArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BillsWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountInvoiceUserArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.InvoicesWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -761,9 +1043,12 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   passwordHash?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  theme?: boolean
   transactionsSent?: boolean | Prisma.User$transactionsSentArgs<ExtArgs>
   transactionsReceived?: boolean | Prisma.User$transactionsReceivedArgs<ExtArgs>
   cardUser?: boolean | Prisma.User$cardUserArgs<ExtArgs>
+  billUser?: boolean | Prisma.User$billUserArgs<ExtArgs>
+  invoiceUser?: boolean | Prisma.User$invoiceUserArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -776,6 +1061,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   passwordHash?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  theme?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -787,6 +1073,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   passwordHash?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  theme?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -798,13 +1085,16 @@ export type UserSelectScalar = {
   passwordHash?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  theme?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "cpf" | "balance" | "passwordHash" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "cpf" | "balance" | "passwordHash" | "createdAt" | "updatedAt" | "theme", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   transactionsSent?: boolean | Prisma.User$transactionsSentArgs<ExtArgs>
   transactionsReceived?: boolean | Prisma.User$transactionsReceivedArgs<ExtArgs>
   cardUser?: boolean | Prisma.User$cardUserArgs<ExtArgs>
+  billUser?: boolean | Prisma.User$billUserArgs<ExtArgs>
+  invoiceUser?: boolean | Prisma.User$invoiceUserArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -816,6 +1106,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     transactionsSent: Prisma.$TransactionPayload<ExtArgs>[]
     transactionsReceived: Prisma.$TransactionPayload<ExtArgs>[]
     cardUser: Prisma.$CreditCardsPayload<ExtArgs>[]
+    billUser: Prisma.$BillsPayload<ExtArgs>[]
+    invoiceUser: Prisma.$InvoicesPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -826,6 +1118,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     passwordHash: string
     createdAt: Date
     updatedAt: Date
+    theme: $Enums.UserThemes
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -1223,6 +1516,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   transactionsSent<T extends Prisma.User$transactionsSentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$transactionsSentArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   transactionsReceived<T extends Prisma.User$transactionsReceivedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$transactionsReceivedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   cardUser<T extends Prisma.User$cardUserArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$cardUserArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CreditCardsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  billUser<T extends Prisma.User$billUserArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$billUserArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BillsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  invoiceUser<T extends Prisma.User$invoiceUserArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$invoiceUserArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvoicesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1260,6 +1555,7 @@ export interface UserFieldRefs {
   readonly passwordHash: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly theme: Prisma.FieldRef<"User", 'UserThemes'>
 }
     
 
@@ -1722,6 +2018,54 @@ export type User$cardUserArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.CreditCardsScalarFieldEnum | Prisma.CreditCardsScalarFieldEnum[]
+}
+
+/**
+ * User.billUser
+ */
+export type User$billUserArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Bills
+   */
+  select?: Prisma.BillsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Bills
+   */
+  omit?: Prisma.BillsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BillsInclude<ExtArgs> | null
+  where?: Prisma.BillsWhereInput
+  orderBy?: Prisma.BillsOrderByWithRelationInput | Prisma.BillsOrderByWithRelationInput[]
+  cursor?: Prisma.BillsWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BillsScalarFieldEnum | Prisma.BillsScalarFieldEnum[]
+}
+
+/**
+ * User.invoiceUser
+ */
+export type User$invoiceUserArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Invoices
+   */
+  select?: Prisma.InvoicesSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Invoices
+   */
+  omit?: Prisma.InvoicesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InvoicesInclude<ExtArgs> | null
+  where?: Prisma.InvoicesWhereInput
+  orderBy?: Prisma.InvoicesOrderByWithRelationInput | Prisma.InvoicesOrderByWithRelationInput[]
+  cursor?: Prisma.InvoicesWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.InvoicesScalarFieldEnum | Prisma.InvoicesScalarFieldEnum[]
 }
 
 /**

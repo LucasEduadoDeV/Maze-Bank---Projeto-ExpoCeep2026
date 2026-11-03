@@ -117,7 +117,7 @@ function RegisterPage() {
 
             <div className={`register-field${errors.email ? ' has-error' : ''}`}>
               <label htmlFor="register-email">E-mail</label>
-              <div className="register-input-wrap register-email-wrap"><Mail size={17} /><input id="register-email" autoComplete="email" inputMode="email" placeholder="seu.usuario" value={email} onChange={(event) => { setEmail(event.target.value.replace(/\s/g, '').split('@')[0]); clearFieldError('email') }} aria-invalid={Boolean(errors.email)} aria-describedby={errors.email ? 'register-email-error' : undefined} /><span>@gmail.com</span></div>
+              <div className="register-input-wrap register-email-wrap"><Mail size={17} /><input id="register-email" autoComplete="email" inputMode="email" placeholder="Seu email" value={email} onChange={(event) => { setEmail(event.target.value.replace(/\s/g, '').split('@')[0]); clearFieldError('email') }} aria-invalid={Boolean(errors.email)} aria-describedby={errors.email ? 'register-email-error' : undefined} /><span>@gmail.com</span></div>
               {errors.email && <span className="register-field-error" id="register-email-error">{errors.email}</span>}
             </div>
 

@@ -27,94 +27,112 @@ export type AggregateCreditCards = {
 }
 
 export type CreditCardsAvgAggregateOutputType = {
-  cvv: number | null
   totalLimit: runtime.Decimal | null
   freeLimit: runtime.Decimal | null
+  theme: number | null
 }
 
 export type CreditCardsSumAggregateOutputType = {
-  cvv: number | null
   totalLimit: runtime.Decimal | null
   freeLimit: runtime.Decimal | null
+  theme: number | null
 }
 
 export type CreditCardsMinAggregateOutputType = {
   idCard: string | null
+  name: string | null
   cardNumber: string | null
-  cvv: number | null
-  validateDate: string | null
+  cvv: string | null
+  validateDate: Date | null
   totalLimit: runtime.Decimal | null
   freeLimit: runtime.Decimal | null
   status: $Enums.StatusCartao | null
+  main: boolean | null
+  theme: number | null
   userId: string | null
 }
 
 export type CreditCardsMaxAggregateOutputType = {
   idCard: string | null
+  name: string | null
   cardNumber: string | null
-  cvv: number | null
-  validateDate: string | null
+  cvv: string | null
+  validateDate: Date | null
   totalLimit: runtime.Decimal | null
   freeLimit: runtime.Decimal | null
   status: $Enums.StatusCartao | null
+  main: boolean | null
+  theme: number | null
   userId: string | null
 }
 
 export type CreditCardsCountAggregateOutputType = {
   idCard: number
+  name: number
   cardNumber: number
   cvv: number
   validateDate: number
   totalLimit: number
   freeLimit: number
   status: number
+  main: number
+  theme: number
   userId: number
   _all: number
 }
 
 
 export type CreditCardsAvgAggregateInputType = {
-  cvv?: true
   totalLimit?: true
   freeLimit?: true
+  theme?: true
 }
 
 export type CreditCardsSumAggregateInputType = {
-  cvv?: true
   totalLimit?: true
   freeLimit?: true
+  theme?: true
 }
 
 export type CreditCardsMinAggregateInputType = {
   idCard?: true
+  name?: true
   cardNumber?: true
   cvv?: true
   validateDate?: true
   totalLimit?: true
   freeLimit?: true
   status?: true
+  main?: true
+  theme?: true
   userId?: true
 }
 
 export type CreditCardsMaxAggregateInputType = {
   idCard?: true
+  name?: true
   cardNumber?: true
   cvv?: true
   validateDate?: true
   totalLimit?: true
   freeLimit?: true
   status?: true
+  main?: true
+  theme?: true
   userId?: true
 }
 
 export type CreditCardsCountAggregateInputType = {
   idCard?: true
+  name?: true
   cardNumber?: true
   cvv?: true
   validateDate?: true
   totalLimit?: true
   freeLimit?: true
   status?: true
+  main?: true
+  theme?: true
   userId?: true
   _all?: true
 }
@@ -207,12 +225,15 @@ export type CreditCardsGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
 
 export type CreditCardsGroupByOutputType = {
   idCard: string
+  name: string
   cardNumber: string
-  cvv: number
-  validateDate: string
+  cvv: string
+  validateDate: Date
   totalLimit: runtime.Decimal
   freeLimit: runtime.Decimal
   status: $Enums.StatusCartao
+  main: boolean
+  theme: number
   userId: string
   _count: CreditCardsCountAggregateOutputType | null
   _avg: CreditCardsAvgAggregateOutputType | null
@@ -241,26 +262,36 @@ export type CreditCardsWhereInput = {
   OR?: Prisma.CreditCardsWhereInput[]
   NOT?: Prisma.CreditCardsWhereInput | Prisma.CreditCardsWhereInput[]
   idCard?: Prisma.UuidFilter<"CreditCards"> | string
+  name?: Prisma.StringFilter<"CreditCards"> | string
   cardNumber?: Prisma.StringFilter<"CreditCards"> | string
-  cvv?: Prisma.IntFilter<"CreditCards"> | number
-  validateDate?: Prisma.StringFilter<"CreditCards"> | string
+  cvv?: Prisma.StringFilter<"CreditCards"> | string
+  validateDate?: Prisma.DateTimeFilter<"CreditCards"> | Date | string
   totalLimit?: Prisma.DecimalFilter<"CreditCards"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   freeLimit?: Prisma.DecimalFilter<"CreditCards"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumStatusCartaoFilter<"CreditCards"> | $Enums.StatusCartao
+  main?: Prisma.BoolFilter<"CreditCards"> | boolean
+  theme?: Prisma.IntFilter<"CreditCards"> | number
   userId?: Prisma.UuidFilter<"CreditCards"> | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  billCard?: Prisma.BillsListRelationFilter
+  invoiceCard?: Prisma.InvoicesListRelationFilter
 }
 
 export type CreditCardsOrderByWithRelationInput = {
   idCard?: Prisma.SortOrder
+  name?: Prisma.SortOrder
   cardNumber?: Prisma.SortOrder
   cvv?: Prisma.SortOrder
   validateDate?: Prisma.SortOrder
   totalLimit?: Prisma.SortOrder
   freeLimit?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  main?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  billCard?: Prisma.BillsOrderByRelationAggregateInput
+  invoiceCard?: Prisma.InvoicesOrderByRelationAggregateInput
 }
 
 export type CreditCardsWhereUniqueInput = Prisma.AtLeast<{
@@ -269,23 +300,31 @@ export type CreditCardsWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.CreditCardsWhereInput | Prisma.CreditCardsWhereInput[]
   OR?: Prisma.CreditCardsWhereInput[]
   NOT?: Prisma.CreditCardsWhereInput | Prisma.CreditCardsWhereInput[]
-  cvv?: Prisma.IntFilter<"CreditCards"> | number
-  validateDate?: Prisma.StringFilter<"CreditCards"> | string
+  name?: Prisma.StringFilter<"CreditCards"> | string
+  cvv?: Prisma.StringFilter<"CreditCards"> | string
+  validateDate?: Prisma.DateTimeFilter<"CreditCards"> | Date | string
   totalLimit?: Prisma.DecimalFilter<"CreditCards"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   freeLimit?: Prisma.DecimalFilter<"CreditCards"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumStatusCartaoFilter<"CreditCards"> | $Enums.StatusCartao
+  main?: Prisma.BoolFilter<"CreditCards"> | boolean
+  theme?: Prisma.IntFilter<"CreditCards"> | number
   userId?: Prisma.UuidFilter<"CreditCards"> | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  billCard?: Prisma.BillsListRelationFilter
+  invoiceCard?: Prisma.InvoicesListRelationFilter
 }, "idCard" | "cardNumber">
 
 export type CreditCardsOrderByWithAggregationInput = {
   idCard?: Prisma.SortOrder
+  name?: Prisma.SortOrder
   cardNumber?: Prisma.SortOrder
   cvv?: Prisma.SortOrder
   validateDate?: Prisma.SortOrder
   totalLimit?: Prisma.SortOrder
   freeLimit?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  main?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   _count?: Prisma.CreditCardsCountOrderByAggregateInput
   _avg?: Prisma.CreditCardsAvgOrderByAggregateInput
@@ -299,88 +338,120 @@ export type CreditCardsScalarWhereWithAggregatesInput = {
   OR?: Prisma.CreditCardsScalarWhereWithAggregatesInput[]
   NOT?: Prisma.CreditCardsScalarWhereWithAggregatesInput | Prisma.CreditCardsScalarWhereWithAggregatesInput[]
   idCard?: Prisma.UuidWithAggregatesFilter<"CreditCards"> | string
+  name?: Prisma.StringWithAggregatesFilter<"CreditCards"> | string
   cardNumber?: Prisma.StringWithAggregatesFilter<"CreditCards"> | string
-  cvv?: Prisma.IntWithAggregatesFilter<"CreditCards"> | number
-  validateDate?: Prisma.StringWithAggregatesFilter<"CreditCards"> | string
+  cvv?: Prisma.StringWithAggregatesFilter<"CreditCards"> | string
+  validateDate?: Prisma.DateTimeWithAggregatesFilter<"CreditCards"> | Date | string
   totalLimit?: Prisma.DecimalWithAggregatesFilter<"CreditCards"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   freeLimit?: Prisma.DecimalWithAggregatesFilter<"CreditCards"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumStatusCartaoWithAggregatesFilter<"CreditCards"> | $Enums.StatusCartao
+  main?: Prisma.BoolWithAggregatesFilter<"CreditCards"> | boolean
+  theme?: Prisma.IntWithAggregatesFilter<"CreditCards"> | number
   userId?: Prisma.UuidWithAggregatesFilter<"CreditCards"> | string
 }
 
 export type CreditCardsCreateInput = {
   idCard?: string
+  name: string
   cardNumber: string
-  cvv: number
-  validateDate: string
+  cvv: string
+  validateDate: Date | string
   totalLimit: runtime.Decimal | runtime.DecimalJsLike | number | string
   freeLimit: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.StatusCartao
+  main?: boolean
+  theme?: number
   user: Prisma.UserCreateNestedOneWithoutCardUserInput
+  billCard?: Prisma.BillsCreateNestedManyWithoutCardInput
+  invoiceCard?: Prisma.InvoicesCreateNestedManyWithoutCardInput
 }
 
 export type CreditCardsUncheckedCreateInput = {
   idCard?: string
+  name: string
   cardNumber: string
-  cvv: number
-  validateDate: string
+  cvv: string
+  validateDate: Date | string
   totalLimit: runtime.Decimal | runtime.DecimalJsLike | number | string
   freeLimit: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.StatusCartao
+  main?: boolean
+  theme?: number
   userId: string
+  billCard?: Prisma.BillsUncheckedCreateNestedManyWithoutCardInput
+  invoiceCard?: Prisma.InvoicesUncheckedCreateNestedManyWithoutCardInput
 }
 
 export type CreditCardsUpdateInput = {
   idCard?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   cardNumber?: Prisma.StringFieldUpdateOperationsInput | string
-  cvv?: Prisma.IntFieldUpdateOperationsInput | number
-  validateDate?: Prisma.StringFieldUpdateOperationsInput | string
+  cvv?: Prisma.StringFieldUpdateOperationsInput | string
+  validateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   totalLimit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   freeLimit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumStatusCartaoFieldUpdateOperationsInput | $Enums.StatusCartao
+  main?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  theme?: Prisma.IntFieldUpdateOperationsInput | number
   user?: Prisma.UserUpdateOneRequiredWithoutCardUserNestedInput
+  billCard?: Prisma.BillsUpdateManyWithoutCardNestedInput
+  invoiceCard?: Prisma.InvoicesUpdateManyWithoutCardNestedInput
 }
 
 export type CreditCardsUncheckedUpdateInput = {
   idCard?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   cardNumber?: Prisma.StringFieldUpdateOperationsInput | string
-  cvv?: Prisma.IntFieldUpdateOperationsInput | number
-  validateDate?: Prisma.StringFieldUpdateOperationsInput | string
+  cvv?: Prisma.StringFieldUpdateOperationsInput | string
+  validateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   totalLimit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   freeLimit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumStatusCartaoFieldUpdateOperationsInput | $Enums.StatusCartao
+  main?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  theme?: Prisma.IntFieldUpdateOperationsInput | number
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  billCard?: Prisma.BillsUncheckedUpdateManyWithoutCardNestedInput
+  invoiceCard?: Prisma.InvoicesUncheckedUpdateManyWithoutCardNestedInput
 }
 
 export type CreditCardsCreateManyInput = {
   idCard?: string
+  name: string
   cardNumber: string
-  cvv: number
-  validateDate: string
+  cvv: string
+  validateDate: Date | string
   totalLimit: runtime.Decimal | runtime.DecimalJsLike | number | string
   freeLimit: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.StatusCartao
+  main?: boolean
+  theme?: number
   userId: string
 }
 
 export type CreditCardsUpdateManyMutationInput = {
   idCard?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   cardNumber?: Prisma.StringFieldUpdateOperationsInput | string
-  cvv?: Prisma.IntFieldUpdateOperationsInput | number
-  validateDate?: Prisma.StringFieldUpdateOperationsInput | string
+  cvv?: Prisma.StringFieldUpdateOperationsInput | string
+  validateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   totalLimit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   freeLimit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumStatusCartaoFieldUpdateOperationsInput | $Enums.StatusCartao
+  main?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  theme?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type CreditCardsUncheckedUpdateManyInput = {
   idCard?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   cardNumber?: Prisma.StringFieldUpdateOperationsInput | string
-  cvv?: Prisma.IntFieldUpdateOperationsInput | number
-  validateDate?: Prisma.StringFieldUpdateOperationsInput | string
+  cvv?: Prisma.StringFieldUpdateOperationsInput | string
+  validateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   totalLimit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   freeLimit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumStatusCartaoFieldUpdateOperationsInput | $Enums.StatusCartao
+  main?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  theme?: Prisma.IntFieldUpdateOperationsInput | number
   userId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -396,47 +467,66 @@ export type CreditCardsOrderByRelationAggregateInput = {
 
 export type CreditCardsCountOrderByAggregateInput = {
   idCard?: Prisma.SortOrder
+  name?: Prisma.SortOrder
   cardNumber?: Prisma.SortOrder
   cvv?: Prisma.SortOrder
   validateDate?: Prisma.SortOrder
   totalLimit?: Prisma.SortOrder
   freeLimit?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  main?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
   userId?: Prisma.SortOrder
 }
 
 export type CreditCardsAvgOrderByAggregateInput = {
-  cvv?: Prisma.SortOrder
   totalLimit?: Prisma.SortOrder
   freeLimit?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
 }
 
 export type CreditCardsMaxOrderByAggregateInput = {
   idCard?: Prisma.SortOrder
+  name?: Prisma.SortOrder
   cardNumber?: Prisma.SortOrder
   cvv?: Prisma.SortOrder
   validateDate?: Prisma.SortOrder
   totalLimit?: Prisma.SortOrder
   freeLimit?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  main?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
   userId?: Prisma.SortOrder
 }
 
 export type CreditCardsMinOrderByAggregateInput = {
   idCard?: Prisma.SortOrder
+  name?: Prisma.SortOrder
   cardNumber?: Prisma.SortOrder
   cvv?: Prisma.SortOrder
   validateDate?: Prisma.SortOrder
   totalLimit?: Prisma.SortOrder
   freeLimit?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  main?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
   userId?: Prisma.SortOrder
 }
 
 export type CreditCardsSumOrderByAggregateInput = {
-  cvv?: Prisma.SortOrder
   totalLimit?: Prisma.SortOrder
   freeLimit?: Prisma.SortOrder
+  theme?: Prisma.SortOrder
+}
+
+export type CreditCardsNullableScalarRelationFilter = {
+  is?: Prisma.CreditCardsWhereInput | null
+  isNot?: Prisma.CreditCardsWhereInput | null
+}
+
+export type CreditCardsScalarRelationFilter = {
+  is?: Prisma.CreditCardsWhereInput
+  isNot?: Prisma.CreditCardsWhereInput
 }
 
 export type CreditCardsCreateNestedManyWithoutUserInput = {
@@ -481,6 +571,14 @@ export type CreditCardsUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.CreditCardsScalarWhereInput | Prisma.CreditCardsScalarWhereInput[]
 }
 
+export type EnumStatusCartaoFieldUpdateOperationsInput = {
+  set?: $Enums.StatusCartao
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
 export type IntFieldUpdateOperationsInput = {
   set?: number
   increment?: number
@@ -489,28 +587,64 @@ export type IntFieldUpdateOperationsInput = {
   divide?: number
 }
 
-export type EnumStatusCartaoFieldUpdateOperationsInput = {
-  set?: $Enums.StatusCartao
+export type CreditCardsCreateNestedOneWithoutBillCardInput = {
+  create?: Prisma.XOR<Prisma.CreditCardsCreateWithoutBillCardInput, Prisma.CreditCardsUncheckedCreateWithoutBillCardInput>
+  connectOrCreate?: Prisma.CreditCardsCreateOrConnectWithoutBillCardInput
+  connect?: Prisma.CreditCardsWhereUniqueInput
+}
+
+export type CreditCardsUpdateOneWithoutBillCardNestedInput = {
+  create?: Prisma.XOR<Prisma.CreditCardsCreateWithoutBillCardInput, Prisma.CreditCardsUncheckedCreateWithoutBillCardInput>
+  connectOrCreate?: Prisma.CreditCardsCreateOrConnectWithoutBillCardInput
+  upsert?: Prisma.CreditCardsUpsertWithoutBillCardInput
+  disconnect?: Prisma.CreditCardsWhereInput | boolean
+  delete?: Prisma.CreditCardsWhereInput | boolean
+  connect?: Prisma.CreditCardsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CreditCardsUpdateToOneWithWhereWithoutBillCardInput, Prisma.CreditCardsUpdateWithoutBillCardInput>, Prisma.CreditCardsUncheckedUpdateWithoutBillCardInput>
+}
+
+export type CreditCardsCreateNestedOneWithoutInvoiceCardInput = {
+  create?: Prisma.XOR<Prisma.CreditCardsCreateWithoutInvoiceCardInput, Prisma.CreditCardsUncheckedCreateWithoutInvoiceCardInput>
+  connectOrCreate?: Prisma.CreditCardsCreateOrConnectWithoutInvoiceCardInput
+  connect?: Prisma.CreditCardsWhereUniqueInput
+}
+
+export type CreditCardsUpdateOneRequiredWithoutInvoiceCardNestedInput = {
+  create?: Prisma.XOR<Prisma.CreditCardsCreateWithoutInvoiceCardInput, Prisma.CreditCardsUncheckedCreateWithoutInvoiceCardInput>
+  connectOrCreate?: Prisma.CreditCardsCreateOrConnectWithoutInvoiceCardInput
+  upsert?: Prisma.CreditCardsUpsertWithoutInvoiceCardInput
+  connect?: Prisma.CreditCardsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CreditCardsUpdateToOneWithWhereWithoutInvoiceCardInput, Prisma.CreditCardsUpdateWithoutInvoiceCardInput>, Prisma.CreditCardsUncheckedUpdateWithoutInvoiceCardInput>
 }
 
 export type CreditCardsCreateWithoutUserInput = {
   idCard?: string
+  name: string
   cardNumber: string
-  cvv: number
-  validateDate: string
+  cvv: string
+  validateDate: Date | string
   totalLimit: runtime.Decimal | runtime.DecimalJsLike | number | string
   freeLimit: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.StatusCartao
+  main?: boolean
+  theme?: number
+  billCard?: Prisma.BillsCreateNestedManyWithoutCardInput
+  invoiceCard?: Prisma.InvoicesCreateNestedManyWithoutCardInput
 }
 
 export type CreditCardsUncheckedCreateWithoutUserInput = {
   idCard?: string
+  name: string
   cardNumber: string
-  cvv: number
-  validateDate: string
+  cvv: string
+  validateDate: Date | string
   totalLimit: runtime.Decimal | runtime.DecimalJsLike | number | string
   freeLimit: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.StatusCartao
+  main?: boolean
+  theme?: number
+  billCard?: Prisma.BillsUncheckedCreateNestedManyWithoutCardInput
+  invoiceCard?: Prisma.InvoicesUncheckedCreateNestedManyWithoutCardInput
 }
 
 export type CreditCardsCreateOrConnectWithoutUserInput = {
@@ -544,107 +678,334 @@ export type CreditCardsScalarWhereInput = {
   OR?: Prisma.CreditCardsScalarWhereInput[]
   NOT?: Prisma.CreditCardsScalarWhereInput | Prisma.CreditCardsScalarWhereInput[]
   idCard?: Prisma.UuidFilter<"CreditCards"> | string
+  name?: Prisma.StringFilter<"CreditCards"> | string
   cardNumber?: Prisma.StringFilter<"CreditCards"> | string
-  cvv?: Prisma.IntFilter<"CreditCards"> | number
-  validateDate?: Prisma.StringFilter<"CreditCards"> | string
+  cvv?: Prisma.StringFilter<"CreditCards"> | string
+  validateDate?: Prisma.DateTimeFilter<"CreditCards"> | Date | string
   totalLimit?: Prisma.DecimalFilter<"CreditCards"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   freeLimit?: Prisma.DecimalFilter<"CreditCards"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumStatusCartaoFilter<"CreditCards"> | $Enums.StatusCartao
+  main?: Prisma.BoolFilter<"CreditCards"> | boolean
+  theme?: Prisma.IntFilter<"CreditCards"> | number
   userId?: Prisma.UuidFilter<"CreditCards"> | string
+}
+
+export type CreditCardsCreateWithoutBillCardInput = {
+  idCard?: string
+  name: string
+  cardNumber: string
+  cvv: string
+  validateDate: Date | string
+  totalLimit: runtime.Decimal | runtime.DecimalJsLike | number | string
+  freeLimit: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: $Enums.StatusCartao
+  main?: boolean
+  theme?: number
+  user: Prisma.UserCreateNestedOneWithoutCardUserInput
+  invoiceCard?: Prisma.InvoicesCreateNestedManyWithoutCardInput
+}
+
+export type CreditCardsUncheckedCreateWithoutBillCardInput = {
+  idCard?: string
+  name: string
+  cardNumber: string
+  cvv: string
+  validateDate: Date | string
+  totalLimit: runtime.Decimal | runtime.DecimalJsLike | number | string
+  freeLimit: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: $Enums.StatusCartao
+  main?: boolean
+  theme?: number
+  userId: string
+  invoiceCard?: Prisma.InvoicesUncheckedCreateNestedManyWithoutCardInput
+}
+
+export type CreditCardsCreateOrConnectWithoutBillCardInput = {
+  where: Prisma.CreditCardsWhereUniqueInput
+  create: Prisma.XOR<Prisma.CreditCardsCreateWithoutBillCardInput, Prisma.CreditCardsUncheckedCreateWithoutBillCardInput>
+}
+
+export type CreditCardsUpsertWithoutBillCardInput = {
+  update: Prisma.XOR<Prisma.CreditCardsUpdateWithoutBillCardInput, Prisma.CreditCardsUncheckedUpdateWithoutBillCardInput>
+  create: Prisma.XOR<Prisma.CreditCardsCreateWithoutBillCardInput, Prisma.CreditCardsUncheckedCreateWithoutBillCardInput>
+  where?: Prisma.CreditCardsWhereInput
+}
+
+export type CreditCardsUpdateToOneWithWhereWithoutBillCardInput = {
+  where?: Prisma.CreditCardsWhereInput
+  data: Prisma.XOR<Prisma.CreditCardsUpdateWithoutBillCardInput, Prisma.CreditCardsUncheckedUpdateWithoutBillCardInput>
+}
+
+export type CreditCardsUpdateWithoutBillCardInput = {
+  idCard?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  cardNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  cvv?: Prisma.StringFieldUpdateOperationsInput | string
+  validateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  totalLimit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  freeLimit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.EnumStatusCartaoFieldUpdateOperationsInput | $Enums.StatusCartao
+  main?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  theme?: Prisma.IntFieldUpdateOperationsInput | number
+  user?: Prisma.UserUpdateOneRequiredWithoutCardUserNestedInput
+  invoiceCard?: Prisma.InvoicesUpdateManyWithoutCardNestedInput
+}
+
+export type CreditCardsUncheckedUpdateWithoutBillCardInput = {
+  idCard?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  cardNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  cvv?: Prisma.StringFieldUpdateOperationsInput | string
+  validateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  totalLimit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  freeLimit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.EnumStatusCartaoFieldUpdateOperationsInput | $Enums.StatusCartao
+  main?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  theme?: Prisma.IntFieldUpdateOperationsInput | number
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  invoiceCard?: Prisma.InvoicesUncheckedUpdateManyWithoutCardNestedInput
+}
+
+export type CreditCardsCreateWithoutInvoiceCardInput = {
+  idCard?: string
+  name: string
+  cardNumber: string
+  cvv: string
+  validateDate: Date | string
+  totalLimit: runtime.Decimal | runtime.DecimalJsLike | number | string
+  freeLimit: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: $Enums.StatusCartao
+  main?: boolean
+  theme?: number
+  user: Prisma.UserCreateNestedOneWithoutCardUserInput
+  billCard?: Prisma.BillsCreateNestedManyWithoutCardInput
+}
+
+export type CreditCardsUncheckedCreateWithoutInvoiceCardInput = {
+  idCard?: string
+  name: string
+  cardNumber: string
+  cvv: string
+  validateDate: Date | string
+  totalLimit: runtime.Decimal | runtime.DecimalJsLike | number | string
+  freeLimit: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: $Enums.StatusCartao
+  main?: boolean
+  theme?: number
+  userId: string
+  billCard?: Prisma.BillsUncheckedCreateNestedManyWithoutCardInput
+}
+
+export type CreditCardsCreateOrConnectWithoutInvoiceCardInput = {
+  where: Prisma.CreditCardsWhereUniqueInput
+  create: Prisma.XOR<Prisma.CreditCardsCreateWithoutInvoiceCardInput, Prisma.CreditCardsUncheckedCreateWithoutInvoiceCardInput>
+}
+
+export type CreditCardsUpsertWithoutInvoiceCardInput = {
+  update: Prisma.XOR<Prisma.CreditCardsUpdateWithoutInvoiceCardInput, Prisma.CreditCardsUncheckedUpdateWithoutInvoiceCardInput>
+  create: Prisma.XOR<Prisma.CreditCardsCreateWithoutInvoiceCardInput, Prisma.CreditCardsUncheckedCreateWithoutInvoiceCardInput>
+  where?: Prisma.CreditCardsWhereInput
+}
+
+export type CreditCardsUpdateToOneWithWhereWithoutInvoiceCardInput = {
+  where?: Prisma.CreditCardsWhereInput
+  data: Prisma.XOR<Prisma.CreditCardsUpdateWithoutInvoiceCardInput, Prisma.CreditCardsUncheckedUpdateWithoutInvoiceCardInput>
+}
+
+export type CreditCardsUpdateWithoutInvoiceCardInput = {
+  idCard?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  cardNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  cvv?: Prisma.StringFieldUpdateOperationsInput | string
+  validateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  totalLimit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  freeLimit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.EnumStatusCartaoFieldUpdateOperationsInput | $Enums.StatusCartao
+  main?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  theme?: Prisma.IntFieldUpdateOperationsInput | number
+  user?: Prisma.UserUpdateOneRequiredWithoutCardUserNestedInput
+  billCard?: Prisma.BillsUpdateManyWithoutCardNestedInput
+}
+
+export type CreditCardsUncheckedUpdateWithoutInvoiceCardInput = {
+  idCard?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  cardNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  cvv?: Prisma.StringFieldUpdateOperationsInput | string
+  validateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  totalLimit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  freeLimit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.EnumStatusCartaoFieldUpdateOperationsInput | $Enums.StatusCartao
+  main?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  theme?: Prisma.IntFieldUpdateOperationsInput | number
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  billCard?: Prisma.BillsUncheckedUpdateManyWithoutCardNestedInput
 }
 
 export type CreditCardsCreateManyUserInput = {
   idCard?: string
+  name: string
   cardNumber: string
-  cvv: number
-  validateDate: string
+  cvv: string
+  validateDate: Date | string
   totalLimit: runtime.Decimal | runtime.DecimalJsLike | number | string
   freeLimit: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.StatusCartao
+  main?: boolean
+  theme?: number
 }
 
 export type CreditCardsUpdateWithoutUserInput = {
   idCard?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   cardNumber?: Prisma.StringFieldUpdateOperationsInput | string
-  cvv?: Prisma.IntFieldUpdateOperationsInput | number
-  validateDate?: Prisma.StringFieldUpdateOperationsInput | string
+  cvv?: Prisma.StringFieldUpdateOperationsInput | string
+  validateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   totalLimit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   freeLimit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumStatusCartaoFieldUpdateOperationsInput | $Enums.StatusCartao
+  main?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  theme?: Prisma.IntFieldUpdateOperationsInput | number
+  billCard?: Prisma.BillsUpdateManyWithoutCardNestedInput
+  invoiceCard?: Prisma.InvoicesUpdateManyWithoutCardNestedInput
 }
 
 export type CreditCardsUncheckedUpdateWithoutUserInput = {
   idCard?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   cardNumber?: Prisma.StringFieldUpdateOperationsInput | string
-  cvv?: Prisma.IntFieldUpdateOperationsInput | number
-  validateDate?: Prisma.StringFieldUpdateOperationsInput | string
+  cvv?: Prisma.StringFieldUpdateOperationsInput | string
+  validateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   totalLimit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   freeLimit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumStatusCartaoFieldUpdateOperationsInput | $Enums.StatusCartao
+  main?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  theme?: Prisma.IntFieldUpdateOperationsInput | number
+  billCard?: Prisma.BillsUncheckedUpdateManyWithoutCardNestedInput
+  invoiceCard?: Prisma.InvoicesUncheckedUpdateManyWithoutCardNestedInput
 }
 
 export type CreditCardsUncheckedUpdateManyWithoutUserInput = {
   idCard?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   cardNumber?: Prisma.StringFieldUpdateOperationsInput | string
-  cvv?: Prisma.IntFieldUpdateOperationsInput | number
-  validateDate?: Prisma.StringFieldUpdateOperationsInput | string
+  cvv?: Prisma.StringFieldUpdateOperationsInput | string
+  validateDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   totalLimit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   freeLimit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumStatusCartaoFieldUpdateOperationsInput | $Enums.StatusCartao
+  main?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  theme?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
+
+/**
+ * Count Type CreditCardsCountOutputType
+ */
+
+export type CreditCardsCountOutputType = {
+  billCard: number
+  invoiceCard: number
+}
+
+export type CreditCardsCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  billCard?: boolean | CreditCardsCountOutputTypeCountBillCardArgs
+  invoiceCard?: boolean | CreditCardsCountOutputTypeCountInvoiceCardArgs
+}
+
+/**
+ * CreditCardsCountOutputType without action
+ */
+export type CreditCardsCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CreditCardsCountOutputType
+   */
+  select?: Prisma.CreditCardsCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * CreditCardsCountOutputType without action
+ */
+export type CreditCardsCountOutputTypeCountBillCardArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BillsWhereInput
+}
+
+/**
+ * CreditCardsCountOutputType without action
+ */
+export type CreditCardsCountOutputTypeCountInvoiceCardArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.InvoicesWhereInput
+}
 
 
 export type CreditCardsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   idCard?: boolean
+  name?: boolean
   cardNumber?: boolean
   cvv?: boolean
   validateDate?: boolean
   totalLimit?: boolean
   freeLimit?: boolean
   status?: boolean
+  main?: boolean
+  theme?: boolean
   userId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  billCard?: boolean | Prisma.CreditCards$billCardArgs<ExtArgs>
+  invoiceCard?: boolean | Prisma.CreditCards$invoiceCardArgs<ExtArgs>
+  _count?: boolean | Prisma.CreditCardsCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["creditCards"]>
 
 export type CreditCardsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   idCard?: boolean
+  name?: boolean
   cardNumber?: boolean
   cvv?: boolean
   validateDate?: boolean
   totalLimit?: boolean
   freeLimit?: boolean
   status?: boolean
+  main?: boolean
+  theme?: boolean
   userId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["creditCards"]>
 
 export type CreditCardsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   idCard?: boolean
+  name?: boolean
   cardNumber?: boolean
   cvv?: boolean
   validateDate?: boolean
   totalLimit?: boolean
   freeLimit?: boolean
   status?: boolean
+  main?: boolean
+  theme?: boolean
   userId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["creditCards"]>
 
 export type CreditCardsSelectScalar = {
   idCard?: boolean
+  name?: boolean
   cardNumber?: boolean
   cvv?: boolean
   validateDate?: boolean
   totalLimit?: boolean
   freeLimit?: boolean
   status?: boolean
+  main?: boolean
+  theme?: boolean
   userId?: boolean
 }
 
-export type CreditCardsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"idCard" | "cardNumber" | "cvv" | "validateDate" | "totalLimit" | "freeLimit" | "status" | "userId", ExtArgs["result"]["creditCards"]>
+export type CreditCardsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"idCard" | "name" | "cardNumber" | "cvv" | "validateDate" | "totalLimit" | "freeLimit" | "status" | "main" | "theme" | "userId", ExtArgs["result"]["creditCards"]>
 export type CreditCardsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  billCard?: boolean | Prisma.CreditCards$billCardArgs<ExtArgs>
+  invoiceCard?: boolean | Prisma.CreditCards$invoiceCardArgs<ExtArgs>
+  _count?: boolean | Prisma.CreditCardsCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CreditCardsIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -657,15 +1018,20 @@ export type $CreditCardsPayload<ExtArgs extends runtime.Types.Extensions.Interna
   name: "CreditCards"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
+    billCard: Prisma.$BillsPayload<ExtArgs>[]
+    invoiceCard: Prisma.$InvoicesPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     idCard: string
+    name: string
     cardNumber: string
-    cvv: number
-    validateDate: string
+    cvv: string
+    validateDate: Date
     totalLimit: runtime.Decimal
     freeLimit: runtime.Decimal
     status: $Enums.StatusCartao
+    main: boolean
+    theme: number
     userId: string
   }, ExtArgs["result"]["creditCards"]>
   composites: {}
@@ -1062,6 +1428,8 @@ readonly fields: CreditCardsFieldRefs;
 export interface Prisma__CreditCardsClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  billCard<T extends Prisma.CreditCards$billCardArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CreditCards$billCardArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BillsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  invoiceCard<T extends Prisma.CreditCards$invoiceCardArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CreditCards$invoiceCardArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvoicesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1092,12 +1460,15 @@ export interface Prisma__CreditCardsClient<T, Null = never, ExtArgs extends runt
  */
 export interface CreditCardsFieldRefs {
   readonly idCard: Prisma.FieldRef<"CreditCards", 'String'>
+  readonly name: Prisma.FieldRef<"CreditCards", 'String'>
   readonly cardNumber: Prisma.FieldRef<"CreditCards", 'String'>
-  readonly cvv: Prisma.FieldRef<"CreditCards", 'Int'>
-  readonly validateDate: Prisma.FieldRef<"CreditCards", 'String'>
+  readonly cvv: Prisma.FieldRef<"CreditCards", 'String'>
+  readonly validateDate: Prisma.FieldRef<"CreditCards", 'DateTime'>
   readonly totalLimit: Prisma.FieldRef<"CreditCards", 'Decimal'>
   readonly freeLimit: Prisma.FieldRef<"CreditCards", 'Decimal'>
   readonly status: Prisma.FieldRef<"CreditCards", 'StatusCartao'>
+  readonly main: Prisma.FieldRef<"CreditCards", 'Boolean'>
+  readonly theme: Prisma.FieldRef<"CreditCards", 'Int'>
   readonly userId: Prisma.FieldRef<"CreditCards", 'String'>
 }
     
@@ -1497,6 +1868,54 @@ export type CreditCardsDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Limit how many CreditCards to delete.
    */
   limit?: number
+}
+
+/**
+ * CreditCards.billCard
+ */
+export type CreditCards$billCardArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Bills
+   */
+  select?: Prisma.BillsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Bills
+   */
+  omit?: Prisma.BillsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BillsInclude<ExtArgs> | null
+  where?: Prisma.BillsWhereInput
+  orderBy?: Prisma.BillsOrderByWithRelationInput | Prisma.BillsOrderByWithRelationInput[]
+  cursor?: Prisma.BillsWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BillsScalarFieldEnum | Prisma.BillsScalarFieldEnum[]
+}
+
+/**
+ * CreditCards.invoiceCard
+ */
+export type CreditCards$invoiceCardArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Invoices
+   */
+  select?: Prisma.InvoicesSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Invoices
+   */
+  omit?: Prisma.InvoicesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InvoicesInclude<ExtArgs> | null
+  where?: Prisma.InvoicesWhereInput
+  orderBy?: Prisma.InvoicesOrderByWithRelationInput | Prisma.InvoicesOrderByWithRelationInput[]
+  cursor?: Prisma.InvoicesWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.InvoicesScalarFieldEnum | Prisma.InvoicesScalarFieldEnum[]
 }
 
 /**

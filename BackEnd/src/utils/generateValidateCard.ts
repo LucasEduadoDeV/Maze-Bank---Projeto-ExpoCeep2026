@@ -1,4 +1,4 @@
-export function gerarValidadeCartao(): Date {
+export function generateValidateCard(): Date {
   const dataValidade = new Date();
   dataValidade.setFullYear(dataValidade.getFullYear() + 5);
   return dataValidade;

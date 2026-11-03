@@ -1,14 +1,19 @@
 import express from "express";
 import cors from "cors";
-import cookieParser from "cookie-parser"
+import cookieParser from "cookie-parser";
 //Routes
 import RegisterRoutes from "./src/routes/register.routes";
 import LoginRoutes from "./src/routes/login.routes";
+import LogoutRoutes from "./src/routes/logout.routes";
 import MeRoutes from "./src/routes/me.routes";
-import TransactionRoutes from "./src/routes/transaction.routes"
+import TransactionRoutes from "./src/routes/transaction.routes";
+import CardsRoutes from "./src/routes/cards.routes";
+import BillsRoutes from "./src/routes/bills.routes";
+import InvoicesRoutes from "./src/routes/invoices.routes";
 //Middlewares
 import { errorHandler } from "./src/middlewares/erroHandler";
 const app = express();
+app.set('trust proxy', 1);
 //Swagger
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './src/config/swagger'
@@ -23,8 +28,12 @@ app.use(cookieParser())
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/register", RegisterRoutes);
 app.use("/login", LoginRoutes);
+app.use("/logout", LogoutRoutes);
 app.use("/me", MeRoutes);
 app.use("/transaction", TransactionRoutes);
+app.use("/cards", CardsRoutes);
+app.use("/bills", BillsRoutes);
+app.use("/invoices", InvoicesRoutes);
 app.use(errorHandler);
 app.listen(3000, () => {
     console.log(`Server Rodando Na Porta 3000`);

@@ -11,6 +11,7 @@
     "db:migrate": "prisma migrate dev --config BackEnd/src/prisma.config.ts"
   },
   "devDependencies": {
+    "@prisma/client": "^7.10.1",
     "@types/bcrypt": "^6.0.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
@@ -21,14 +22,14 @@
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
     "nodemon": "^3.1.14",
-    "prisma": "^7.10.0",
+    "prisma": "^7.10.1",
     "swagger": "^0.7.5",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.0",
-    "@prisma/client": "^7.10.0",
+    "@prisma/orm-postgres": "^8.0.0-rc.22",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",

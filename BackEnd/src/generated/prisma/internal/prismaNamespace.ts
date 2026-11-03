@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.10.0
- * Query Engine version: 0edf323efd1d98336f3f0a68684b56f689b900d3
+ * Prisma Client JS version: 7.10.1
+ * Query Engine version: d1b3f377ca835d73fd50954a5e22128b9ebdd6b8
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.10.0",
-  engine: "0edf323efd1d98336f3f0a68684b56f689b900d3"
+  client: "7.10.1",
+  engine: "d1b3f377ca835d73fd50954a5e22128b9ebdd6b8"
 }
 
 /**
@@ -399,7 +399,9 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   User: 'User',
   Transaction: 'Transaction',
-  CreditCards: 'CreditCards'
+  CreditCards: 'CreditCards',
+  Bills: 'Bills',
+  Invoices: 'Invoices'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -415,7 +417,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "transaction" | "creditCards"
+    modelProps: "user" | "transaction" | "creditCards" | "bills" | "invoices"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -641,6 +643,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Bills: {
+      payload: Prisma.$BillsPayload<ExtArgs>
+      fields: Prisma.BillsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BillsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BillsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BillsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BillsPayload>
+        }
+        findFirst: {
+          args: Prisma.BillsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BillsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BillsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BillsPayload>
+        }
+        findMany: {
+          args: Prisma.BillsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BillsPayload>[]
+        }
+        create: {
+          args: Prisma.BillsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BillsPayload>
+        }
+        createMany: {
+          args: Prisma.BillsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BillsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BillsPayload>[]
+        }
+        delete: {
+          args: Prisma.BillsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BillsPayload>
+        }
+        update: {
+          args: Prisma.BillsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BillsPayload>
+        }
+        deleteMany: {
+          args: Prisma.BillsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BillsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BillsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BillsPayload>[]
+        }
+        upsert: {
+          args: Prisma.BillsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BillsPayload>
+        }
+        aggregate: {
+          args: Prisma.BillsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBills>
+        }
+        groupBy: {
+          args: Prisma.BillsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BillsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BillsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BillsCountAggregateOutputType> | number
+        }
+      }
+    }
+    Invoices: {
+      payload: Prisma.$InvoicesPayload<ExtArgs>
+      fields: Prisma.InvoicesFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.InvoicesFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicesPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.InvoicesFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicesPayload>
+        }
+        findFirst: {
+          args: Prisma.InvoicesFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicesPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.InvoicesFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicesPayload>
+        }
+        findMany: {
+          args: Prisma.InvoicesFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicesPayload>[]
+        }
+        create: {
+          args: Prisma.InvoicesCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicesPayload>
+        }
+        createMany: {
+          args: Prisma.InvoicesCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.InvoicesCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicesPayload>[]
+        }
+        delete: {
+          args: Prisma.InvoicesDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicesPayload>
+        }
+        update: {
+          args: Prisma.InvoicesUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicesPayload>
+        }
+        deleteMany: {
+          args: Prisma.InvoicesDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.InvoicesUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.InvoicesUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicesPayload>[]
+        }
+        upsert: {
+          args: Prisma.InvoicesUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InvoicesPayload>
+        }
+        aggregate: {
+          args: Prisma.InvoicesAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateInvoices>
+        }
+        groupBy: {
+          args: Prisma.InvoicesGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.InvoicesGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.InvoicesCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.InvoicesCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -688,7 +838,8 @@ export const UserScalarFieldEnum = {
   balance: 'balance',
   passwordHash: 'passwordHash',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  theme: 'theme'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -710,16 +861,54 @@ export type TransactionScalarFieldEnum = (typeof TransactionScalarFieldEnum)[key
 
 export const CreditCardsScalarFieldEnum = {
   idCard: 'idCard',
+  name: 'name',
   cardNumber: 'cardNumber',
   cvv: 'cvv',
   validateDate: 'validateDate',
   totalLimit: 'totalLimit',
   freeLimit: 'freeLimit',
   status: 'status',
+  main: 'main',
+  theme: 'theme',
   userId: 'userId'
 } as const
 
 export type CreditCardsScalarFieldEnum = (typeof CreditCardsScalarFieldEnum)[keyof typeof CreditCardsScalarFieldEnum]
+
+
+export const BillsScalarFieldEnum = {
+  billId: 'billId',
+  billName: 'billName',
+  biller: 'biller',
+  description: 'description',
+  dueDate: 'dueDate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  status: 'status',
+  value: 'value',
+  type: 'type',
+  userId: 'userId',
+  cardId: 'cardId'
+} as const
+
+export type BillsScalarFieldEnum = (typeof BillsScalarFieldEnum)[keyof typeof BillsScalarFieldEnum]
+
+
+export const InvoicesScalarFieldEnum = {
+  invoiceId: 'invoiceId',
+  invoiceName: 'invoiceName',
+  totalAmount: 'totalAmount',
+  totalPaid: 'totalPaid',
+  dueDate: 'dueDate',
+  itens: 'itens',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  status: 'status',
+  userId: 'userId',
+  cardId: 'cardId'
+} as const
+
+export type InvoicesScalarFieldEnum = (typeof InvoicesScalarFieldEnum)[keyof typeof InvoicesScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -730,12 +919,36 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 
@@ -787,16 +1000,16 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
- * Reference to a field of type 'Int'
+ * Reference to a field of type 'UserThemes'
  */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+export type EnumUserThemesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserThemes'>
     
 
 
 /**
- * Reference to a field of type 'Int[]'
+ * Reference to a field of type 'UserThemes[]'
  */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+export type ListEnumUserThemesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserThemes[]'>
     
 
 
@@ -811,6 +1024,69 @@ export type EnumStatusCartaoFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
  * Reference to a field of type 'StatusCartao[]'
  */
 export type ListEnumStatusCartaoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StatusCartao[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+/**
+ * Reference to a field of type 'Int[]'
+ */
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'StatusBill'
+ */
+export type EnumStatusBillFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StatusBill'>
+    
+
+
+/**
+ * Reference to a field of type 'StatusBill[]'
+ */
+export type ListEnumStatusBillFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StatusBill[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'StatusInvoice'
+ */
+export type EnumStatusInvoiceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StatusInvoice'>
+    
+
+
+/**
+ * Reference to a field of type 'StatusInvoice[]'
+ */
+export type ListEnumStatusInvoiceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StatusInvoice[]'>
     
 
 
@@ -981,6 +1257,8 @@ export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   transaction?: Prisma.TransactionOmit
   creditCards?: Prisma.CreditCardsOmit
+  bills?: Prisma.BillsOmit
+  invoices?: Prisma.InvoicesOmit
 }
 
 /* Types for Logging */

@@ -23,6 +23,15 @@
   outline: 3px solid rgb(182 32 40 / 25%);
   outline-offset: 3px;
 }
+.cards-page .cards-field > input:focus-visible,
+.cards-page .cards-currency-field > input:focus-visible {
+  outline: 0;
+  outline-offset: 0;
+}
+.cards-page .cards-field > input:focus-visible {
+  border-color: #bcb8b1;
+  box-shadow: 0 0 0 3px rgb(36 35 35 / 6%);
+}
 
 .cards-page-header { margin-bottom: 27px; }
 .cards-back-button {
@@ -88,6 +97,13 @@
 .cards-create-button:hover:not(:disabled) { transform: translateY(-2px); background: var(--cards-red-dark); box-shadow: 0 8px 18px rgb(182 32 40 / 22%); }
 .cards-create-button:active:not(:disabled) { transform: translateY(0); }
 .cards-create-button:disabled { cursor: not-allowed; opacity: .58; box-shadow: none; }
+.cards-modal-open .cards-create-button,
+.cards-modal-open .cards-create-button:hover,
+.cards-modal-open .cards-create-button:focus-visible {
+  outline: 0;
+  box-shadow: none;
+  transform: none;
+}
 
 .cards-toast {
   display: flex;
@@ -108,6 +124,8 @@
 .cards-toast > span { flex: 1; }
 .cards-toast button { display: grid; width: 28px; height: 28px; place-items: center; border: 0; border-radius: 5px; background: transparent; color: inherit; cursor: pointer; }
 .cards-toast button:hover { background: rgb(53 101 72 / 8%); }
+.cards-toast-error { border-color: #e6aaa6; background: #fff1ef; color: #8e2925; }
+.cards-toast-error button:hover { background: rgb(142 41 37 / 8%); }
 
 .cards-overview {
   display: flex;
@@ -147,7 +165,7 @@
   animation: wallet-card-enter .5s cubic-bezier(.2, .7, .2, 1) both;
   transition: transform .24s ease, box-shadow .24s ease, border-color .24s ease;
 }
-.wallet-card:hover { transform: translateY(-4px); border-color: #d3cec5; box-shadow: 0 13px 28px rgb(32 29 24 / 10%); }
+.wallet-card:hover { transform: translateY(-6px); border-color: #c5beb2; box-shadow: 0 18px 34px rgb(32 29 24 / 15%); }
 .wallet-card-face {
   position: relative;
   display: flex;
@@ -158,6 +176,11 @@
   color: #fff;
   isolation: isolate;
 }
+.wallet-card-face-button { width: 100%; border: 0; cursor: pointer; font: inherit; text-align: left; transition: filter .22s ease; }
+.wallet-card-face-button:focus-visible { z-index: 1; outline: 3px solid rgb(182 32 40 / 48%); outline-offset: -4px; }
+.wallet-card-face-button::after { position: absolute; inset: 0; border: 1px solid transparent; border-radius: inherit; box-shadow: inset 0 0 0 0 rgb(255 255 255 / 0%); content: ''; pointer-events: none; transition: border-color .22s ease, box-shadow .22s ease; }
+.wallet-card-face-button:hover { filter: brightness(1.14) saturate(1.08); }
+.wallet-card-face-button:hover::after { border-color: rgb(255 255 255 / 58%); box-shadow: inset 0 0 0 2px rgb(255 255 255 / 12%); }
 .wallet-card-theme-0 { background: linear-gradient(135deg, #343431 0%, #222220 55%, #171716 100%); }
 .wallet-card-theme-1 { background: linear-gradient(135deg, #47745b 0%, #274a38 54%, #1c3629 100%); }
 .wallet-card-theme-2 { background: linear-gradient(135deg, #b7393d 0%, #85282d 56%, #5d1c21 100%); }
@@ -177,31 +200,36 @@
 .wallet-card-orbit-one { top: 45px; right: 12px; }
 .wallet-card-orbit-two { top: 61px; right: -4px; }
 .wallet-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.wallet-card-brand { display: inline-flex; align-items: center; gap: 7px; color: rgb(255 255 255 / 92%); font-size: 8px; font-weight: 700; letter-spacing: 1.1px; }
-.wallet-card-mark { display: grid; width: 23px; height: 23px; place-items: center; border: 1px solid rgb(255 255 255 / 38%); border-radius: 6px; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 800; letter-spacing: 0; }
-.wallet-card-kind { padding: 5px 7px; border: 1px solid rgb(255 255 255 / 22%); border-radius: 20px; color: rgb(255 255 255 / 82%); font-size: 7px; font-weight: 700; letter-spacing: .8px; }
-.wallet-card-chip { position: relative; display: grid; width: 31px; height: 24px; grid-template: 1fr 1fr / 1fr 1fr; overflow: hidden; margin-top: 20px; border: 1px solid rgb(245 220 167 / 55%); border-radius: 5px; background: linear-gradient(135deg, #dbca9f, #a98e5d); }
+.wallet-card-top-badges { display: inline-flex; align-items: center; gap: 5px; }
+.wallet-card-brand { display: inline-flex; align-items: center; gap: 7px; color: rgb(255 255 255 / 92%); font-size: 9px; font-weight: 700; letter-spacing: 1.1px; }
+.wallet-card-mark { display: grid; width: 23px; height: 23px; place-items: center; padding-top: 1px; border: 1px solid rgb(255 255 255 / 38%); border-radius: 6px; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 800; letter-spacing: 0; line-height: 1; transform: translateY(-1px); }
+.wallet-card-kind { padding: 5px 8px; border: 1px solid rgb(255 255 255 / 22%); border-radius: 20px; color: rgb(255 255 255 / 82%); font-size: 8px; font-weight: 700; letter-spacing: .8px; line-height: 1; }
+.wallet-card-primary-badge { display: inline-flex; align-items: center; gap: 4px; padding: 5px 7px; border: 1px solid rgb(232 203 143 / 42%); border-radius: 20px; background: rgb(102 74 28 / 30%); color: #f2d89e; font-size: 7px; font-weight: 800; letter-spacing: .4px; line-height: 1; }
+.wallet-card-chip { position: relative; display: grid; width: 35px; height: 27px; grid-template: 1fr 1fr / 1fr 1fr; overflow: hidden; margin-top: 20px; border: 1px solid rgb(245 220 167 / 55%); border-radius: 6px; background: linear-gradient(135deg, #dbca9f, #a98e5d); }
 .wallet-card-chip span { border: .5px solid rgb(96 76 41 / 34%); }
 .wallet-card-chip span:nth-child(1) { border-top: 0; border-left: 0; }
 .wallet-card-chip span:nth-child(2) { border-top: 0; border-right: 0; }
 .wallet-card-chip span:nth-child(3) { border-bottom: 0; border-left: 0; }
 .wallet-card-chip span:nth-child(4) { border-right: 0; border-bottom: 0; }
-.wallet-card-number { margin-top: auto; color: rgb(255 255 255 / 94%); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; letter-spacing: 1.25px; white-space: nowrap; }
-.wallet-card-bottom { display: flex; align-items: end; gap: 12px; margin-top: 11px; }
-.wallet-card-owner { flex: 1; overflow: hidden; color: rgb(255 255 255 / 93%); font-size: 8px; font-weight: 600; letter-spacing: .35px; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
-.wallet-card-expiry { display: grid; gap: 2px; color: rgb(255 255 255 / 92%); font-size: 8px; font-weight: 600; white-space: nowrap; }
-.wallet-card-expiry small { color: rgb(255 255 255 / 59%); font-size: 5px; font-weight: 700; letter-spacing: .7px; }
+.wallet-card-number { margin-top: auto; color: rgb(255 255 255 / 94%); font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; letter-spacing: 1.4px; white-space: nowrap; }
+.wallet-card-bottom { display: flex; align-items: end; gap: 12px; margin-top: 11px; line-height: 1.2; }
+.wallet-card-owner { flex: 1; overflow: hidden; color: rgb(255 255 255 / 93%); font-size: 9px; font-weight: 600; letter-spacing: .35px; line-height: 1.2; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
+.wallet-card-expiry { display: grid; gap: 3px; color: rgb(255 255 255 / 92%); font-size: 9px; font-weight: 600; line-height: 1.2; white-space: nowrap; }
+.wallet-card-expiry small { color: rgb(255 255 255 / 59%); font-size: 7px; font-weight: 700; letter-spacing: .7px; line-height: 1.2; }
 .wallet-card-contactless { position: relative; display: flex; width: 17px; height: 16px; align-items: center; justify-content: flex-end; overflow: hidden; }
 .wallet-card-contactless span { width: 5px; height: 8px; margin-right: -3px; border: 1px solid rgb(255 255 255 / 65%); border-left-color: transparent; border-radius: 50%; }
-.wallet-card-blocked { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 7px; background: rgb(26 25 24 / 78%); color: white; font-size: 11px; font-weight: 700; letter-spacing: .2px; backdrop-filter: blur(2px); }
 .wallet-card-details { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 13px 15px 12px; }
 .wallet-card-limit { display: grid; min-width: 0; gap: 4px; }
-.wallet-card-limit > span { color: var(--cards-muted); font-size: 8px; }
+.wallet-card-limit > span { color: color-mix(in srgb, var(--cards-ink) 74%, var(--cards-muted)); font-size: 9px; line-height: 1.2; }
 .wallet-card-limit > strong { overflow: hidden; color: var(--cards-ink); font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
 .wallet-card-status { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 5px; padding: 5px 8px; border-radius: 20px; background: #eff6f0; color: #41704e; font-size: 8px; font-weight: 700; }
 .wallet-card-status i { width: 5px; height: 5px; border-radius: 50%; background: #5da77f; }
 .wallet-card-status.status-blocked { background: #fbefee; color: #a4393d; }
 .wallet-card-status.status-blocked i { background: #b62028; }
+.wallet-card-primary-action { display: flex; width: calc(100% - 30px); min-height: 34px; align-items: center; justify-content: center; gap: 7px; margin: 0 15px 9px; border: 1px solid #e6d6b7; border-radius: 5px; background: #fbf7ee; color: #85642f; cursor: pointer; font-size: 9px !important; font-weight: 700; transition: border-color .18s ease, background .18s ease, color .18s ease; }
+.wallet-card-primary-action:hover:not(:disabled) { border-color: #c9ad78; background: #f7f0e2; color: #684b1f; }
+.wallet-card-primary-action:disabled { cursor: default; }
+.wallet-card-primary-action.is-selected { border-color: #d7c49c; background: #f4eddd; color: #715522; }
 .wallet-card-actions { display: flex; align-items: center; gap: 8px; padding: 0 15px 14px; }
 .wallet-card-action, .wallet-card-delete {
   display: inline-flex;
@@ -218,23 +246,91 @@
   font-weight: 600;
   transition: color .18s ease, border-color .18s ease, background .18s ease;
 }
-.wallet-card-action { flex: 1; }
-.wallet-card-action:hover { border-color: #d8b6b3; background: #fdf7f6; color: var(--cards-red); }
-.wallet-card-delete { width: 34px; flex: 0 0 auto; color: #9e7774; }
+.wallet-card-action, .wallet-card-delete { flex: 1; padding-inline: 5px; }
+.wallet-card-action { border-color: #c9c5bd; background: #f4f3f0; color: #262521; }
+.wallet-card-action:hover { border-color: #aaa59b; background: #e9e7e2; color: #171716; }
+.wallet-card-action:disabled { cursor: not-allowed; opacity: .76; }
+.wallet-card-action.wallet-card-action-blocked { border-color: #d7d4ce; background: #efeeeb; color: #67645f; }
+.wallet-card-action.wallet-card-action-blocked:hover { border-color: #d7d4ce; background: #efeeeb; color: #67645f; }
+.wallet-card-delete { border-color: #e2c3c0; background: #fff9f8; color: #a63a3e; }
 .wallet-card-delete:hover { border-color: #e4c2bf; background: #fbefee; color: var(--cards-red); }
 .wallet-card.is-blocked .wallet-card-face { filter: saturate(.68); }
+.card-detail-page { --cards-red: var(--red, #b62028); --cards-surface: var(--surface, #fff); --cards-soft: var(--surface-soft, #f8f7f5); --cards-ink: var(--ink, #242323); --cards-muted: var(--muted, #6f6b65); --cards-line: var(--line, #e9e7e2); min-height: 62vh; animation: card-detail-enter .2s ease-out both; }
+.card-detail-back { margin-bottom: 25px; }
+.card-detail-heading { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 23px; }
+.card-detail-heading h1 { margin: 9px 0 5px; color: var(--cards-ink); font-family: 'Manrope', sans-serif; font-size: clamp(24px, 3vw, 32px); font-weight: 700; letter-spacing: -1px; }
+.card-detail-heading p { color: var(--cards-muted); font-size: 10px; line-height: 1.6; }
+.card-detail-status { margin-bottom: 4px; }
+.card-detail-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: stretch; gap: 14px; }
+.card-detail-visual { display: flex; min-width: 0; flex-direction: column; justify-content: space-between; gap: 25px; overflow: hidden; padding: 18px; border: 1px solid var(--cards-line); border-radius: 9px; background: linear-gradient(145deg, var(--cards-surface), var(--surface-soft, #f8f7f5)); }
+.card-detail-visual-heading, .card-detail-visual-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--cards-muted); }
+.card-detail-visual-heading { font-size: 8px; font-weight: 700; letter-spacing: 1px; }
+.card-detail-visual-heading svg { color: var(--cards-red); }
+.card-detail-face { width: min(100%, 390px); min-height: 240px; align-self: center; padding: 22px 24px 19px; border-radius: 12px; box-shadow: 0 18px 35px rgb(22 20 18 / 19%); }
+.card-detail-face .wallet-card-mark { width: 27px; height: 27px; font-size: 16px; }
+.card-detail-face .wallet-card-brand { font-size: 9px; }
+.card-detail-face .wallet-card-chip { width: 40px; height: 31px; margin-top: 25px; }
+.card-detail-face .wallet-card-number { font-size: 17px; letter-spacing: 1.6px; }
+.card-detail-face .wallet-card-bottom { margin-top: 14px; }
+.card-detail-face .wallet-card-owner { font-size: 9px; }
+.card-detail-face .wallet-card-expiry { font-size: 9px; }
+.card-detail-face .wallet-card-expiry small { font-size: 7px; }
+.card-detail-face .wallet-card-number.card-detail-number-revealed { font-size: clamp(13px, 2vw, 17px); letter-spacing: 1.1px; white-space: nowrap; }
+.card-detail-visual-footer { padding-top: 12px; border-top: 1px solid var(--cards-line); font-size: 8px; }
+.card-detail-visual-footer > span:first-child { display: inline-flex; align-items: center; gap: 6px; }
+.card-detail-visual-footer svg { color: #558368; }
+.card-detail-visual-footer > span:last-child { color: var(--cards-ink); font-weight: 700; letter-spacing: .5px; }
+.card-detail-limit-panel { min-width: 0; padding: 20px; border: 1px solid var(--cards-line); border-radius: 9px; background: var(--cards-surface); box-shadow: 0 5px 16px rgb(32 29 24 / 3%); }
+.card-detail-panel-kicker { color: var(--cards-muted); font-size: 8px; font-weight: 700; letter-spacing: 1px; }
+.card-detail-available { display: block; margin-top: 10px; color: var(--cards-ink); font-family: 'Manrope', sans-serif; font-size: clamp(23px, 3vw, 31px); font-weight: 700; letter-spacing: -.8px; }
+.card-detail-available-label { display: block; margin-top: 3px; color: var(--cards-muted); font-size: 9px; }
+.card-detail-progress { height: 6px; overflow: hidden; margin-top: 17px; border-radius: 8px; background: var(--cards-soft, #f2f0ec); }
+.card-detail-progress > span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #8b292d, var(--cards-red)); transition: width .45s ease; }
+.card-detail-limit-legend { display: flex; justify-content: space-between; gap: 10px; margin-top: 8px; color: var(--cards-muted); font-size: 8px; }
+.card-detail-limit-legend span { display: grid; gap: 4px; }
+.card-detail-limit-legend span:last-child { text-align: right; }
+.card-detail-limit-legend strong { color: var(--cards-ink); font-size: 9px; font-weight: 700; }
+.card-detail-panel-divider { height: 1px; margin: 18px 0 7px; background: var(--cards-line); }
+.card-detail-meta-row { display: flex; min-height: 39px; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--cards-line); }
+.card-detail-meta-row:last-child { border-bottom: 0; }
+.card-detail-meta-row > span { display: inline-flex; min-width: 0; align-items: center; gap: 7px; color: var(--cards-muted); font-size: 8px; }
+.card-detail-meta-row > span svg { flex: 0 0 auto; }
+.card-detail-meta-row > strong { min-width: 0; overflow: hidden; color: var(--cards-ink); font-size: 9px; font-weight: 600; text-align: right; text-overflow: ellipsis; white-space: nowrap; }
+.card-detail-reveal-button { display: flex; width: 100%; min-height: 39px; align-items: center; justify-content: center; gap: 7px; margin-top: 14px; padding: 8px 10px; border: 1px solid rgb(182 32 40 / 35%); border-radius: 5px; background: rgb(182 32 40 / 5%); color: var(--cards-red); cursor: pointer; font-size: 9px; font-weight: 700; transition: background .18s ease, border-color .18s ease; }
+.card-detail-reveal-button:hover { border-color: var(--cards-red); background: rgb(182 32 40 / 10%); }
+.card-detail-hide-button { border-color: var(--cards-line); background: var(--cards-surface); color: var(--cards-muted); }
+.card-detail-hide-button:hover { border-color: #c9c4bc; background: var(--cards-soft); }
+.card-identity-backdrop { background: rgb(22 20 18 / 48%); backdrop-filter: blur(3px); }
+.card-identity-modal { width: min(100%, 410px); }
+.card-identity-modal .cards-form { gap: 14px; }
+.card-identity-modal .cards-field > input { color-scheme: light; }
+.theme-dark .card-identity-modal .cards-field > input { color-scheme: dark; }
+.theme-dark .card-detail-reveal-button { background: rgb(255 255 255 / 5%); }
+.theme-dark .card-detail-reveal-button:hover { background: rgb(255 255 255 / 9%); }
+.theme-dark .card-detail-hide-button { background: var(--cards-surface); }
+.card-detail-security-note { display: flex; align-items: center; gap: 11px; margin-top: 15px; padding: 13px 15px; border: 1px solid var(--cards-line); border-radius: 7px; background: var(--cards-surface); }
+.card-detail-security-note > span { display: grid; flex: 0 0 auto; place-items: center; color: #558368; }
+.card-detail-security-note > div { display: grid; gap: 4px; }
+.card-detail-security-note strong { color: var(--cards-ink); font-size: 9px; }
+.card-detail-security-note p { color: var(--cards-muted); font-size: 8px; line-height: 1.5; }
 .cards-empty { display: grid; justify-items: center; padding: 40px 18px; border: 1px dashed #d4d0c8; border-radius: 9px; background: var(--cards-surface); text-align: center; }
 .cards-empty > span { display: grid; width: 48px; height: 48px; place-items: center; margin-bottom: 13px; border-radius: 50%; background: #fbefee; color: var(--cards-red); }
 .cards-empty h3 { margin: 0 0 6px; color: var(--cards-ink); font-family: 'Manrope', sans-serif; font-size: 14px; }
 .cards-empty p { max-width: 310px; margin-bottom: 17px; color: var(--cards-muted); font-size: 10px; line-height: 1.6; }
-.cards-security-note { display: flex; align-items: center; gap: 12px; margin-top: 22px; padding: 13px 15px; border: 1px solid var(--cards-line); border-radius: 7px; background: var(--cards-surface); }
+.cards-load-error { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px; border: 1px solid #e6aaa6; border-radius: 8px; background: #fff5f3; color: #8e2925; }
+.cards-load-error strong { font-size: 11px; }
+.cards-load-error p { margin-top: 5px; font-size: 9px; line-height: 1.5; }
+.cards-load-error button { min-height: 36px; flex: 0 0 auto; padding: 0 12px; border: 1px solid #e1b5b1; border-radius: 5px; background: white; color: #8e2925; cursor: pointer; font-size: 9px; font-weight: 700; }
+.cards-load-error button:hover { background: #fff; border-color: #c97a74; }
+.cards-security-note { display: flex; width: 100%; align-items: center; gap: 12px; margin-top: 22px; padding: 13px 15px; border: 1px solid var(--cards-line); border-radius: 7px; background: var(--cards-surface); color: inherit; cursor: pointer; text-align: left; transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease; }
+.cards-security-note:hover { transform: translateY(-2px); border-color: #d3cec5; box-shadow: 0 8px 22px rgb(32 29 24 / 7%); }
 .cards-security-icon { display: grid; width: 35px; height: 35px; flex: 0 0 auto; place-items: center; border-radius: 6px; background: #edf5ef; color: #4c8060; }
 .cards-security-copy { display: grid; flex: 1; gap: 4px; }
 .cards-security-copy strong { color: var(--cards-ink); font-size: 10px; font-weight: 700; }
 .cards-security-copy small { color: var(--cards-muted); font-size: 9px; line-height: 1.5; }
 .cards-security-arrow { flex: 0 0 auto; color: #a4a099; }
 
-.cards-modal-backdrop { position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; overflow-y: auto; padding: 22px; background: rgb(22 21 20 / 54%); backdrop-filter: blur(5px); animation: cards-backdrop-enter .2s ease both; }
+.cards-modal-backdrop { --cards-surface: var(--surface, #fff); --cards-soft: var(--surface-soft, #f8f7f5); --cards-ink: var(--ink, #242323); --cards-muted: var(--muted, #6f6b65); --cards-line: var(--line, #e9e7e2); --cards-red: var(--red, #b62028); --cards-red-dark: var(--red-dark, #971b22); position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; overflow-y: auto; padding: 22px; background: transparent; animation: cards-backdrop-enter .2s ease both; }
 .cards-modal { position: relative; width: min(100%, 440px); max-height: calc(100svh - 44px); overflow-y: auto; padding: 25px; border: 1px solid rgb(255 255 255 / 55%); border-radius: 11px; background: var(--cards-surface); box-shadow: 0 24px 70px rgb(15 14 12 / 25%); animation: cards-modal-enter .28s cubic-bezier(.2, .7, .2, 1) both; }
 .cards-modal-heading { position: relative; padding-bottom: 19px; border-bottom: 1px solid var(--cards-line); }
 .cards-modal-icon { display: grid; width: 40px; height: 40px; place-items: center; margin-bottom: 18px; border-radius: 8px; background: #fbefee; color: var(--cards-red); }
@@ -251,28 +347,157 @@
 .cards-currency-field { display: flex; align-items: center; gap: 9px; padding: 0 11px; }
 .cards-currency-field > span { color: var(--cards-muted); font-size: 10px; font-weight: 600; }
 .cards-currency-field > input { width: 100%; height: 100%; border: 0; outline: 0; background: transparent; color: var(--cards-ink); font-size: 11px; font-weight: 600; }
-.cards-currency-field:focus-within { border-color: var(--cards-red); box-shadow: 0 0 0 3px rgb(182 32 40 / 9%); }
+.cards-currency-field:focus-within { border-color: #bcb8b1; box-shadow: 0 0 0 3px rgb(36 35 35 / 6%); }
 .cards-field > small { color: var(--cards-muted); font-size: 8px; font-weight: 400; }
+.cards-color-field { display: grid; min-width: 0; gap: 9px; margin: 0; padding: 0; border: 0; }
+.cards-color-field legend { margin-bottom: 9px; padding: 0; color: var(--cards-ink); font-size: 10px; font-weight: 700; }
+.cards-color-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.cards-color-option { position: relative; display: grid; min-width: 0; justify-items: center; gap: 7px; padding: 9px 7px; border: 1px solid var(--cards-line); border-radius: 6px; background: var(--cards-surface); color: var(--cards-ink); cursor: pointer; font-size: 9px; font-weight: 600; transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease; }
+.cards-color-option:hover { transform: translateY(-1px); border-color: #c9c4bc; }
+.cards-color-option.is-selected { border-color: var(--cards-red); box-shadow: 0 0 0 2px rgb(182 32 40 / 10%); }
+.cards-color-swatch { display: flex; width: 100%; height: 45px; align-items: flex-start; padding: 6px; border-radius: 4px; color: rgb(255 255 255 / 90%); }
+.cards-color-swatch > span { display: grid; width: 20px; height: 20px; place-items: center; border: 1px solid rgb(255 255 255 / 42%); border-radius: 5px; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 800; }
+.cards-color-option > svg { position: absolute; top: 7px; right: 7px; color: var(--cards-red); }
+.theme-dark .cards-color-option { background: var(--cards-surface); }
 .cards-modal-actions { display: flex; gap: 9px; margin-top: 3px; }
+.cards-request-error { margin: 0; padding: 10px 11px; border: 1px solid #e6aaa6; border-radius: 5px; background: #fff1ef; color: #8e2925; font-size: 10px; line-height: 1.5; }
 .cards-cancel-button, .cards-submit-button { display: inline-flex; min-height: 41px; flex: 1; align-items: center; justify-content: center; gap: 7px; border-radius: 5px; cursor: pointer; font-size: 10px !important; font-weight: 700; transition: transform .18s ease, background .18s ease, border-color .18s ease; }
 .cards-cancel-button { border: 1px solid var(--cards-line); background: var(--cards-surface); color: var(--cards-ink); }
 .cards-cancel-button:hover { border-color: #c9c4bc; background: var(--cards-soft); }
 .cards-submit-button { border: 1px solid var(--cards-red); background: var(--cards-red); color: white; }
 .cards-submit-button:hover { transform: translateY(-1px); border-color: var(--cards-red-dark); background: var(--cards-red-dark); }
+.cards-submit-button.cards-delete-confirm-button { border-color: #a3262d; background: #a3262d; }
+.cards-submit-button.cards-delete-confirm-button:hover { border-color: #821c22; background: #821c22; }
+.cards-submit-button:disabled, .cards-cancel-button:disabled, .cards-modal-close:disabled { cursor: wait; opacity: .65; }
 .cards-modal-footnote { display: flex; align-items: center; justify-content: center; gap: 6px; padding-top: 2px; color: var(--cards-muted); font-size: 8px; font-weight: 500; }
 .cards-modal-footnote svg { color: #5c916c; }
 
+.card-benefits-page {
+  --cards-red: var(--red, #b62028);
+  --cards-red-dark: var(--red-dark, #971b22);
+  --cards-paper: var(--paper, #f4f3f0);
+  --cards-surface: var(--surface, #fff);
+  --cards-soft: var(--surface-soft, #f8f7f5);
+  --cards-ink: var(--ink, #242323);
+  --cards-muted: var(--muted, #6f6b65);
+  --cards-line: var(--line, #e9e7e2);
+  min-height: 100vh;
+  animation: cards-page-enter .45s cubic-bezier(.2, .7, .2, 1) both;
+}
+.card-benefits-back { margin-bottom: 0; }
+.card-benefits-hero {
+  position: relative;
+  display: flex;
+  min-height: 690px;
+  align-items: flex-start;
+  overflow: visible;
+  margin: 20px -20px 0;
+  padding: clamp(35px, 6vw, 70px) 25px 0;
+  border-radius: 10px;
+  background:
+    radial-gradient(ellipse at 82% 55%, rgb(182 32 40 / 9%), transparent 42%),
+    linear-gradient(135deg, var(--cards-surface) 0%, var(--cards-soft) 100%);
+}
+.card-benefits-copy { position: relative; z-index: 1; width: 53%; max-width: 470px; padding: 8px 0 0 18px; }
+.card-benefits-copy h1 { margin: 17px 0 13px; color: var(--cards-ink); font-family: 'Manrope', sans-serif; font-size: clamp(38px, 5vw, 58px); font-weight: 700; letter-spacing: -2.7px; line-height: 1.03; }
+.card-benefits-copy > p { max-width: 380px; color: var(--cards-muted); font-size: 12px; line-height: 1.8; }
+.card-benefits-scroll { display: inline-flex; align-items: center; gap: 10px; margin-top: 29px; color: var(--cards-muted); font-size: 9px; line-height: 1.6; text-decoration: none; }
+.card-benefits-scroll strong { color: var(--cards-ink); font-size: 10px; font-weight: 700; }
+.card-benefits-scroll-icon { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid var(--cards-line); border-radius: 50%; background: var(--cards-surface); color: var(--cards-red); transform: rotate(135deg); transition: transform .2s ease, border-color .2s ease; }
+.card-benefits-scroll:hover .card-benefits-scroll-icon { transform: rotate(135deg) translateX(2px); border-color: #d5aaa7; }
+.card-benefits-card-stage { position: absolute; right: 0; bottom: -115px; width: 47%; height: 430px; scroll-margin-top: 70px; }
+.benefits-vertical-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 230px;
+  height: 365px;
+  overflow: hidden;
+  padding: 19px 17px;
+  border: 1px solid rgb(255 255 255 / 27%);
+  border-radius: 18px;
+  background:
+    radial-gradient(ellipse at 17% 83%, rgb(210 63 67 / 57%), transparent 39%),
+    radial-gradient(ellipse at 84% 12%, rgb(195 152 94 / 20%), transparent 37%),
+    linear-gradient(155deg, #30302e 0%, #171716 58%, #22201f 100%);
+  box-shadow: 0 24px 55px rgb(22 20 18 / 26%), inset 0 1px 0 rgb(255 255 255 / 20%);
+  color: #fff;
+  transform: translate(-50%, -50%) rotate(8deg);
+  transition: transform .4s cubic-bezier(.2, .7, .2, 1), box-shadow .4s ease;
+}
+.card-benefits-card-stage:hover .benefits-vertical-card { transform: translate(-50%, -51%) rotate(4deg); box-shadow: 0 32px 65px rgb(22 20 18 / 30%), inset 0 1px 0 rgb(255 255 255 / 20%); }
+.benefits-vertical-card::before, .benefits-vertical-card::after { position: absolute; z-index: 0; border: 1px solid rgb(255 255 255 / 9%); border-radius: 50%; content: ''; pointer-events: none; }
+.benefits-vertical-card::before { top: 69px; right: -127px; width: 310px; height: 310px; box-shadow: 0 0 0 23px rgb(255 255 255 / 3%), 0 0 0 48px rgb(255 255 255 / 2%); }
+.benefits-vertical-card::after { right: 22px; bottom: 28px; width: 42px; height: 42px; border-color: rgb(255 255 255 / 17%); }
+.benefits-card-top, .benefits-card-chip, .benefits-card-number, .benefits-card-divider, .benefits-card-name, .benefits-card-bottom, .benefits-card-vertical-label { position: relative; z-index: 1; }
+.benefits-card-top { display: flex; align-items: center; justify-content: space-between; }
+.benefits-card-brand { display: inline-flex; align-items: center; gap: 7px; color: rgb(255 255 255 / 88%); font-size: 7px; font-weight: 700; letter-spacing: 1px; }
+.benefits-card-brand > span, .benefits-card-mark { display: grid; width: 28px; height: 28px; place-items: center; border: 1px solid rgb(255 255 255 / 37%); border-radius: 7px; font-family: 'Manrope', sans-serif; font-size: 17px; font-weight: 800; }
+.benefits-card-contactless { display: flex; width: 18px; align-items: center; justify-content: flex-end; overflow: hidden; }
+.benefits-card-contactless i { width: 6px; height: 9px; margin-right: -4px; border: 1px solid rgb(255 255 255 / 70%); border-left-color: transparent; border-radius: 50%; }
+.benefits-card-pattern { position: absolute; top: 91px; right: -54px; width: 132px; height: 132px; border: 1px solid rgb(209 169 111 / 34%); border-radius: 50%; box-shadow: 0 0 0 17px rgb(209 169 111 / 5%), 0 0 0 36px rgb(209 169 111 / 4%); }
+.benefits-card-chip { display: grid; width: 38px; height: 30px; grid-template: 1fr 1fr / 1fr 1fr; overflow: hidden; margin-top: 56px; border: 1px solid rgb(245 220 167 / 55%); border-radius: 6px; background: linear-gradient(135deg, #dfcea5, #9b8052); }
+.benefits-card-chip i { border: .5px solid rgb(96 76 41 / 34%); }
+.benefits-card-chip i:nth-child(1) { border-top: 0; border-left: 0; }
+.benefits-card-chip i:nth-child(2) { border-top: 0; border-right: 0; }
+.benefits-card-chip i:nth-child(3) { border-bottom: 0; border-left: 0; }
+.benefits-card-chip i:nth-child(4) { border-right: 0; border-bottom: 0; }
+.benefits-card-number { margin-top: 25px; color: rgb(255 255 255 / 90%); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; letter-spacing: 2.3px; line-height: 1.9; }
+.benefits-card-divider { width: 100%; height: 1px; margin: 17px 0 13px; background: linear-gradient(90deg, rgb(255 255 255 / 30%), transparent); }
+.benefits-card-name { color: rgb(255 255 255 / 86%); font-size: 8px; font-weight: 700; letter-spacing: 1.25px; }
+.benefits-card-bottom { display: flex; align-items: end; justify-content: space-between; margin-top: 21px; color: rgb(255 255 255 / 55%); font-size: 6px; letter-spacing: 1px; line-height: 1.8; }
+.benefits-card-bottom strong { color: rgb(255 255 255 / 83%); font-size: 7px; font-weight: 700; }
+.benefits-card-mark { width: 31px; height: 31px; border-color: rgb(205 161 105 / 52%); color: #d4ae7c; font-size: 19px; }
+.benefits-card-vertical-label { position: absolute; top: 50%; right: 7px; color: rgb(255 255 255 / 34%); font-size: 5px; font-weight: 700; letter-spacing: 1.6px; writing-mode: vertical-rl; }
+.card-benefits-card-caption { position: absolute; bottom: 9px; left: 50%; color: var(--cards-muted); font-size: 7px; font-weight: 700; letter-spacing: 1.2px; white-space: nowrap; transform: translateX(-50%); }
+.card-benefits-details { padding: 112px 0 35px; scroll-margin-top: 24px; }
+.card-benefits-section-heading { margin-bottom: 24px; }
+.card-benefits-section-heading h2 { margin: 9px 0 7px; color: var(--cards-ink); font-family: 'Manrope', sans-serif; font-size: clamp(22px, 3vw, 30px); font-weight: 700; letter-spacing: -.8px; }
+.card-benefits-section-heading > p { color: var(--cards-muted); font-size: 11px; line-height: 1.6; }
+.card-benefits-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; }
+.card-benefit-item { position: relative; min-height: 197px; overflow: hidden; padding: 19px 17px; border: 1px solid var(--cards-line); border-radius: 8px; background: var(--cards-surface); transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
+.card-benefit-item:hover { transform: translateY(-4px); border-color: #d5cec3; box-shadow: 0 12px 25px rgb(32 29 24 / 7%); }
+.card-benefit-icon { display: grid; width: 39px; height: 39px; place-items: center; border-radius: 7px; background: #fbefee; color: var(--cards-red); }
+.card-benefit-number { position: absolute; top: 17px; right: 17px; color: #c6c1b9; font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 700; }
+.card-benefit-item h3 { margin: 19px 0 7px; color: var(--cards-ink); font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; }
+.card-benefit-item p { color: var(--cards-muted); font-size: 9px; line-height: 1.7; }
+.card-benefits-limit-note { display: flex; align-items: flex-start; gap: 11px; margin-top: 16px; padding: 14px 16px; border: 1px solid var(--cards-line); border-radius: 7px; background: var(--cards-soft); }
+.card-benefits-limit-note > span { display: grid; flex: 0 0 auto; place-items: center; color: #558368; }
+.card-benefits-limit-note p { color: var(--cards-muted); font-size: 9px; line-height: 1.7; }
+.card-benefits-limit-note strong { color: var(--cards-ink); font-size: 10px; }
+.card-benefits-return { display: inline-flex; min-height: 38px; align-items: center; gap: 8px; margin-top: 19px; padding: 0 12px; border: 1px solid var(--cards-line); border-radius: 5px; background: var(--cards-surface); color: var(--cards-ink); cursor: pointer; font-size: 9px; font-weight: 600; transition: border-color .2s ease, transform .2s ease; }
+.card-benefits-return:hover { transform: translateX(-2px); border-color: #c9c4bc; }
+.theme-dark .card-benefits-hero { background: radial-gradient(ellipse at 82% 55%, rgb(182 32 40 / 15%), transparent 42%), linear-gradient(135deg, var(--cards-surface) 0%, var(--cards-soft) 100%); }
+.theme-dark .card-benefit-icon { background: #3a2828; }
+.theme-dark .card-benefits-limit-note > span { color: #8bc7a3; }
+
 .theme-dark .cards-overview-note strong { color: var(--cards-ink); }
 .theme-dark .cards-toast { border-color: #3a5543; background: #24352b; color: #a9d2b3; }
+.theme-dark .cards-toast-error { border-color: #69413c; background: #332423; color: #f0c1ba; }
+.theme-dark .cards-load-error { border-color: #69413c; background: #332423; color: #f0c1ba; }
+.theme-dark .cards-load-error button { border-color: #69413c; background: #29211f; color: #f0c1ba; }
 .theme-dark .cards-overview-icon { background: #3a2828; }
 .theme-dark .cards-overview-icon-green, .theme-dark .cards-security-icon { background: #263a30; color: #8bc7a3; }
-.theme-dark .wallet-card-action:hover, .theme-dark .wallet-card-delete:hover { background: #332423; }
+.theme-dark .wallet-card-action { border-color: #716e67; background: #373632; color: #f2f0eb; }
+.theme-dark .wallet-card-action:hover { border-color: #a7a196; background: #46443f; color: #fff; }
+.theme-dark .wallet-card-action.wallet-card-action-blocked { border-color: #625f59; background: #302f2c; color: #c4c0b7; }
+.theme-dark .wallet-card-action.wallet-card-action-blocked:hover { border-color: #77736b; background: #3a3935; color: #e4e0d7; }
+.theme-dark .wallet-card-delete:hover { background: #332423; }
+.theme-dark .wallet-card-primary-action { border-color: #5b5038; background: #302c23; color: #e4ce9c; }
+.theme-dark .wallet-card-primary-action:hover:not(:disabled) { border-color: #8a754a; background: #393323; color: #f1dfb6; }
+.theme-dark .wallet-card-primary-action.is-selected { border-color: #6d5e3d; background: #383222; color: #ead39d; }
 .theme-dark .wallet-card-status { background: #263a30; color: #a9d2b3; }
 .theme-dark .wallet-card-status.status-blocked { background: #3a2828; color: #e2a19b; }
 .theme-dark .cards-empty > span, .theme-dark .cards-modal-icon { background: #3a2828; }
+.theme-dark .cards-request-error { border-color: #69413c; background: #332423; color: #f0c1ba; }
+.theme-dark .cards-delete-modal-icon { background: #3a2828; color: #e2a19b; }
 .theme-dark .cards-field > input, .theme-dark .cards-field > select, .theme-dark .cards-currency-field { color-scheme: dark; }
+.theme-dark .card-detail-visual { background: linear-gradient(145deg, var(--cards-surface), var(--surface-soft)); }
+.theme-dark .card-detail-progress { background: #393936; }
+.theme-dark .card-detail-security-note > span { color: #8bc7a3; }
 
-@keyframes cards-page-enter { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes cards-page-enter { from { opacity: 0; } to { opacity: 1; } }
+@keyframes card-detail-enter { from { opacity: 0; } to { opacity: 1; } }
 @keyframes wallet-card-enter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes cards-toast-enter { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes cards-backdrop-enter { from { opacity: 0; } to { opacity: 1; } }
@@ -296,8 +521,20 @@
   .cards-overview-item small { font-size: 8px; }
   .cards-overview-note { gap: 7px; font-size: 8px; }
   .cards-overview-note strong { font-size: 9px; }
+  .card-detail-layout { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 560px) {
+  .card-detail-page { padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+  .card-detail-heading { align-items: flex-start; flex-direction: column; gap: 11px; }
+  .card-detail-heading h1 { font-size: 26px; }
+  .card-detail-heading p { max-width: 280px; }
+  .card-detail-status { margin: 0; }
+  .card-detail-visual { gap: 20px; padding: 14px; }
+  .card-detail-face { min-height: 205px; padding: 18px 17px 15px; }
+  .card-detail-face .wallet-card-chip { margin-top: 20px; }
+  .card-detail-face .wallet-card-number { font-size: clamp(13px, 4vw, 16px); letter-spacing: 1px; }
+  .card-detail-limit-panel { padding: 17px; }
+  .card-detail-security-note { align-items: flex-start; padding: 12px; }
   .cards-heading-row { flex-direction: column; gap: 17px; }
   .cards-heading-action { width: 100%; flex-direction: row; align-items: center; justify-content: space-between; }
   .cards-heading-copy h1 { margin-top: 9px; font-size: 32px; }
@@ -308,11 +545,25 @@
   .cards-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .wallet-card-face { min-height: 198px; padding: 19px 20px 17px; }
   .wallet-card-chip { margin-top: 23px; }
-  .wallet-card-number { font-size: 14px; }
+  .wallet-card-number { font-size: 16px; }
   .wallet-card-details { padding: 14px 16px 12px; }
+  .wallet-card-primary-action { width: calc(100% - 32px); margin-inline: 16px; }
   .wallet-card-actions { padding: 0 16px 15px; }
   .cards-security-note { align-items: flex-start; padding: 12px; }
   .cards-security-copy small { font-size: 8px; }
+  .card-benefits-hero { min-height: 760px; margin: 18px -8px 0; padding: 32px 17px 0; }
+  .card-benefits-copy { width: 100%; max-width: 420px; padding-left: 2px; }
+  .card-benefits-copy h1 { font-size: clamp(38px, 10vw, 51px); letter-spacing: -2px; }
+  .card-benefits-copy > p { max-width: 310px; font-size: 10px; }
+  .card-benefits-scroll { margin-top: 18px; }
+  .card-benefits-card-stage { right: 0; bottom: -124px; width: 100%; height: 440px; }
+  .benefits-vertical-card { width: 218px; height: 350px; }
+  .benefits-card-chip { margin-top: 51px; }
+  .benefits-card-number { margin-top: 22px; }
+  .card-benefits-details { padding-top: 105px; }
+  .card-benefits-grid { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .card-benefit-item { min-height: 0; padding: 16px; }
+  .card-benefit-item h3 { margin-top: 13px; }
 }
 @media (max-width: 360px) {
   .cards-heading-copy h1 { font-size: 29px; }
@@ -322,11 +573,175 @@
   .cards-overview-item small { max-width: 75px; }
   .wallet-card-face { min-height: 184px; padding-inline: 15px; }
   .wallet-card-details { padding-inline: 13px; }
+  .wallet-card-primary-action { width: calc(100% - 26px); margin-inline: 13px; }
   .wallet-card-actions { padding-inline: 13px; }
   .cards-modal { padding: 20px 17px; }
 }
+@media (max-width: 560px) {
+  .card-benefits-hero { min-height: 750px; }
+  .card-benefits-card-stage { bottom: -124px; height: 420px; }
+  .card-benefits-details { padding-top: 98px; }
+}
+@media (max-width: 560px) {
+  .cards-page,
+  .card-benefits-page {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .cards-back-button {
+    min-height: 40px;
+    margin-bottom: 20px;
+    padding-inline: 12px;
+    font-size: 11px !important;
+  }
+
+  .cards-heading-row { gap: 15px; }
+  .cards-heading-action { min-height: 40px; }
+  .cards-limit-label { font-size: 9px; }
+  .cards-create-button { min-height: 42px; }
+
+  .cards-overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 8px;
+    padding: 14px 12px;
+  }
+
+  .cards-overview-item { min-width: 0; gap: 7px; }
+  .cards-overview-item > span:last-child { min-width: 0; }
+  .cards-overview-item strong { font-size: 16px; }
+  .cards-overview-item small { font-size: 8px; line-height: 1.35; }
+
+  .cards-section-heading { margin-bottom: 13px; }
+  .cards-grid { gap: 14px; }
+  .wallet-card { border-radius: 8px; }
+  .wallet-card-face { min-height: 194px; }
+  .wallet-card-actions { gap: 7px; }
+  .wallet-card-action,
+  .wallet-card-delete {
+    min-width: 0;
+    min-height: 39px;
+    gap: 5px;
+    font-size: 8px !important;
+    white-space: nowrap;
+  }
+  .wallet-card-action svg,
+  .wallet-card-delete svg { width: 13px; height: 13px; flex: 0 0 auto; }
+
+  .cards-security-note { min-height: 62px; gap: 10px; }
+  .cards-security-copy { min-width: 0; }
+  .cards-security-copy strong { font-size: 9px; line-height: 1.4; }
+  .cards-security-copy small { font-size: 8px; line-height: 1.45; }
+
+  .cards-modal-backdrop {
+    align-items: start;
+    padding: max(14px, env(safe-area-inset-top, 0px)) 14px max(14px, env(safe-area-inset-bottom, 0px));
+  }
+  .cards-modal {
+    width: min(100%, 440px);
+    max-height: calc(100svh - max(28px, env(safe-area-inset-top, 0px) + env(safe-area-inset-bottom, 0px)));
+    margin-block: auto;
+    padding: 21px 19px;
+    border-radius: 10px;
+  }
+  .cards-form { gap: 14px; }
+  .cards-field > input,
+  .cards-field > select,
+  .cards-currency-field { height: 46px; font-size: 12px; }
+  .cards-modal-actions { gap: 8px; }
+  .cards-cancel-button,
+  .cards-submit-button { min-height: 44px; }
+
+  .card-benefits-page { overflow: clip; }
+  .card-benefits-hero {
+    min-height: max(730px, calc(100svh + 60px));
+    margin: 16px -7px 0;
+    padding: 28px 17px 0;
+    border-radius: 8px;
+  }
+  .card-benefits-copy { padding-left: 0; }
+  .card-benefits-copy h1 { margin-top: 14px; font-size: clamp(36px, 10vw, 48px); }
+  .card-benefits-copy > p { max-width: 300px; font-size: 11px; line-height: 1.7; }
+  .card-benefits-scroll { min-height: 42px; margin-top: 17px; }
+  .card-benefits-card-stage {
+    right: -3px;
+    bottom: -143px;
+    width: calc(100% + 6px);
+    height: 420px;
+    scroll-margin-top: 58px;
+  }
+  .benefits-vertical-card {
+    width: min(218px, calc(100vw - 90px));
+    height: 350px;
+    padding: 18px 16px;
+  }
+  .benefits-card-chip { margin-top: 49px; }
+  .benefits-card-number { margin-top: 21px; }
+  .card-benefits-card-caption { bottom: 13px; font-size: 6px; }
+  .card-benefits-details { padding: 112px 0 28px; scroll-margin-top: 16px; }
+  .card-benefits-section-heading { margin-bottom: 18px; }
+  .card-benefits-section-heading h2 { font-size: 24px; line-height: 1.2; }
+  .card-benefits-section-heading > p { font-size: 10px; }
+  .card-benefits-grid { gap: 9px; }
+  .card-benefit-item { display: grid; grid-template-columns: 39px minmax(0, 1fr); column-gap: 12px; align-items: start; padding: 14px; }
+  .card-benefit-icon { grid-row: span 2; }
+  .card-benefit-number { top: 13px; right: 13px; }
+  .card-benefit-item h3 { margin: 1px 26px 5px 0; font-size: 12px; }
+  .card-benefit-item p { grid-column: 2; font-size: 9px; line-height: 1.6; }
+  .card-benefits-limit-note { gap: 9px; padding: 12px; }
+  .card-benefits-limit-note p { font-size: 9px; }
+  .card-benefits-return { min-height: 42px; }
+}
+@media (max-width: 380px) {
+  .cards-page,
+  .card-benefits-page { padding-bottom: calc(82px + env(safe-area-inset-bottom, 0px)); }
+
+  .cards-heading-copy h1 { font-size: 29px; }
+  .cards-heading-copy > p { max-width: 235px; font-size: 9px; }
+  .cards-heading-action .cards-create-button { min-height: 40px; gap: 5px; padding-inline: 9px; font-size: 9px !important; }
+  .cards-limit-label { gap: 5px; font-size: 8px; }
+  .cards-overview { padding-inline: 10px; }
+  .cards-overview-icon { width: 30px; height: 30px; }
+  .wallet-card-face { min-height: 184px; padding: 17px 15px 15px; }
+  .wallet-card-brand { gap: 5px; font-size: 7px; }
+  .wallet-card-number { font-size: 14px; letter-spacing: 1.1px; }
+  .wallet-card-bottom { gap: 8px; }
+  .wallet-card-owner { font-size: 8px; }
+  .wallet-card-details { padding-inline: 12px; }
+  .wallet-card-actions { padding-inline: 12px; }
+  .wallet-card-action,
+  .wallet-card-delete { gap: 4px; font-size: 7px !important; }
+  .wallet-card-action svg,
+  .wallet-card-delete svg { width: 12px; height: 12px; }
+  .cards-modal { padding-inline: 16px; }
+  .cards-modal-heading h2 { font-size: 19px; }
+  .cards-modal-actions { flex-direction: column-reverse; }
+  .cards-cancel-button,
+  .cards-submit-button { width: 100%; }
+
+  .card-benefits-hero { min-height: max(700px, calc(100svh + 45px)); padding-inline: 14px; }
+  .card-benefits-copy h1 { font-size: 36px; letter-spacing: -1.7px; }
+  .card-benefits-copy > p { max-width: 255px; font-size: 10px; }
+  .card-benefits-card-stage { bottom: -152px; height: 410px; }
+  .benefits-vertical-card { height: 336px; padding: 16px 14px; border-radius: 16px; }
+  .benefits-card-chip { margin-top: 43px; }
+  .benefits-card-number { margin-top: 19px; font-size: 13px; }
+  .benefits-card-divider { margin-block: 14px 11px; }
+  .card-benefits-details { padding-top: 111px; }
+}
+@media (max-width: 340px) {
+  .cards-heading-action .cards-create-button { font-size: 0 !important; }
+  .cards-heading-action .cards-create-button svg { width: 19px; height: 19px; }
+  .wallet-card-actions { flex-direction: column; align-items: stretch; }
+  .wallet-card-action,
+  .wallet-card-delete { width: 100%; min-height: 38px; font-size: 9px !important; }
+  .card-benefits-hero { min-height: 690px; }
+  .card-benefits-card-stage { bottom: -165px; }
+  .card-benefits-details { padding-top: 116px; }
+}
 @media (prefers-reduced-motion: reduce) {
-  .cards-page *, .cards-page *::before, .cards-page *::after {
+  .cards-page *, .cards-page *::before, .cards-page *::after,
+  .card-benefits-page *, .card-benefits-page *::before, .card-benefits-page *::after,
+  .card-detail-page *, .card-detail-page *::before, .card-detail-page *::after {
     animation-duration: .01ms !important;
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;

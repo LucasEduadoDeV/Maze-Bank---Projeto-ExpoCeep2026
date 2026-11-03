@@ -1,0 +1,549 @@
+.bank-app {
+  --paper: #f5f4f1;
+  --surface: #fff;
+  --surface-soft: #faf9f7;
+  --ink: #242323;
+  --muted: #6b6964;
+  --line: #e7e5df;
+  --red: #b62028;
+  --red-dark: #971b22;
+  --green: #81c7a6;
+  --panel-shadow: 0 10px 28px rgb(36 35 33 / 5%);
+  color-scheme: light;
+}
+
+.bank-app.theme-dark {
+  --paper: #191918;
+  --surface: #222220;
+  --surface-soft: #2a2a27;
+  --ink: #f1f0ed;
+  --muted: #aaa8a2;
+  --line: #383835;
+  --red: #ff6b64;
+  --red-dark: #e95b56;
+  --panel-shadow: 0 12px 30px rgb(0 0 0 / 16%);
+  color-scheme: dark;
+}
+
+.bank-app,
+.landing-page,
+.login-page,
+.register-page {
+  font-family: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.bank-app button,
+.landing-page button,
+.login-page button,
+.register-page button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.bank-app :disabled,
+.landing-page :disabled,
+.login-page :disabled,
+.register-page :disabled {
+  cursor: not-allowed;
+}
+
+.main-column {
+  min-width: 0;
+}
+
+.topbar {
+  padding-inline: clamp(24px, 3.2vw, 48px);
+}
+
+.breadcrumb {
+  font-size: 12px;
+}
+
+.account-status {
+  font-size: 11px;
+}
+
+.page-content {
+  width: min(1120px, 100%);
+  padding: 40px clamp(24px, 3.2vw, 48px) 36px;
+}
+
+.page-heading {
+  margin-bottom: 29px;
+}
+
+.page-heading h1 {
+  font-size: clamp(28px, 2.5vw, 34px);
+  letter-spacing: -.8px;
+}
+
+.page-heading p {
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: .04em;
+}
+
+.balance-panel {
+  min-height: 210px;
+  padding: 23px 24px 18px;
+  border-radius: 16px;
+  box-shadow: var(--panel-shadow);
+}
+
+.balance-label {
+  font-size: 11px;
+}
+
+.balance-updated {
+  font-size: 10px;
+}
+
+.balance-panel-footer,
+.balance-panel-footer button {
+  font-size: 11px;
+}
+
+.account-card-face {
+  min-height: 210px;
+  border-radius: 16px;
+}
+
+.dashboard-card-link,
+.quick-action,
+.profile-detail-card,
+.settings-list,
+.empty-page,
+.profile-load-state,
+.profile-account-status {
+  border-radius: 12px;
+}
+
+.dashboard-card-link {
+  min-height: 54px;
+  padding: 9px 13px;
+}
+
+.dashboard-card-link-copy small {
+  font-size: 11px;
+}
+
+.quick-action {
+  min-height: 78px;
+  gap: 13px;
+  padding: 14px;
+}
+
+.quick-action strong {
+  font-size: 13px;
+}
+
+.quick-action small {
+  font-size: 11px;
+}
+
+.section-heading h2 {
+  font-size: 16px;
+}
+
+.section-heading p {
+  font-size: 12px;
+}
+
+.balance-panel,
+.profile-detail-card,
+.settings-list,
+.empty-page,
+.profile-load-state,
+.dashboard-card-link,
+.quick-action,
+.bills-overview,
+.bill-item,
+.pay-form-section,
+.pay-summary,
+.pix-form-panel,
+.pix-complete-panel,
+.invoice-main-card,
+.invoice-limit-card,
+.cards-overview,
+.card-detail-visual,
+.card-detail-limit-panel {
+  box-shadow: var(--panel-shadow);
+}
+
+.profile-hero {
+  border-radius: 18px;
+}
+
+.profile-hero-kicker {
+  font-size: 10px;
+}
+
+.profile-hero-copy p {
+  font-size: 13px;
+}
+
+.profile-member-badge {
+  font-size: 11px;
+}
+
+.profile-detail-card {
+  padding: 22px;
+}
+
+.profile-card-heading h2 {
+  font-size: 16px;
+}
+
+.profile-card-heading p,
+.profile-data-row dt {
+  font-size: 12px;
+}
+
+.profile-data-row dd {
+  font-size: 13px;
+}
+
+.profile-account-status {
+  font-size: 11px;
+}
+
+.setting-row {
+  min-height: 82px;
+}
+
+.setting-copy strong {
+  font-size: 13px;
+}
+
+.setting-copy small,
+.theme-note {
+  font-size: 11px;
+}
+
+.subpage .page-heading {
+  margin-bottom: 28px;
+}
+
+.pix-page-heading h1,
+.bills-page-heading h1,
+.pay-heading h1 {
+  font-size: clamp(28px, 2.7vw, 34px);
+  letter-spacing: -.8px;
+}
+
+.pix-page-heading p,
+.bills-page-heading p,
+.pay-heading p {
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.pix-form-panel,
+.pix-complete-panel,
+.pay-form-section,
+.pay-summary,
+.bills-overview,
+.bill-item,
+.invoice-main-card,
+.invoice-limit-card,
+.card-detail-visual,
+.card-detail-limit-panel {
+  border-radius: 14px;
+}
+
+.pix-back-button,
+.pix-edit-button,
+.pix-continue,
+.pix-confirm-button {
+  min-height: 44px;
+  border-radius: 9px;
+  font-size: 12px;
+}
+
+.pix-progress-step {
+  font-size: 10px;
+}
+
+.pix-panel-heading h2 {
+  font-size: 16px;
+}
+
+.pix-panel-heading p,
+.pix-field label {
+  font-size: 12px;
+}
+
+.pix-field label span,
+.pix-field-hint,
+.pix-field-error,
+.pix-review-recipient em {
+  font-size: 11px;
+}
+
+.pix-input-wrap input,
+.pix-amount-wrap input,
+.pix-plain-input {
+  font-size: 13px;
+}
+
+.pix-character-count {
+  font-size: 10px;
+}
+
+.pix-side-label {
+  font-size: 10px;
+}
+
+.pix-side-note h2 {
+  font-size: 18px;
+}
+
+.pix-side-note > p,
+.pix-demo-note {
+  font-size: 11px;
+}
+
+.pix-review-recipient small,
+.pix-review-rows > div span {
+  font-size: 10px;
+}
+
+.pix-review-recipient strong,
+.pix-review-rows > div strong {
+  font-size: 12px;
+}
+
+.pix-request-error,
+.pix-page-footer {
+  font-size: 10px;
+}
+
+.bills-list-heading h2 {
+  font-size: 18px;
+}
+
+.bills-list-heading p,
+.bills-list-heading > span,
+.bill-item-company,
+.bill-item-meta,
+.bill-item-payment small {
+  font-size: 12px;
+}
+
+.bill-item-title strong {
+  font-size: 15px;
+}
+
+.bill-item-title i {
+  font-size: 10px;
+}
+
+.bill-item-payment strong {
+  font-size: 17px;
+}
+
+.bills-state > strong {
+  font-size: 15px;
+}
+
+.bills-state > span,
+.bills-state > p {
+  font-size: 13px;
+}
+
+.pay-section-heading h2 {
+  font-size: 17px;
+}
+
+.pay-section-heading p,
+.pay-bill-copy small,
+.pay-bill-details span,
+.pay-method-option-copy small,
+.pay-summary-footnote,
+.pay-form-footnote {
+  font-size: 12px;
+}
+
+.pay-field label,
+.pay-card-picker-toggle small,
+.pay-card-option-copy small {
+  font-size: 11px;
+}
+
+.cards-overview {
+  border-radius: 14px;
+}
+
+.cards-overview-item small,
+.cards-overview-note,
+.cards-section-kicker,
+.cards-section-count {
+  font-size: 11px;
+}
+
+.cards-section-heading h2 {
+  font-size: 20px;
+}
+
+.cards-empty {
+  border-radius: 14px;
+  box-shadow: var(--panel-shadow);
+}
+
+.cards-empty h3 {
+  font-size: 16px;
+}
+
+.cards-empty p {
+  font-size: 12px;
+}
+
+.card-detail-heading p {
+  font-size: 13px;
+}
+
+.card-detail-visual-heading,
+.card-detail-visual-footer,
+.card-detail-panel-kicker,
+.card-detail-available-label,
+.card-detail-limit-legend,
+.card-detail-meta-row > span,
+.card-detail-security-note p {
+  font-size: 10px;
+}
+
+.card-detail-limit-legend strong,
+.card-detail-meta-row > strong,
+.card-detail-security-note strong {
+  font-size: 12px;
+}
+
+.invoice-card-kicker,
+.invoice-total-block > span,
+.invoice-total-block > p,
+.invoice-payment-preview > div:nth-child(2) span,
+.invoice-section-heading > span,
+.invoice-purchase-info span,
+.invoice-purchase time {
+  font-size: 11px;
+}
+
+.invoice-title-lockup h2,
+.invoice-section-heading h3 {
+  font-size: 17px;
+}
+
+.invoice-payment-preview > div:nth-child(2) strong,
+.invoice-purchase-info strong,
+.invoice-purchase > b {
+  font-size: 13px;
+}
+
+.landing-button,
+.login-submit,
+.register-submit {
+  border-radius: 10px;
+}
+
+.landing-header {
+  background: rgb(245 244 241 / 96%);
+}
+
+.landing-button {
+  min-height: 46px;
+  padding-inline: 19px;
+  font-size: 12px;
+}
+
+.landing-button-small {
+  min-height: 40px;
+}
+
+.landing-nav a,
+.landing-login-link,
+.landing-text-link {
+  font-size: 12px;
+}
+
+.login-input-wrap,
+.register-input-wrap {
+  border-radius: 12px;
+}
+
+.login-request-error,
+.register-request-error,
+.login-success,
+.register-success {
+  border-radius: 10px;
+}
+
+@media (max-width: 900px) {
+  .page-content {
+    padding: 32px 26px 30px;
+  }
+
+  .balance-panel,
+  .account-card-face {
+    min-height: 196px;
+  }
+}
+
+@media (max-width: 760px) {
+  .topbar {
+    padding-inline: 20px;
+  }
+
+  .page-content {
+    padding: 28px 20px calc(88px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .page-heading {
+    align-items: flex-start;
+    margin-bottom: 23px;
+  }
+
+  .page-heading h1 {
+    font-size: 28px;
+  }
+
+  .quick-action {
+    min-height: 68px;
+  }
+
+  .profile-detail-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .landing-button {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-content {
+    padding-inline: 16px;
+  }
+
+  .topbar {
+    padding-inline: 16px;
+  }
+
+  .profile-hero {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 22px;
+  }
+
+  .profile-member-badge {
+    align-self: flex-start;
+  }
+
+  .profile-detail-card {
+    padding: 18px;
+  }
+}

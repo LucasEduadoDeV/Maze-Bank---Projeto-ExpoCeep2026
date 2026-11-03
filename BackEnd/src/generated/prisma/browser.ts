@@ -32,3 +32,13 @@ export type Transaction = Prisma.TransactionModel
  * 
  */
 export type CreditCards = Prisma.CreditCardsModel
+/**
+ * Model Bills
+ * 
+ */
+export type Bills = Prisma.BillsModel
+/**
+ * Model Invoices
+ * 
+ */
+export type Invoices = Prisma.InvoicesModel

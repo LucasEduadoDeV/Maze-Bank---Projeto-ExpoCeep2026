@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "cards" ALTER COLUMN "name" SET DATA TYPE CHAR(30);

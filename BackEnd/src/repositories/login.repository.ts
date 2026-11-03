@@ -12,6 +12,27 @@ export async function getPasswordHash(email: string) {
     return result;
 }
 
+export async function getPasswordHashWithId(id: string) {
+    const result = await prisma.user.findUnique({
+        where: { id },
+        select: {
+            id: true,
+            passwordHash: true,
+        }
+    })
+    return result;
+}
+
+export async function getPasswordHashWithIdReturningOnlyPasswordHash(id: string) {
+    const result = await prisma.user.findUnique({
+        where: { id },
+        select: {
+            passwordHash: true,
+        }
+    })
+    return result;
+}
+
 export async function emailAlreadyExists(email: string) {
     const result = await prisma.user.findUnique({
         where:{ email },

@@ -15,7 +15,23 @@ export default defineConfig({
         target: 'http://localhost:3000',
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
+      '/api/logout': {
+        target: 'http://localhost:3000',
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
       '/api/transaction': {
+        target: 'http://localhost:3000',
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+      '/api/cards': {
+        target: 'http://localhost:3000',
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+      '/api/bills': {
+        target: 'http://localhost:3000',
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+      '/api/invoices': {
         target: 'http://localhost:3000',
         rewrite: (path) => path.replace(/^\/api/, ''),
       },

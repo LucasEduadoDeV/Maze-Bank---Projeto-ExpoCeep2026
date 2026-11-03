@@ -93,7 +93,7 @@ function LoginPage() {
           <form className="login-form" onSubmit={handleSubmit} noValidate>
             <div className={`login-field${errors.email ? ' has-error' : ''}`}>
               <label htmlFor="login-email">E-mail</label>
-              <div className="login-input-wrap"><Mail size={17} /><input id="login-email" autoComplete="email" inputMode="email" placeholder="Seu email" value={email} onChange={(event) => { setEmail(event.target.value.replace(/\s/g, '').split('@')[0]); clearFieldError('email') }} aria-invalid={Boolean(errors.email)} aria-describedby={errors.email ? 'login-email-error' : undefined} /><span>@gmail.com</span></div>
+              <div className="login-input-wrap login-email-wrap"><Mail size={17} /><input id="login-email" autoComplete="email" inputMode="email" placeholder="Seu email" value={email} onChange={(event) => { setEmail(event.target.value.replace(/\s/g, '').split('@')[0]); clearFieldError('email') }} aria-invalid={Boolean(errors.email)} aria-describedby={errors.email ? 'login-email-error' : undefined} /><span>@gmail.com</span></div>
               {errors.email && <span className="login-field-error" id="login-email-error">{errors.email}</span>}
             </div>
 

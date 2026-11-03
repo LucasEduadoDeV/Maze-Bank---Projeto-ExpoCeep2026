@@ -9,9 +9,36 @@
 * 🟢 You can import this file directly.
 */
 
+export const UserThemes = {
+  LIGHT: 'LIGHT',
+  DARK: 'DARK'
+} as const
+
+export type UserThemes = (typeof UserThemes)[keyof typeof UserThemes]
+
+
 export const StatusCartao = {
   ATIVO: 'ATIVO',
   BLOQUEADO: 'BLOQUEADO'
 } as const
 
 export type StatusCartao = (typeof StatusCartao)[keyof typeof StatusCartao]
+
+
+export const StatusBill = {
+  EM_ABERTO: 'EM_ABERTO',
+  PAGO: 'PAGO',
+  CANCELADO: 'CANCELADO',
+  FATURADO: 'FATURADO'
+} as const
+
+export type StatusBill = (typeof StatusBill)[keyof typeof StatusBill]
+
+
+export const StatusInvoice = {
+  EM_ABERTO: 'EM_ABERTO',
+  PAGO: 'PAGO',
+  CANCELADO: 'CANCELADO'
+} as const
+
+export type StatusInvoice = (typeof StatusInvoice)[keyof typeof StatusInvoice]
