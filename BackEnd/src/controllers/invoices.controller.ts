@@ -13,6 +13,7 @@ import { comparePasswordHash } from "../services/login.service";
 
 //Repositories
 import { getPasswordHashWithIdReturningOnlyPasswordHash } from "../repositories/login.repository";
+import { notifyUserAccountUpdated } from "../realtime";
 
 export async function createInvoiceController(req: Request<CardIdParams>, res: Response, next: NextFunction) {
     const userId = req.user?.userId
@@ -31,6 +32,7 @@ export async function createInvoiceController(req: Request<CardIdParams>, res: R
 
     try {
         const invoice = await createInvoiceService(userId, cardId, predictedValue, nameInvoice)
+        notifyUserAccountUpdated(userId)
 
         return res.status(201).json({ message: "Fatura criada.", invoice })
     }
@@ -78,6 +80,7 @@ export async function deleteInvoiceController(req: Request<InvoiceIdParams>, res
 
     try {
         const deleted = await deleteInvoiceService(userId, invoiceId)
+        notifyUserAccountUpdated(userId)
 
         return res.status(200).json({ message: "Fatura excluída.", deleted })
     }
@@ -113,6 +116,7 @@ export async function payInvoiceWithBalanceAccountController(req: Request<Invoic
 
         await comparePasswordHash(passwordResult.data, passwordHash.passwordHash)
         const payment = await payInvoiceWithBalanceAccountService(userId, invoiceId)
+        notifyUserAccountUpdated(userId)
 
         return res.status(200).json({
             paid: true,

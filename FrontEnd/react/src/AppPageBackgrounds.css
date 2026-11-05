@@ -1,0 +1,174 @@
+.bank-app:not(.dashboard-home-active) .main-column {
+  --page-accent: #b62028;
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse at 91% 11%, color-mix(in srgb, var(--page-accent) 24%, transparent), transparent 34%),
+    radial-gradient(ellipse at 7% 54%, color-mix(in srgb, var(--page-accent) 13%, transparent), transparent 39%),
+    linear-gradient(138deg, #f8f3ec 0%, #efede9 49%, #f5efec 100%);
+}
+
+.bank-app.page-bg-statement .main-column { --page-accent: #387c70; }
+.bank-app.page-bg-pix .main-column { --page-accent: #428c71; }
+.bank-app.page-bg-cards .main-column { --page-accent: #b62028; }
+.bank-app.page-bg-bills .main-column { --page-accent: #b27b35; }
+.bank-app.page-bg-pay .main-column { --page-accent: #ba5139; }
+.bank-app.page-bg-invoice .main-column,
+.bank-app.page-bg-invoices .main-column { --page-accent: #775c99; }
+.bank-app.page-bg-settings .main-column { --page-accent: #647d8e; }
+.bank-app.page-bg-profile .main-column { --page-accent: #a76e45; }
+.bank-app.page-bg-transfer .main-column { --page-accent: #b62028; }
+
+.bank-app:not(.dashboard-home-active) .main-column::before {
+  position: absolute;
+  z-index: -1;
+  inset: 70px 0 0;
+  background-image:
+    radial-gradient(color-mix(in srgb, var(--page-accent) 40%, transparent) 1px, transparent 1px),
+    linear-gradient(118deg, transparent 0 39%, color-mix(in srgb, var(--page-accent) 13%, transparent) 39.1% 39.5%, transparent 39.6%),
+    linear-gradient(138deg, transparent 0 58%, rgb(255 255 255 / 54%) 58.1% 70%, transparent 70.1%),
+    linear-gradient(138deg, transparent 0 82%, color-mix(in srgb, var(--page-accent) 9%, transparent) 82.1% 100%);
+  background-position: 8px 8px, center, center, center;
+  background-size: 21px 21px, 100% 100%, 100% 100%, 100% 100%;
+  content: '';
+  mask-image: linear-gradient(112deg, #000 0%, #000 60%, transparent 100%);
+  opacity: .7;
+  pointer-events: none;
+}
+
+.bank-app:not(.dashboard-home-active) .main-column::after {
+  position: absolute;
+  z-index: -1;
+  top: 95px;
+  right: max(-180px, calc((100% - 1300px) / 2));
+  width: min(560px, 48vw);
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--page-accent) 30%, transparent);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, transparent 0 42%, color-mix(in srgb, var(--page-accent) 12%, transparent) 42.2% 42.7%, transparent 43%),
+    radial-gradient(circle at 50% 50%, transparent 0 61%, color-mix(in srgb, var(--page-accent) 17%, transparent) 61.2% 61.7%, transparent 62%),
+    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--page-accent) 11%, transparent), transparent 70%);
+  box-shadow:
+    0 0 0 25px color-mix(in srgb, var(--page-accent) 7%, transparent),
+    0 0 0 63px color-mix(in srgb, var(--page-accent) 5%, transparent),
+    0 0 0 120px color-mix(in srgb, var(--page-accent) 3%, transparent);
+  content: '';
+  pointer-events: none;
+}
+
+.bank-app:not(.dashboard-home-active) .topbar,
+.bank-app:not(.dashboard-home-active) .page-content {
+  position: relative;
+}
+
+.bank-app:not(.dashboard-home-active) .topbar {
+  z-index: 3;
+}
+
+.bank-app:not(.dashboard-home-active) .page-content {
+  z-index: 1;
+}
+
+.theme-dark:not(.dashboard-home-active) .main-column {
+  background:
+    radial-gradient(ellipse at 91% 11%, color-mix(in srgb, var(--page-accent) 27%, transparent), transparent 36%),
+    radial-gradient(ellipse at 7% 54%, color-mix(in srgb, var(--page-accent) 17%, transparent), transparent 40%),
+    linear-gradient(138deg, #282321 0%, #1b1a19 52%, #211a1a 100%);
+}
+
+.theme-dark:not(.dashboard-home-active) .main-column::before {
+  background-image:
+    radial-gradient(color-mix(in srgb, var(--page-accent) 55%, transparent) 1px, transparent 1px),
+    linear-gradient(118deg, transparent 0 39%, color-mix(in srgb, var(--page-accent) 18%, transparent) 39.1% 39.5%, transparent 39.6%),
+    linear-gradient(138deg, transparent 0 58%, rgb(255 255 255 / 7%) 58.1% 70%, transparent 70.1%),
+    linear-gradient(138deg, transparent 0 82%, color-mix(in srgb, var(--page-accent) 16%, transparent) 82.1% 100%);
+}
+
+.theme-dark:not(.dashboard-home-active) .main-column::after {
+  border-color: color-mix(in srgb, var(--page-accent) 39%, transparent);
+  background:
+    radial-gradient(circle at 50% 50%, transparent 0 42%, color-mix(in srgb, var(--page-accent) 16%, transparent) 42.2% 42.7%, transparent 43%),
+    radial-gradient(circle at 50% 50%, transparent 0 61%, color-mix(in srgb, var(--page-accent) 20%, transparent) 61.2% 61.7%, transparent 62%),
+    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--page-accent) 14%, transparent), transparent 70%);
+  box-shadow:
+    0 0 0 25px color-mix(in srgb, var(--page-accent) 9%, transparent),
+    0 0 0 63px color-mix(in srgb, var(--page-accent) 6%, transparent),
+    0 0 0 120px color-mix(in srgb, var(--page-accent) 4%, transparent);
+}
+
+.landing-page .landing-features {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse at 94% 7%, rgb(182 32 40 / 15%), transparent 34%),
+    radial-gradient(ellipse at 4% 85%, rgb(183 148 105 / 13%), transparent 39%),
+    linear-gradient(135deg, #fff 0%, #f7f4f0 100%);
+}
+
+.landing-page .landing-features::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-image:
+    radial-gradient(rgb(94 70 50 / 17%) .8px, transparent .8px),
+    linear-gradient(135deg, transparent 0 60%, rgb(182 32 40 / 7%) 60.1% 60.5%, transparent 60.6%);
+  background-size: 22px 22px, 100% 100%;
+  content: '';
+  mask-image: linear-gradient(110deg, transparent, #000 75%);
+  pointer-events: none;
+}
+
+.landing-page .landing-about {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse at 89% 12%, rgb(182 32 40 / 37%), transparent 38%),
+    radial-gradient(ellipse at 6% 100%, rgb(180 140 94 / 20%), transparent 39%),
+    linear-gradient(125deg, #302e2c, #1d1c1b 74%);
+}
+
+.landing-page .landing-about::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-image:
+    radial-gradient(rgb(255 255 255 / 17%) .8px, transparent .8px),
+    linear-gradient(135deg, transparent 0 58%, rgb(255 255 255 / 7%) 58.1% 58.4%, transparent 58.5%);
+  background-size: 22px 22px, 100% 100%;
+  content: '';
+  mask-image: linear-gradient(115deg, transparent, #000 78%);
+  pointer-events: none;
+}
+
+.login-page .login-form-side,
+.register-page .register-form-side {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse at 100% 8%, rgb(182 32 40 / 17%), transparent 36%),
+    radial-gradient(ellipse at 2% 94%, rgb(181 148 109 / 15%), transparent 37%),
+    linear-gradient(140deg, #f8f5f0 0%, #efede9 100%);
+}
+
+.login-page .login-form-side::before,
+.register-page .register-form-side::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-image:
+    radial-gradient(rgb(95 70 49 / 18%) .8px, transparent .8px),
+    linear-gradient(135deg, transparent 0 55%, rgb(182 32 40 / 8%) 55.1% 55.5%, transparent 55.6%);
+  background-size: 21px 21px, 100% 100%;
+  content: '';
+  mask-image: linear-gradient(110deg, transparent, #000 80%);
+  pointer-events: none;
+}
+
+@media (max-width: 760px) {
+  .bank-app:not(.dashboard-home-active) .main-column::after {
+    top: 150px;
+    right: -220px;
+    width: 450px;
+  }
+}

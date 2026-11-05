@@ -124,3 +124,27 @@ export async function getPaginatedTransactionsRepository(userId: string, page: n
     }
   };
 }
+
+export async function getTransactionDetailsRepository(transactionId: string, userId: string) {
+  return prisma.transaction.findFirst({
+    where: {
+      id: transactionId,
+      OR: [
+        { senderId: userId },
+        { receiverId: userId },
+      ],
+    },
+    select: {
+      id: true,
+      amount: true,
+      cpf: true,
+      createdAt: true,
+      description: true,
+      type: true,
+      senderId: true,
+      receiverId: true,
+      sender: { select: { name: true, cpf: true } },
+      receiver: { select: { name: true, cpf: true } },
+    },
+  });
+}

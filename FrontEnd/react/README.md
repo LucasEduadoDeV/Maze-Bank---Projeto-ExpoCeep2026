@@ -1,5 +1,21 @@
 # React + TypeScript + Vite
 
+## Rotas autenticadas
+
+As páginas da conta usam URLs próprias sob `/dashboard`, para que voltar/avançar do navegador acompanhe a navegação interna:
+
+- `/dashboard` — visão geral
+- `/dashboard/statement` — extrato
+- `/dashboard/cards` — cartões
+- `/dashboard/pix` — Pix
+- `/dashboard/bills` — contas
+- `/dashboard/pay` — pagamento da conta selecionada
+- `/dashboard/invoice` e `/dashboard/invoices` — simulação e histórico de faturas
+- `/dashboard/profile` e `/dashboard/settings` — perfil e ajustes
+- `/dashboard/transfers/:id` — detalhes de transferência
+
+O servidor de produção deve entregar o `index.html` da aplicação para essas rotas, assim como faz para `/dashboard`.
+
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
 Currently, two official plugins are available:

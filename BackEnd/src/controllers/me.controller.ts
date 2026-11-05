@@ -4,6 +4,7 @@ import { NextFunction, Request, Response } from "express";
 import { getCredentials } from "../repositories/me.repository";
 import { getThreeLastActivities } from "../repositories/me.repository";
 import { changeUserThemeService } from "../services/me.service";
+import { notifyUserAccountUpdated } from "../realtime";
 
 export async function getMe(req: Request, res: Response, next: NextFunction) {
   const id = req.user?.userId
@@ -33,6 +34,7 @@ export async function changeUserThemeController(req: Request, res: Response, nex
 
   try {
     const theme = await changeUserThemeService(userId)
+    notifyUserAccountUpdated(userId)
 
     return res.status(200).json({ message: "Tema Alterado.", theme })
   }

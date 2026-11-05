@@ -100,8 +100,6 @@
 .invoice-pay-button { display: inline-flex; min-height: 42px; align-items: center; justify-content: center; gap: 8px; padding: 0 12px; border: 0; border-radius: 6px; background: var(--invoice-red); color: #fff; cursor: pointer; font-size: 10px !important; font-weight: 700; transition: background .16s ease, transform .16s ease; }
 .invoice-pay-button:hover { transform: translateY(-1px); background: var(--red-dark, #971b22); }
 .invoice-pay-button:focus-visible { outline: 3px solid rgb(182 32 40 / 25%); outline-offset: 3px; }
-.invoice-download-button { display: flex; min-height: 42px; align-items: center; justify-content: center; gap: 8px; padding: 0 12px; border: 1px solid var(--invoice-line); border-radius: 6px; background: var(--invoice-soft); color: var(--invoice-muted); cursor: not-allowed; font-size: 10px !important; font-weight: 700; }
-.invoice-download-button span { margin-left: auto; color: var(--invoice-muted); font-size: 8px; font-weight: 600; }
 .invoice-delete-button { display: inline-flex; min-height: 42px; align-items: center; justify-content: center; gap: 8px; padding: 0 12px; border: 1px solid #e6aaa6; border-radius: 6px; background: var(--invoice-surface); color: #a4393d; cursor: pointer; font-size: 10px !important; font-weight: 700; transition: background .16s ease, border-color .16s ease; }
 .invoice-delete-button:hover { border-color: #c97b75; background: #fff1ef; }
 .invoice-delete-button:focus-visible, .invoice-delete-confirm:focus-visible, .invoice-delete-cancel:focus-visible { outline: 3px solid rgb(182 32 40 / 25%); outline-offset: 3px; }
@@ -293,7 +291,6 @@
   .invoice-layout { grid-template-columns: minmax(0, 1fr); }
   .invoice-side-column { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
   .invoice-card-preview { grid-column: 1 / -1; }
-  .invoice-download-button { align-self: stretch; }
   .invoice-delete-button { grid-column: 1 / -1; }
   .invoice-simulation-layout { grid-template-columns: minmax(0, 1fr); }
   .invoice-simulation-result { min-height: 230px; }

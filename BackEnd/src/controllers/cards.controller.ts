@@ -11,6 +11,7 @@ import { blockCardRepository } from "../repositories/cards.repository";
 import { desblockCardRepository } from "../repositories/cards.repository";
 import { deleteCardRepository } from "../repositories/cards.repository";
 import { getPasswordHashWithId } from "../repositories/login.repository";
+import { notifyUserAccountUpdated } from "../realtime";
 
 export async function createCardController(req: Request, res: Response, next: NextFunction) {
     const { name, monthlyIncome, theme } = req.body;
@@ -18,6 +19,7 @@ export async function createCardController(req: Request, res: Response, next: Ne
 
     try {
         const result = await createCardService(userId!, name, monthlyIncome, theme);
+        notifyUserAccountUpdated(userId!);
         res.status(201).json({
             id: result.idCard,
             name: result.name.trim(),
@@ -116,6 +118,7 @@ export async function blockCardController(req: Request, res: Response, next: Nex
             return res.status(404).json({ message: "Cartão não encontrado." })
         }
 
+        notifyUserAccountUpdated(userId)
         return res.status(200).json(result);
     }
     catch (err) {
@@ -150,6 +153,7 @@ export async function desblockCardController(req: Request, res: Response, next: 
             return res.status(404).json({ message: "Cartão não encontrado." })
         }
 
+        notifyUserAccountUpdated(userId)
         return res.status(200).json(result);
     }
     catch (err) {
@@ -185,6 +189,7 @@ export async function deleteCardController(req: Request, res: Response, next: Ne
             return res.status(404).json({ message: "Cartão não encontrado." })
         }
 
+        notifyUserAccountUpdated(userId)
         return res.status(200).json({ deleted: true });
     }
     catch (err) {
@@ -209,6 +214,7 @@ export async function changeMainCard(req: Request, res: Response, next: NextFunc
             return res.status(404).json({ message: "Cartão não encontrado." })
         }
 
+        notifyUserAccountUpdated(userId)
         return res.status(200).json({ id: result.idCard, main: result.main })
     }
     catch (err) {

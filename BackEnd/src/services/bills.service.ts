@@ -74,6 +74,10 @@ export async function payBillWithBalanceAccountService(userId: string, billId: s
         throw new AppError("Conta não encontrada.", 404)
     }
 
+    if (billExists.status !== "EM_ABERTO") {
+        throw new AppError("Essa conta não está disponível para pagamento.", 409)
+    }
+
     const userExists = await findUserById(userId);
 
     if (!userExists) {
@@ -89,7 +93,7 @@ export async function payBillWithBalanceAccountService(userId: string, billId: s
     const billValue = billExists.value
     const userBalance = userBalanceGet.balance
 
-    if (billValue < userBalance) {
+    if (billValue.greaterThan(userBalance)) {
         throw new AppError("Saldo insuficiente", 402)
     }
 

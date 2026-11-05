@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, CalendarDays, ChevronRight, CreditCard, ReceiptText } from 'lucide-react'
 import InvoiceDetailPage from './InvoiceDetailPage'
@@ -38,6 +38,21 @@ export default function InvoiceHistoryPage({
   const selectedCard = cards.find((card) => card.id === selectedCardId) ?? null
 
   useEffect(() => {
+    function refreshInvoices() {
+      setReload((current) => current + 1)
+    }
+
+    window.addEventListener('maze:account-updated', refreshInvoices)
+    return () => window.removeEventListener('maze:account-updated', refreshInvoices)
+  }, [])
+
+  useLayoutEffect(() => {
+    if (window.matchMedia('(max-width: 760px)').matches) {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    }
+  }, [selectedCardId, selectedInvoice])
+
+  useEffect(() => {
     if (!selectedCardId) {
       setInvoices([])
       setMeta(null)
@@ -59,6 +74,9 @@ export default function InvoiceHistoryPage({
         }
         setInvoices(response.data)
         setMeta(response.meta)
+        setSelectedInvoice((current) => current
+          ? response.data.find((invoice) => invoice.id === current.id) ?? null
+          : null)
       })
       .catch((requestError: unknown) => {
         if (!active) return

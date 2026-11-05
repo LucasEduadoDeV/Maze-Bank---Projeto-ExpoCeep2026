@@ -158,6 +158,30 @@
 .pay-delete-bill-button:focus-visible, .pay-delete-close:focus-visible, .pay-delete-actions button:focus-visible { outline: 3px solid rgb(182 32 40 / 25%); outline-offset: 3px; }
 .pay-review-notice { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border: 1px solid #cce2d2; border-radius: 6px; background: #f0f8f2; color: #356548; font-size: 9px; font-weight: 600; }
 .pay-review-notice svg { flex: 0 0 auto; }
+.pay-confirm-backdrop { --pay-surface: var(--surface, #fff); --pay-soft: var(--surface-soft, #f8f7f5); --pay-ink: var(--ink, #242323); --pay-muted: var(--muted, #6f6b65); --pay-line: var(--line, #e9e7e2); position: fixed; z-index: 65; inset: 0; display: grid; place-items: center; overflow-y: auto; padding: max(20px, env(safe-area-inset-top, 0px)) 18px max(20px, env(safe-area-inset-bottom, 0px)); background: rgb(20 19 18 / 60%); backdrop-filter: blur(4px); animation: pay-delete-backdrop-enter .2s ease both; }
+.pay-confirm-modal { position: relative; display: flex; width: min(100%, 430px); flex-direction: column; align-items: center; padding: 34px 30px 28px; border: 1px solid var(--pay-line); border-radius: 18px; background: var(--pay-surface); box-shadow: 0 24px 70px rgb(15 14 12 / 28%); text-align: center; animation: pay-delete-modal-enter .24s cubic-bezier(.2, .7, .2, 1) both; }
+.pay-confirm-close { position: absolute; top: 13px; right: 13px; display: grid; width: 36px; height: 36px; place-items: center; border: 1px solid var(--pay-line); border-radius: 9px; background: var(--pay-surface); color: var(--pay-muted); cursor: pointer; }
+.pay-confirm-close:disabled { cursor: wait; opacity: .6; }
+.pay-confirm-icon { display: grid; width: 68px; height: 68px; place-items: center; margin-bottom: 18px; border: 1px solid #b8d9c1; border-radius: 50%; background: #f0f8f2; color: #356548; box-shadow: 0 0 0 7px rgb(53 101 72 / 7%); }
+.pay-confirm-icon.is-card { border-color: #c4d6e0; background: #eef5f8; color: #45677a; box-shadow: 0 0 0 7px rgb(69 103 122 / 7%); }
+.pay-confirm-eyebrow { color: var(--pay-muted); font-size: 10px; font-weight: 800; letter-spacing: .1em; }
+.pay-confirm-modal h2 { margin: 9px 0 7px; color: var(--pay-ink); font-family: 'Manrope', sans-serif; font-size: 25px; font-weight: 800; letter-spacing: -.5px; line-height: 1.2; }
+.pay-confirm-modal > p { max-width: 350px; margin: 0; color: var(--pay-muted); font-size: 13px; line-height: 1.65; overflow-wrap: anywhere; }
+.pay-confirm-modal > p strong { color: var(--pay-ink); font-weight: 700; }
+.pay-confirm-form { display: grid; width: 100%; gap: 17px; margin-top: 21px; text-align: left; }
+.pay-confirm-form .pay-field { gap: 7px; font-size: 11px; }
+.pay-confirm-form .pay-field input { min-height: 46px; border-radius: 8px; font-size: 13px; }
+.pay-confirm-actions { display: flex; width: 100%; gap: 10px; }
+.pay-confirm-actions button { display: inline-flex; min-height: 47px; flex: 1; align-items: center; justify-content: center; gap: 8px; padding: 0 10px; border: 1px solid var(--pay-line); border-radius: 9px; cursor: pointer; font-size: 12px; font-weight: 800; }
+.pay-confirm-cancel { background: var(--pay-surface); color: var(--pay-muted); }
+.pay-confirm-submit { border-color: #347b50 !important; background: #347b50; color: #fff; }
+.pay-confirm-submit:hover:not(:disabled) { background: #286440; }
+.pay-confirm-submit:disabled, .pay-confirm-cancel:disabled { cursor: wait; opacity: .65; }
+.pay-confirm-close:focus-visible, .pay-confirm-actions button:focus-visible { outline: 3px solid rgb(182 32 40 / 25%); outline-offset: 3px; }
+.theme-dark .pay-confirm-icon { border-color: #3a5543; background: #24352b; color: #a9d2b3; }
+.theme-dark .pay-confirm-icon.is-card { border-color: #354c5a; background: #24313a; color: #b7d1df; }
+.theme-dark .pay-confirm-submit { background: #347b50; }
+.theme-dark .pay-confirm-submit:hover:not(:disabled) { background: #286440; }
 .pay-result-backdrop { --pay-surface: var(--surface, #fff); --pay-soft: var(--surface-soft, #f8f7f5); --pay-ink: var(--ink, #242323); --pay-muted: var(--muted, #6f6b65); --pay-line: var(--line, #e9e7e2); position: fixed; z-index: 70; inset: 0; display: grid; place-items: center; overflow-y: auto; padding: max(20px, env(safe-area-inset-top, 0px)) 18px max(20px, env(safe-area-inset-bottom, 0px)); background: rgb(20 19 18 / 62%); backdrop-filter: blur(4px); animation: pay-delete-backdrop-enter .2s ease both; }
 .pay-result-modal { position: relative; display: flex; width: min(100%, 430px); flex-direction: column; align-items: center; padding: 34px 30px 28px; border: 1px solid var(--pay-line); border-radius: 18px; background: var(--pay-surface); box-shadow: 0 24px 70px rgb(15 14 12 / 28%); text-align: center; animation: pay-delete-modal-enter .24s cubic-bezier(.2, .7, .2, 1) both; }
 .pay-result-modal-success { --result-color: #356548; --result-border: #b8d9c1; --result-soft: #f0f8f2; }
@@ -323,6 +347,8 @@
   .pay-summary-footnote { font-size: 10px; }
   .pay-result-modal { padding: 32px 22px 23px; border-radius: 16px; }
   .pay-result-modal h2 { font-size: 22px; }
+  .pay-confirm-modal { padding: 32px 22px 23px; border-radius: 16px; }
+  .pay-confirm-modal h2 { font-size: 22px; }
 }
 
 @media (max-width: 380px) {
@@ -347,4 +373,5 @@
   .pay-method-option { gap: 8px; padding: 9px; }
   .pay-method-option-icon { width: 36px; height: 36px; }
   .pay-result-modal > p { font-size: 12px; }
+  .pay-confirm-modal > p { font-size: 12px; }
 }

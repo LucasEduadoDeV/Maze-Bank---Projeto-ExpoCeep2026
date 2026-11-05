@@ -14,6 +14,7 @@ import { BillIdParams } from "../types/BillIdParams.type";
 import { comparePasswordHash } from "../services/login.service";
 import { getPasswordHashWithId, getPasswordHashWithIdReturningOnlyPasswordHash } from "../repositories/login.repository";
 import { CardIdParams } from "../types/CardIdParamsForInvoice.type";
+import { notifyUserAccountUpdated } from "../realtime";
 
 
 export async function createBillController(req: Request<CardIdParams>, res: Response, next: NextFunction) {
@@ -30,6 +31,7 @@ export async function createBillController(req: Request<CardIdParams>, res: Resp
             throw new AppError(`Erro ao criar a conta.`, 500)
         }
 
+        notifyUserAccountUpdated(userId);
         res.status(201).json(result);
     }
     catch (err) {
@@ -70,6 +72,7 @@ export async function deleteSettledBillController(req: Request<BillIdParams>, re
 
     try {
         await deleteSettledBillService(userId, billId)
+        notifyUserAccountUpdated(userId)
         return res.status(200).json({ deleted: true, billId })
     } catch (err) {
         return next(err)
@@ -117,6 +120,7 @@ export async function payBillWithCardController(req: Request<BillAndCardParams>,
         }
 
         await payBillWithCardService(billId, cardId);
+        notifyUserAccountUpdated(userId)
 
         return res.status(200).json({ paid: true, billId, cardId });
     }
@@ -155,6 +159,7 @@ export async function payBillWithBalanceAccountController(req: Request<BillIdPar
         }
 
         await payBillWithBalanceAccountService(userId, billId)
+        notifyUserAccountUpdated(userId)
 
         return res.status(200).json({ paid: true, billId });
     }

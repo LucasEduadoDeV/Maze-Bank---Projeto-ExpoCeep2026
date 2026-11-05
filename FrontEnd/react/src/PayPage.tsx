@@ -55,6 +55,7 @@ export default function PayPage({ bill, cards, mainCardId, balance, onBack, onOp
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [confirmingPayment, setConfirmingPayment] = useState(false)
   const [paymentComplete, setPaymentComplete] = useState(false)
   const [paymentResultOpen, setPaymentResultOpen] = useState(false)
   const [cardPickerOpen, setCardPickerOpen] = useState(false)
@@ -79,15 +80,20 @@ export default function PayPage({ bill, cards, mainCardId, balance, onBack, onOp
   const canDelete = bill.status === 'PAGO' || bill.status === 'FATURADO'
 
   useEffect(() => {
-    if (!confirmingDelete && !paymentResultOpen) return
+    if (!confirmingDelete && !confirmingPayment && !paymentResultOpen) return
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key !== 'Escape') return
       if (confirmingDelete && !deleting) setConfirmingDelete(false)
+      if (confirmingPayment && !submitting) {
+        setConfirmingPayment(false)
+        setPassword('')
+        setPaymentError('')
+      }
       if (paymentResultOpen && !submitting) setPaymentResultOpen(false)
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [confirmingDelete, deleting, paymentResultOpen, submitting])
+  }, [confirmingDelete, confirmingPayment, deleting, paymentResultOpen, submitting])
 
   async function handleDeleteBill() {
     if (deleting || !canDelete) return
@@ -129,6 +135,7 @@ export default function PayPage({ bill, cards, mainCardId, balance, onBack, onOp
         await payBillWithCard(selectedCard.id, bill.id, password)
       }
       setPaymentComplete(true)
+      setConfirmingPayment(false)
       setPaymentResultOpen(true)
       onPaymentComplete(bill.id, paymentMethod, bill.amount, paymentMethod === 'card' ? selectedCard?.id : undefined)
     } catch (error) {
@@ -141,6 +148,7 @@ export default function PayPage({ bill, cards, mainCardId, balance, onBack, onOp
         return
       }
       setPaymentError(error instanceof Error ? error.message : 'Não foi possível pagar esta conta.')
+      setConfirmingPayment(false)
       setPaymentResultOpen(true)
     } finally {
       setPassword('')
@@ -181,7 +189,7 @@ export default function PayPage({ bill, cards, mainCardId, balance, onBack, onOp
       </div>
 
       <div className="pay-layout">
-        <form className="pay-form" onSubmit={handleSubmit}>
+        <form className="pay-form" onSubmit={(event) => event.preventDefault()}>
           <section className="pay-form-section" aria-labelledby="pay-bill-title">
             <div className="pay-section-heading">
               <span className="pay-section-icon"><FileText size={18} /></span>
@@ -342,42 +350,18 @@ export default function PayPage({ bill, cards, mainCardId, balance, onBack, onOp
             ) : null}
           </section>
 
-          {!paymentComplete && isPayable && (
-            <label className="pay-field pay-password-field" htmlFor="pay-account-password">
-              Senha da conta
-              <span className="pay-password-input-wrap">
-                <input
-                  autoComplete="current-password"
-                  disabled={submitting}
-                  id="pay-account-password"
-                  onChange={(event) => {
-                    setPassword(event.target.value)
-                    setPaymentError('')
-                  }}
-                  required
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                />
-                <button
-                  aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
-                  className="pay-password-toggle"
-                  disabled={submitting}
-                  onClick={() => setShowPassword((visible) => !visible)}
-                  type="button"
-                >
-                  {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
-                </button>
-              </span>
-            </label>
-          )}
-
           <button
             className="pay-submit-button"
             disabled={submitting || paymentComplete || !isPayable
-              || !password
               || (paymentMethod === 'balance' && !canPayWithBalance)
               || (paymentMethod === 'card' && !selectedCard)}
-            type="submit"
+            onClick={() => {
+              setPassword('')
+              setPaymentError('')
+              setShowPassword(false)
+              setConfirmingPayment(true)
+            }}
+            type="button"
           >
             {submitting ? <><LoaderCircle className="pay-submit-loading" size={16} /> Processando pagamento...</>
               : paymentComplete || bill.status === 'PAGO' ? <>Conta paga <Check size={16} /></>
@@ -424,6 +408,87 @@ export default function PayPage({ bill, cards, mainCardId, balance, onBack, onOp
           )}
         </aside>
       </div>
+
+      {confirmingPayment && createPortal(
+        <div className="pay-confirm-backdrop">
+          <section aria-labelledby="pay-confirm-title" aria-modal="true" className="pay-confirm-modal" role="dialog">
+            <button
+              aria-label="Fechar confirmação de pagamento"
+              className="pay-confirm-close"
+              disabled={submitting}
+              onClick={() => {
+                setConfirmingPayment(false)
+                setPassword('')
+                setPaymentError('')
+              }}
+              type="button"
+            >
+              <X size={18} />
+            </button>
+            <span className={`pay-confirm-icon${paymentMethod === 'card' ? ' is-card' : ''}`}>
+              {paymentMethod === 'balance' ? <Wallet size={23} /> : <CreditCard size={23} />}
+            </span>
+            <span className="pay-confirm-eyebrow">CONFIRMAÇÃO SEGURA</span>
+            <h2 id="pay-confirm-title">Confirmar pagamento</h2>
+            <p>
+              Você está pagando <strong>{formatCurrency(bill.amount)}</strong> de <strong>{bill.title}</strong>
+              {' '}com {paymentMethod === 'balance'
+                ? 'o saldo da conta'
+                : `o cartão final ${selectedCard?.lastFour ?? ''}`}.
+              {' '}Informe sua senha para confirmar.
+            </p>
+            <form className="pay-confirm-form" onSubmit={(event) => void handleSubmit(event)}>
+              <label className="pay-field" htmlFor="pay-account-password">
+                Senha da conta
+                <span className="pay-password-input-wrap">
+                  <input
+                    autoComplete="current-password"
+                    autoFocus
+                    disabled={submitting}
+                    id="pay-account-password"
+                    onChange={(event) => {
+                      setPassword(event.target.value)
+                      setPaymentError('')
+                    }}
+                    required
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                  />
+                  <button
+                    aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                    className="pay-password-toggle"
+                    disabled={submitting}
+                    onClick={() => setShowPassword((visible) => !visible)}
+                    type="button"
+                  >
+                    {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+                  </button>
+                </span>
+              </label>
+              <div className="pay-confirm-actions">
+                <button
+                  className="pay-confirm-cancel"
+                  disabled={submitting}
+                  onClick={() => {
+                    setConfirmingPayment(false)
+                    setPassword('')
+                    setPaymentError('')
+                  }}
+                  type="button"
+                >
+                  Cancelar
+                </button>
+                <button className="pay-confirm-submit" disabled={submitting || !password} type="submit">
+                  {submitting
+                    ? <><LoaderCircle className="pay-submit-loading" size={16} /> Processando...</>
+                    : <>Confirmar e pagar <ArrowRight size={16} /></>}
+                </button>
+              </div>
+            </form>
+          </section>
+        </div>,
+        getModalRoot(),
+      )}
 
       {paymentResultOpen && createPortal(
         <div

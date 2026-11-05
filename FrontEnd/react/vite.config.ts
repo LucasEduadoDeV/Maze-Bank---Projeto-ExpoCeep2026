@@ -6,33 +6,37 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/me': 'http://localhost:3000',
+      '/ws': {
+        target: 'ws://backend:3000',
+        ws: true,
+      },
+      '/me': 'http://backend:3000',
       '/api/register': {
-        target: 'http://localhost:3000',
+        target: 'http://backend:3000',
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
       '/api/login': {
-        target: 'http://localhost:3000',
+        target: 'http://backend:3000',
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
       '/api/logout': {
-        target: 'http://localhost:3000',
+        target: 'http://backend:3000',
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
       '/api/transaction': {
-        target: 'http://localhost:3000',
+        target: 'http://backend:3000',
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
       '/api/cards': {
-        target: 'http://localhost:3000',
+        target: 'http://backend:3000',
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
       '/api/bills': {
-        target: 'http://localhost:3000',
+        target: 'http://backend:3000',
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
       '/api/invoices': {
-        target: 'http://localhost:3000',
+        target: 'http://backend:3000',
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
     },

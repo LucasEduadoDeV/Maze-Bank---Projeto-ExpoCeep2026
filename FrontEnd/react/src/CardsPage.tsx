@@ -103,6 +103,15 @@ export default function CardsPage({ onBack, openCardId, onOpenCardHandled, mainC
   const hasReachedLimit = cards.length >= CARD_LIMIT
 
   useEffect(() => {
+    function refreshCards() {
+      setCardsReload((current) => current + 1)
+    }
+
+    window.addEventListener('maze:account-updated', refreshCards)
+    return () => window.removeEventListener('maze:account-updated', refreshCards)
+  }, [])
+
+  useEffect(() => {
     let active = true
 
     getCards()
@@ -110,6 +119,9 @@ export default function CardsPage({ onBack, openCardId, onOpenCardHandled, mainC
         if (!active) return
         const cardItems = accountCards.map((card) => toCardItem(card))
         setCards(cardItems)
+        setSelectedCard((current) => current
+          ? cardItems.find((card) => card.id === current.id) ?? null
+          : null)
         if (openCardId) {
           const cardToOpen = cardItems.find((card) => card.id === openCardId)
           if (cardToOpen) setSelectedCard(cardToOpen)
@@ -161,8 +173,7 @@ export default function CardsPage({ onBack, openCardId, onOpenCardHandled, mainC
   }
 
   function scrollToTop() {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-    document.querySelector('.main-column')?.scrollTo({ top: 0, behavior: 'smooth' })
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
   }
 
   function openBenefits() {

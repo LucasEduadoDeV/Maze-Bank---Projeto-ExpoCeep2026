@@ -73,7 +73,7 @@
 .register-success { margin-bottom: 14px; padding: 12px 14px; border: 1px solid #bad7c3; border-radius: 5px; background: #eef7f0; color: #315f3d; font-size: 12px; line-height: 1.5; }
 
 @media (max-width: 900px) {
-  .register-page { grid-template-columns: minmax(280px, .8fr) minmax(420px, 1.2fr); }
+  .register-page { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); }
   .register-story { padding-inline: 30px; }
   .register-form-side { padding-inline: 34px; }
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { createPortal } from 'react-dom'
-import { ArrowDownLeft, ArrowLeft, CalendarDays, CheckCircle2, Clock3, Download, ReceiptText, ShieldCheck, ShoppingBag, Smartphone, Trash2, Utensils, Wallet, X } from 'lucide-react'
+import { ArrowDownLeft, ArrowLeft, CalendarDays, CheckCircle2, Clock3, ReceiptText, ShieldCheck, ShoppingBag, Smartphone, Trash2, Utensils, Wallet, X } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { formatInvoiceCurrency } from './invoiceDemo'
@@ -295,11 +295,6 @@ export default function InvoiceDetailPage({ invoice, balance, onBack, onDeleted,
             </button>
           )}
 
-          <button className="invoice-download-button" type="button" disabled>
-            <Download size={16} />
-            Baixar fatura
-            <span>Em breve</span>
-          </button>
           <button
             className="invoice-delete-button"
             onClick={() => {

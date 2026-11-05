@@ -1,4 +1,5 @@
 import express from "express";
+import { createServer } from "node:http";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 //Routes
@@ -12,6 +13,7 @@ import BillsRoutes from "./src/routes/bills.routes";
 import InvoicesRoutes from "./src/routes/invoices.routes";
 //Middlewares
 import { errorHandler } from "./src/middlewares/erroHandler";
+import { attachRealtime } from "./src/realtime";
 const app = express();
 app.set('trust proxy', 1);
 //Swagger
@@ -35,6 +37,8 @@ app.use("/cards", CardsRoutes);
 app.use("/bills", BillsRoutes);
 app.use("/invoices", InvoicesRoutes);
 app.use(errorHandler);
-app.listen(3000, () => {
+const server = createServer(app);
+attachRealtime(server);
+server.listen(3000, () => {
     console.log(`Server Rodando Na Porta 3000`);
 })

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import {
   ArrowDownLeft,
   ArrowRight,
@@ -27,6 +27,12 @@ import {
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { changeUserTheme, getBills, getCards, getMe, getStatement, logoutAccount, type AccountCard, type AccountUser, type Activity, type PaginationMeta } from './services/api'
 import './MainMenu.css'
+import './StatementPage.css'
+import './DashboardActivity.css'
+import './DashboardBackground.css'
+import './AppPageBackgrounds.css'
+import './SettingsPage.css'
+import './DashboardPolish.css'
 import LandingPage from './LandingPage'
 import RegisterPage from './RegisterPage'
 import LoginPage from './LoginPage'
@@ -36,9 +42,29 @@ import PayPage from './PayPage'
 import BillsPage from './BillsPage'
 import InvoiceHistoryPage from './InvoiceHistoryPage'
 import SimulateInvoicePage from './SimulateInvoicePage'
+import TransferDetailPage from './TransferDetailPage'
 import type { Bill } from './bills'
 
-type Tab = 'home' | 'statement' | 'settings' | 'profile' | 'pix' | 'cards' | 'bills' | 'pay' | 'invoice' | 'invoices'
+type Tab = 'home' | 'statement' | 'settings' | 'profile' | 'pix' | 'cards' | 'bills' | 'pay' | 'invoice' | 'invoices' | 'transfer'
+
+const tabPaths: Record<Exclude<Tab, 'transfer'>, string> = {
+  home: '/dashboard',
+  statement: '/dashboard/statement',
+  settings: '/dashboard/settings',
+  profile: '/dashboard/profile',
+  pix: '/dashboard/pix',
+  cards: '/dashboard/cards',
+  bills: '/dashboard/bills',
+  pay: '/dashboard/pay',
+  invoice: '/dashboard/invoice',
+  invoices: '/dashboard/invoices',
+}
+
+function getTabFromPath(pathname: string): Tab {
+  if (pathname.startsWith('/dashboard/transfers/')) return 'transfer'
+  const route = Object.entries(tabPaths).find(([, path]) => pathname === path)
+  return (route?.[0] as Tab | undefined) ?? 'home'
+}
 
 const navigation = [
   { id: 'home', label: 'Visão geral', icon: LayoutDashboard },
@@ -76,6 +102,11 @@ function getUserInitials(name: string) {
 function App() {
   const location = useLocation()
   const navigate = useNavigate()
+  const activeTab = getTabFromPath(location.pathname)
+  const transferReturnTab = new URLSearchParams(location.search).get('from') === 'statement' ? 'statement' : 'home'
+  const selectedTransferId = activeTab === 'transfer'
+    ? decodeURIComponent(location.pathname.slice('/dashboard/transfers/'.length))
+    : null
   const [user, setUser] = useState<AccountUser | null>(null)
   const [activities, setActivities] = useState<Activity[]>([])
   const [accountCards, setAccountCards] = useState<AccountCard[]>([])
@@ -86,13 +117,51 @@ function App() {
   const [cardsLoadError, setCardsLoadError] = useState('')
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
-  const [activeTab, setActiveTab] = useState<Tab>('home')
+  const [realtimeStatus, setRealtimeStatus] = useState<'connecting' | 'connected' | 'offline'>('connecting')
+  const [statementRefresh, setStatementRefresh] = useState(0)
   const [balanceHidden, setBalanceHidden] = useState(true)
   const [darkMode, setDarkMode] = useState(false)
   const [themeUpdating, setThemeUpdating] = useState(false)
   const [themeError, setThemeError] = useState('')
   const [logoutLoading, setLogoutLoading] = useState(false)
   const [logoutError, setLogoutError] = useState('')
+  const balanceAmountRef = useRef<HTMLParagraphElement>(null)
+  const previousBalanceRef = useRef<number | null>(null)
+
+  useLayoutEffect(() => {
+    if (window.matchMedia('(max-width: 760px)').matches) {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    }
+  }, [activeTab, location.pathname])
+
+  useLayoutEffect(() => {
+    const balance = user ? Number(user.balance) : null
+    const previousBalance = previousBalanceRef.current
+    previousBalanceRef.current = balance
+
+    if (
+      balance === null
+      || previousBalance === null
+      || !Number.isFinite(balance)
+      || balance === previousBalance
+      || window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      return
+    }
+
+    const amountElement = balanceAmountRef.current
+    if (!amountElement) return
+
+    const accent = balance > previousBalance ? '#8fe0aa' : '#ffaaa4'
+    amountElement.animate(
+      [
+        { transform: 'scale(1)', color: '#ffffff', filter: 'drop-shadow(0 0 0 transparent)' },
+        { transform: 'scale(1.055)', color: accent, filter: `drop-shadow(0 0 12px ${accent})` },
+        { transform: 'scale(1)', color: '#ffffff', filter: 'drop-shadow(0 0 0 transparent)' },
+      ],
+      { duration: 850, easing: 'ease-out' },
+    )
+  }, [user])
 
   // Statement pagination state
   const [statementData, setStatementData] = useState<Activity[]>([])
@@ -107,7 +176,7 @@ function App() {
   const billsRequestId = useRef(0)
 
   useEffect(() => {
-    if (location.pathname !== '/dashboard' || activeTab !== 'statement') return
+    if (!location.pathname.startsWith('/dashboard') || activeTab !== 'statement') return
 
     let active = true
     setStatementLoading(true)
@@ -132,10 +201,10 @@ function App() {
     return () => {
       active = false
     }
-  }, [location.pathname, activeTab, statementPage, navigate])
+  }, [location.pathname, activeTab, statementPage, statementRefresh, navigate])
 
   useEffect(() => {
-    if (location.pathname !== '/dashboard') return
+    if (!location.pathname.startsWith('/dashboard')) return
 
     let active = true
 
@@ -165,7 +234,7 @@ function App() {
   }, [location.pathname, navigate])
 
   useEffect(() => {
-    if (location.pathname !== '/dashboard') return
+    if (!location.pathname.startsWith('/dashboard')) return
 
     let active = true
 
@@ -203,15 +272,29 @@ function App() {
     style: 'currency',
     currency: 'BRL',
   })
-  const activeLabel = activeTab === 'profile' ? 'Meu perfil' : activeTab === 'pix' ? 'Pix' : activeTab === 'cards' ? 'Cartões' : activeTab === 'bills' ? 'Contas' : activeTab === 'pay' ? 'Pagar' : activeTab === 'invoice' ? 'Simular fatura' : activeTab === 'invoices' ? 'Faturas' : navigation.find((item) => item.id === activeTab)?.label
-  async function refreshAccount() {
+  const statementTotals = statementData.reduce((totals, item) => {
+    const amount = Number(item.amount)
+    if (!Number.isFinite(amount) || amount < 0) return totals
+    const isOutgoing = user?.id ? item.senderId === user.id : true
+    return isOutgoing
+      ? { ...totals, outgoing: totals.outgoing + amount }
+      : { ...totals, incoming: totals.incoming + amount }
+  }, { incoming: 0, outgoing: 0 })
+  const activeLabel = activeTab === 'profile' ? 'Meu perfil' : activeTab === 'pix' ? 'Pix' : activeTab === 'cards' ? 'Cartões' : activeTab === 'bills' ? 'Contas' : activeTab === 'pay' ? 'Pagar' : activeTab === 'invoice' ? 'Simular fatura' : activeTab === 'invoices' ? 'Faturas' : activeTab === 'transfer' ? 'Detalhes da transferência' : navigation.find((item) => item.id === activeTab)?.label
+  function goToTab(tab: Tab) {
+    if (tab === 'transfer') return
+    const path = tabPaths[tab]
+    if (location.pathname !== path) navigate(path)
+  }
+
+  const refreshAccount = useCallback(async () => {
     const data = await getMe()
     setUser(data.user)
     setActivities(data.activities)
     setLoadError('')
-  }
+  }, [])
 
-  async function loadBills(page: number) {
+  const loadBills = useCallback(async (page: number) => {
     const requestId = billsRequestId.current + 1
     billsRequestId.current = requestId
     setBillsLoading(true)
@@ -221,6 +304,9 @@ function App() {
       const response = await getBills(page, 5)
       if (requestId !== billsRequestId.current) return
       setBills(response.data)
+      setSelectedBill((current) => current
+        ? response.data.find((bill) => bill.id === current.id) ?? null
+        : null)
       setBillsMeta(response.meta)
       setBillsPage(response.meta.page)
     } catch (error) {
@@ -233,12 +319,114 @@ function App() {
     } finally {
       if (requestId === billsRequestId.current) setBillsLoading(false)
     }
-  }
+  }, [navigate])
+
+  useEffect(() => {
+    function refreshLiveData() {
+      void refreshAccount().catch((error: unknown) => {
+        if (error instanceof Error && error.message === 'UNAUTHORIZED') {
+          navigate('/login', { replace: true, state: { sessionExpired: true } })
+          return
+        }
+        setLoadError(error instanceof Error ? error.message : 'Não foi possível atualizar sua conta.')
+      })
+      void getCards()
+        .then((cards) => {
+          setAccountCards(cards)
+          setMainCardId(cards.find((card) => card.main)?.id ?? null)
+          setCardsLoadError('')
+        })
+        .catch((error: unknown) => {
+          if (error instanceof Error && error.message === 'UNAUTHORIZED') {
+            navigate('/login', { replace: true, state: { sessionExpired: true } })
+            return
+          }
+          setCardsLoadError(error instanceof Error ? error.message : 'Não foi possível atualizar seus cartões.')
+        })
+
+      if (activeTab === 'statement') {
+        setStatementRefresh((current) => current + 1)
+      }
+      if (activeTab === 'bills' || activeTab === 'pay') {
+        void loadBills(billsPage)
+      }
+    }
+
+    window.addEventListener('maze:account-updated', refreshLiveData)
+    return () => window.removeEventListener('maze:account-updated', refreshLiveData)
+  }, [activeTab, billsPage, loadBills, navigate, refreshAccount])
+
+  useEffect(() => {
+    if (!location.pathname.startsWith('/dashboard')) {
+      return
+    }
+
+    let active = true
+    let reconnectTimer: number | undefined
+    let reconnectDelay = 1000
+    let socket: WebSocket | null = null
+
+    function connect() {
+      if (!active) return
+      setRealtimeStatus('connecting')
+      const socketUrl = new URL('/ws', window.location.href)
+      socketUrl.protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+      socket = new WebSocket(socketUrl)
+
+      socket.onopen = () => {
+        if (!active) return
+        reconnectDelay = 1000
+        setRealtimeStatus('connected')
+      }
+
+      socket.onmessage = (event) => {
+        if (typeof event.data !== 'string') return
+        let message: unknown
+        try {
+          message = JSON.parse(event.data)
+        } catch {
+          return
+        }
+        if (
+          typeof message === 'object'
+          && message !== null
+          && 'type' in message
+          && message.type === 'account.updated'
+        ) {
+          window.dispatchEvent(new Event('maze:account-updated'))
+        }
+      }
+
+      socket.onclose = (event) => {
+        if (!active) return
+        setRealtimeStatus('offline')
+        if (event.code === 4401) {
+          navigate('/login', { replace: true, state: { sessionExpired: true } })
+          return
+        }
+        reconnectTimer = window.setTimeout(connect, reconnectDelay)
+        reconnectDelay = Math.min(reconnectDelay * 2, 15_000)
+      }
+
+      socket.onerror = () => socket?.close()
+    }
+
+    connect()
+    return () => {
+      active = false
+      if (reconnectTimer !== undefined) window.clearTimeout(reconnectTimer)
+      socket?.close(1000, 'Page changed')
+    }
+  }, [location.pathname, navigate])
 
   function openBills() {
     setSelectedBill(null)
     void loadBills(1)
-    setActiveTab('bills')
+    goToTab('bills')
+  }
+
+  function openTransfer(transactionId: string, origin: 'home' | 'statement') {
+    navigate(`/dashboard/transfers/${encodeURIComponent(transactionId)}?from=${origin}`)
   }
 
   async function toggleUserTheme() {
@@ -289,9 +477,9 @@ function App() {
   }
 
   const dashboard = (
-    <div className={`bank-app${darkMode ? ' theme-dark' : ''}`}>
+    <div className={`bank-app${darkMode ? ' theme-dark' : ''}${activeTab === 'home' ? ' dashboard-home-active' : ''} page-bg-${activeTab}`}>
       <aside className="sidebar">
-        <a className="brand" href="#inicio" onClick={() => setActiveTab('home')} aria-label="Maze Bank, início">
+        <a className="brand" href="/dashboard" onClick={(event) => { event.preventDefault(); goToTab('home') }} aria-label="Maze Bank, início">
           <span className="brand-mark">M</span>
           <span className="brand-copy"><strong>MAZE BANK</strong><small>OF CASTALDI</small></span>
         </a>
@@ -300,11 +488,11 @@ function App() {
         <nav className="side-nav" aria-label="Navegação principal">
           {navigation.map(({ id, label, icon: Icon }) => (
             <button
-              className={`side-link${activeTab === id || (activeTab === 'pix' && id === 'home') ? ' active' : ''}`}
+              className={`side-link${activeTab === id || (activeTab === 'pix' && id === 'home') || (activeTab === 'transfer' && transferReturnTab === id) ? ' active' : ''}`}
               key={id}
-              onClick={() => setActiveTab(id)}
+              onClick={() => goToTab(id)}
               type="button"
-              aria-current={activeTab === id || (activeTab === 'pix' && id === 'home') ? 'page' : undefined}
+              aria-current={activeTab === id || (activeTab === 'pix' && id === 'home') || (activeTab === 'transfer' && transferReturnTab === id) ? 'page' : undefined}
             >
               <Icon size={18} strokeWidth={1.8} />
               <span>{label}</span>
@@ -313,7 +501,7 @@ function App() {
         </nav>
 
         <div className="sidebar-bottom">
-          <button className="profile-row" type="button" aria-current={activeTab === 'profile' ? 'page' : undefined} onClick={() => setActiveTab('profile')}>
+          <button className="profile-row" type="button" aria-current={activeTab === 'profile' ? 'page' : undefined} onClick={() => goToTab('profile')}>
             <span className="profile-avatar">{formattedName.slice(0, 1)}</span>
             <span className="profile-copy"><strong>{loading ? 'Carregando...' : formattedName}</strong><small>Conta pessoal</small></span>
             <MoreHorizontal size={19} />
@@ -325,26 +513,45 @@ function App() {
         <header className="topbar">
           <div className="breadcrumb"><span>Conta</span><ChevronRight size={14} /><strong>{activeLabel}</strong></div>
           <div className="topbar-actions">
-            <span className="account-status"><i /> Conta ativa</span>
-            <button className="top-avatar" type="button" aria-label="Abrir perfil de demonstração" aria-current={activeTab === 'profile' ? 'page' : undefined} onClick={() => setActiveTab('profile')}>{formattedName.slice(0, 1)}</button>
+            <span
+              className={`account-status${realtimeStatus === 'connected' ? ' is-online' : realtimeStatus === 'connecting' ? ' is-connecting' : ' is-offline'}`}
+              title={realtimeStatus === 'connected' ? 'Atualizações em tempo real ativas' : 'Atualizações em tempo real indisponíveis no momento'}
+              aria-label={realtimeStatus === 'connected'
+                ? 'Atualizações em tempo real ativas'
+                : realtimeStatus === 'connecting'
+                  ? 'Conectando às atualizações em tempo real'
+                  : 'Atualizações em tempo real offline'}
+            >
+              <i /> {realtimeStatus === 'connected' ? 'Ao vivo' : realtimeStatus === 'connecting' ? 'Conectando' : 'Offline'}
+            </span>
+            <button className="top-avatar" type="button" aria-label="Abrir perfil de demonstração" aria-current={activeTab === 'profile' ? 'page' : undefined} onClick={() => goToTab('profile')}>{formattedName.slice(0, 1)}</button>
           </div>
         </header>
 
         <main className="page-content">
+          {activeTab === 'transfer' && selectedTransferId && (
+            <TransferDetailPage
+              key={selectedTransferId}
+              transactionId={selectedTransferId}
+              userId={user?.id}
+              onBack={() => goToTab(transferReturnTab)}
+            />
+          )}
+
           {activeTab === 'home' && (
             <>
-              <section className="page-heading">
+              <section className="page-heading dashboard-welcome">
                 <div><span className="eyebrow">{todayLabel}</span><h1>Olá, {formattedName}</h1><p>Veja o resumo da sua conta hoje.</p></div>
-                <button className="quiet-button" type="button" onClick={() => setActiveTab('statement')}><FileClock size={16} /> Ver extrato</button>
+                <button className="quiet-button" type="button" aria-label="Ver extrato" title="Ver extrato" onClick={() => goToTab('statement')}><FileClock size={16} /> Ver extrato</button>
               </section>
 
               {loadError && <div className="inline-alert" role="alert">{loadError}</div>}
 
-              <section className="overview-grid" aria-label="Resumo da conta">
+              <section className="overview-grid dashboard-overview" aria-label="Resumo da conta">
                 <article className="balance-panel">
                   <div className="balance-panel-top"><span className="balance-label"><Wallet size={16} /> SALDO DISPONÍVEL</span><span className="balance-updated"><i /> ATUALIZADO AGORA</span></div>
-                  <div className="balance-line"><p>{loading ? 'Carregando...' : loadError ? 'Indisponível' : balanceHidden ? 'R$ ••••••' : formattedBalance}</p><button className="balance-visibility" type="button" aria-label={balanceHidden ? 'Mostrar saldo' : 'Ocultar saldo'} title={balanceHidden ? 'Mostrar saldo' : 'Ocultar saldo'} onClick={() => setBalanceHidden(!balanceHidden)}>{balanceHidden ? <Eye size={18} /> : <EyeOff size={18} />}</button></div>
-                  <div className="balance-panel-footer"><span>Maze Bank <b>•</b> Conta pessoal</span><button type="button" onClick={() => setActiveTab('statement')}>Detalhes da conta <ArrowUpRight size={15} /></button></div>
+                  <div className="balance-line"><p ref={balanceAmountRef}>{loading ? 'Carregando...' : loadError ? 'Indisponível' : balanceHidden ? 'R$ ••••••' : formattedBalance}</p><button className="balance-visibility" type="button" aria-label={balanceHidden ? 'Mostrar saldo' : 'Ocultar saldo'} title={balanceHidden ? 'Mostrar saldo' : 'Ocultar saldo'} onClick={() => setBalanceHidden(!balanceHidden)}>{balanceHidden ? <Eye size={18} /> : <EyeOff size={18} />}</button></div>
+                  <div className="balance-panel-footer"><span>Maze Bank <b>•</b> Conta pessoal</span><button type="button" onClick={() => goToTab('statement')}>Detalhes da conta <ArrowUpRight size={15} /></button></div>
                   <span className="balance-watermark" aria-hidden="true">M</span>
                 </article>
                 <div className="dashboard-card-group">
@@ -353,7 +560,7 @@ function App() {
                     type="button"
                     onClick={() => {
                       setOpenCardId(mainCard?.id ?? null)
-                      setActiveTab('cards')
+                      goToTab('cards')
                     }}
                     aria-label={mainCard ? `Ver detalhes do cartão principal ${mainCard.name}, final ${mainCard.lastFour}` : 'Abrir carteira de cartões'}
                   >
@@ -385,7 +592,7 @@ function App() {
                       </div>
                     )}
                   </button>
-                  <button className="dashboard-card-link" type="button" onClick={() => setActiveTab('cards')}>
+                  <button className="dashboard-card-link" type="button" onClick={() => goToTab('cards')}>
                     <span className="dashboard-card-link-icon"><CreditCard size={16} /></span>
                     <span className="dashboard-card-link-copy">
                       <strong>Gerenciar cartões</strong>
@@ -396,18 +603,18 @@ function App() {
                 </div>
               </section>
 
-              <section className="quick-section">
+              <section className="quick-section dashboard-quick-section">
                 <div className="section-heading"><div><h2>Atalhos</h2><p>O que você quer fazer?</p></div></div>
                 <div className="quick-actions">
-                  <button className="quick-action" type="button" onClick={() => setActiveTab('pix')}><span className="quick-icon pix-icon"><QrCode size={20} /></span><span><strong>Fazer um Pix</strong><small>Envie dinheiro em segundos</small></span><ChevronRight size={17} /></button>
+                  <button className="quick-action" type="button" onClick={() => goToTab('pix')}><span className="quick-icon pix-icon"><QrCode size={20} /></span><span><strong>Fazer um Pix</strong><small>Envie dinheiro em segundos</small></span><ChevronRight size={17} /></button>
                   <button className="quick-action" type="button" onClick={openBills}><span className="quick-icon pay-icon"><ArrowUpRight size={20} /></span><span><strong>Pagar uma conta</strong><small>Boletos e contas do dia a dia</small></span><ChevronRight size={17} /></button>
-                  <button className="quick-action" type="button" onClick={() => setActiveTab('invoice')}><span className="quick-icon invoice-icon"><CreditCard size={20} /></span><span><strong>Simular Fatura</strong><small>Simule uma nova fatura</small></span><ChevronRight size={17} /></button>
-                  <button className="quick-action" type="button" onClick={() => setActiveTab('invoices')}><span className="quick-icon invoices-icon"><FileClock size={20} /></span><span><strong>Ver Faturas</strong><small>Acesse suas faturas do cartão</small></span><ChevronRight size={17} /></button>
+                  <button className="quick-action" type="button" onClick={() => goToTab('invoice')}><span className="quick-icon invoice-icon"><CreditCard size={20} /></span><span><strong>Simular Fatura</strong><small>Simule uma nova fatura</small></span><ChevronRight size={17} /></button>
+                  <button className="quick-action" type="button" onClick={() => goToTab('invoices')}><span className="quick-icon invoices-icon"><FileClock size={20} /></span><span><strong>Ver Faturas</strong><small>Acesse suas faturas do cartão</small></span><ChevronRight size={17} /></button>
                 </div>
               </section>
 
-              <section className="activity-section">
-                <div className="section-heading activity-heading"><div><h2>Atividade recente</h2><p>Suas movimentações mais recentes</p></div><button className="text-link" type="button" onClick={() => setActiveTab('statement')}>Ver tudo <ArrowUpRight size={15} /></button></div>
+              <section className="activity-section dashboard-activity-section">
+                <div className="section-heading activity-heading"><div><h2>Atividade recente</h2><p>Suas movimentações mais recentes</p></div><button className="text-link" type="button" onClick={() => goToTab('statement')}>Ver tudo <ArrowUpRight size={15} /></button></div>
                 {activities.length === 0 ? (
                   <div className="activity-empty"><span className="empty-icon"><Gauge size={21} /></span><div><strong>Nenhuma atividade por aqui</strong><p>Quando houver movimentações, elas aparecerão nesta lista.</p></div></div>
                 ) : (
@@ -426,7 +633,13 @@ function App() {
                       }).format(new Date(item.createdAt))
 
                       return (
-                        <article key={item.id} className="activity-item">
+                        <button
+                          key={item.id}
+                          className="activity-item dashboard-activity-item"
+                          type="button"
+                          onClick={() => openTransfer(item.id, 'home')}
+                          aria-label={`Ver detalhes da transferência ${isOutgoing ? 'enviada' : 'recebida'} de ${formattedAmount}`}
+                        >
                           <span className={`activity-item-icon ${isOutgoing ? 'sent' : 'received'}`}>
                             {isOutgoing ? <ArrowUpRight size={18} /> : <ArrowDownLeft size={18} />}
                           </span>
@@ -453,7 +666,7 @@ function App() {
                           <span className={`activity-item-amount ${isOutgoing ? 'sent' : 'received'}`}>
                             {isOutgoing ? `- ${formattedAmount}` : `+ ${formattedAmount}`}
                           </span>
-                        </article>
+                        </button>
                       )
                     })}
                   </div>
@@ -462,14 +675,14 @@ function App() {
             </>
           )}
 
-          {activeTab === 'pix' && <PixPage onBack={() => setActiveTab('home')} onTransferComplete={refreshAccount} />}
+          {activeTab === 'pix' && <PixPage onBack={() => goToTab('home')} onTransferComplete={refreshAccount} />}
 
           {activeTab === 'invoice' && (
             <SimulateInvoicePage
               cards={accountCards}
               cardsLoading={cardsLoading}
               cardsError={cardsLoadError}
-              onBack={() => setActiveTab('home')}
+              onBack={() => goToTab('home')}
             />
           )}
 
@@ -479,8 +692,8 @@ function App() {
               cardsLoading={cardsLoading}
               cardsError={cardsLoadError}
               balance={Number(user?.balance ?? 0)}
-              onBack={() => setActiveTab('home')}
-              onOpenCards={() => setActiveTab('cards')}
+              onBack={() => goToTab('home')}
+              onOpenCards={() => goToTab('cards')}
               onPaymentComplete={() => {
                 void refreshAccount().catch((error: unknown) => {
                   setLoadError(error instanceof Error ? error.message : 'O pagamento foi feito, mas não foi possível atualizar o saldo.')
@@ -507,12 +720,12 @@ function App() {
               page={billsPage}
               loading={billsLoading}
               error={billsError}
-              onBack={() => setActiveTab('home')}
+              onBack={() => goToTab('home')}
               onPageChange={(page) => void loadBills(page)}
               onRetry={() => void loadBills(billsPage)}
               onSelectBill={(bill) => {
                 setSelectedBill(bill)
-                setActiveTab('pay')
+                goToTab('pay')
               }}
             />
           )}
@@ -523,12 +736,12 @@ function App() {
               cards={accountCards}
               mainCardId={mainCardId}
               balance={Number(user?.balance ?? 0)}
-              onBack={() => setActiveTab('bills')}
-              onOpenCards={() => setActiveTab('cards')}
+              onBack={() => goToTab('bills')}
+              onOpenCards={() => goToTab('cards')}
               onPaymentComplete={markBillAsPaid}
               onBillDeleted={() => {
                 setSelectedBill(null)
-                setActiveTab('bills')
+                goToTab('bills')
                 void loadBills(bills.length === 1 && billsPage > 1 ? billsPage - 1 : billsPage)
               }}
             />
@@ -536,7 +749,7 @@ function App() {
 
           {activeTab === 'cards' && (
             <CardsPage
-              onBack={() => setActiveTab('home')}
+              onBack={() => goToTab('home')}
               openCardId={openCardId}
               onOpenCardHandled={() => setOpenCardId(null)}
               mainCardId={mainCardId}
@@ -624,88 +837,125 @@ function App() {
           )}
 
           {activeTab === 'statement' && (
-            <section className="subpage">
+            <section className="subpage statement-page">
               <div className="page-heading">
                 <div>
                   <span className="eyebrow">SUA CONTA</span>
                   <h1>Extrato</h1>
-                  <p>Acompanhe todas as entradas e saídas da sua conta.</p>
+                  <p>Uma visão clara de cada movimentação da sua conta.</p>
                 </div>
               </div>
 
               {statementLoading && statementData.length === 0 ? (
-                <div className="empty-page">
+                <div className="empty-page statement-empty">
                   <span className="empty-icon"><FileClock size={22} /></span>
                   <h2>Carregando extrato...</h2>
                 </div>
               ) : statementData.length === 0 ? (
-                <div className="empty-page">
+                <div className="empty-page statement-empty">
                   <span className="empty-icon"><FileClock size={22} /></span>
                   <h2>Seu extrato está começando</h2>
                   <p>As movimentações aparecerão aqui quando você realizar ou receber transferências.</p>
                 </div>
               ) : (
                 <div className="statement-container">
-                  <div className="activity-list" style={{ marginBottom: '20px' }}>
-                    {statementData.map((item) => {
-                      const isOutgoing = user?.id ? item.senderId === user.id : true
-                      const formattedAmount = Number(item.amount).toLocaleString('pt-BR', {
-                        style: 'currency',
-                        currency: 'BRL',
-                      })
-                      const formattedDate = new Intl.DateTimeFormat('pt-BR', {
-                        day: '2-digit',
-                        month: 'short',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      }).format(new Date(item.createdAt))
+                  <section className="statement-overview" aria-label="Resumo das movimentações desta página">
+                    <span className="statement-overview-watermark" aria-hidden="true">M</span>
+                    <div className="statement-overview-heading">
+                      <span className="statement-overview-icon"><FileClock size={20} /></span>
+                      <div>
+                        <span className="statement-overview-kicker">MOVIMENTAÇÕES DA CONTA</span>
+                        <h2>Seu dinheiro em movimento</h2>
+                      </div>
+                      <span className="statement-page-count">{statementData.length} {statementData.length === 1 ? 'registro' : 'registros'}</span>
+                    </div>
+                    <div className="statement-summary-grid">
+                      <article className="statement-summary-item">
+                        <span className="statement-summary-label">Entradas nesta página</span>
+                        <strong className="statement-summary-value incoming">
+                          + {statementTotals.incoming.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                        </strong>
+                      </article>
+                      <article className="statement-summary-item">
+                        <span className="statement-summary-label">Saídas nesta página</span>
+                        <strong className="statement-summary-value outgoing">
+                          − {statementTotals.outgoing.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                        </strong>
+                      </article>
+                    </div>
+                  </section>
 
-                      return (
-                        <article key={item.id} className="activity-item">
-                          <span className={`activity-item-icon ${isOutgoing ? 'sent' : 'received'}`}>
-                            {isOutgoing ? <ArrowUpRight size={18} /> : <ArrowDownLeft size={18} />}
-                          </span>
-                          <div className="activity-item-details">
-                            <strong className="activity-item-title">
-                              {item.description?.trim() || (isOutgoing ? 'Transferência enviada' : 'Transferência recebida')}
-                            </strong>
-                            <span className="activity-item-meta">
-                              <span className="activity-meta-type">Pix</span>
-                              <span className="activity-meta-separator">•</span>
-                              <time dateTime={item.createdAt}>{formattedDate}</time>
-                              {(isOutgoing ? item.receiver?.name : item.sender?.name) && (
-                                <>
-                                  <span className="activity-meta-separator">|</span>
-                                  <span className="activity-meta-party">
-                                    {isOutgoing
-                                      ? `Para: ${item.receiver?.name}`
-                                      : `De: ${item.sender?.name}`}
-                                  </span>
-                                </>
-                              )}
+                  <section className="statement-ledger" aria-label="Lista de movimentações">
+                    <div className="statement-ledger-heading">
+                      <div>
+                        <span className="statement-ledger-kicker">HISTÓRICO</span>
+                        <h2>Movimentações recentes</h2>
+                      </div>
+                      <span className="statement-sort"><CalendarDays size={14} /> Mais recentes primeiro</span>
+                    </div>
+                    <div className="activity-list">
+                      {statementData.map((item) => {
+                        const isOutgoing = user?.id ? item.senderId === user.id : true
+                        const formattedAmount = Number(item.amount).toLocaleString('pt-BR', {
+                          style: 'currency',
+                          currency: 'BRL',
+                        })
+                        const formattedDate = new Intl.DateTimeFormat('pt-BR', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        }).format(new Date(item.createdAt))
+
+                        return (
+                          <button
+                            key={item.id}
+                            className={`activity-item${isOutgoing ? ' is-outgoing' : ' is-incoming'}`}
+                            type="button"
+                            onClick={() => openTransfer(item.id, 'statement')}
+                            aria-label={`Ver detalhes da transferência ${isOutgoing ? 'enviada' : 'recebida'} de ${formattedAmount}`}
+                          >
+                            <span className={`activity-item-icon ${isOutgoing ? 'sent' : 'received'}`}>
+                              {isOutgoing ? <ArrowUpRight size={20} /> : <ArrowDownLeft size={20} />}
                             </span>
-                          </div>
-                          <span className={`activity-item-amount ${isOutgoing ? 'sent' : 'received'}`}>
-                            {isOutgoing ? `- ${formattedAmount}` : `+ ${formattedAmount}`}
-                          </span>
-                        </article>
-                      )
-                    })}
-                  </div>
+                            <div className="activity-item-details">
+                              <strong className="activity-item-title">
+                                {item.description?.trim() || (isOutgoing ? 'Transferência enviada' : 'Transferência recebida')}
+                              </strong>
+                              <span className="activity-item-meta">
+                                <span className="activity-meta-type"><QrCode size={13} /> Pix</span>
+                                <time dateTime={item.createdAt}>{formattedDate}</time>
+                                {(isOutgoing ? item.receiver?.name : item.sender?.name) && (
+                                  <span className="activity-meta-party">
+                                    {isOutgoing ? `Para ${item.receiver?.name}` : `De ${item.sender?.name}`}
+                                  </span>
+                                )}
+                              </span>
+                            </div>
+                            <div className="activity-item-result">
+                              <span className="activity-status"><i /> Concluído</span>
+                              <strong className={`activity-item-amount ${isOutgoing ? 'sent' : 'received'}`}>
+                                {isOutgoing ? `− ${formattedAmount}` : `+ ${formattedAmount}`}
+                              </strong>
+                            </div>
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </section>
 
                   {statementMeta && statementMeta.totalPages > 1 && (
-                    <div className="pagination-controls" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: '6px' }}>
+                    <div className="pagination-controls statement-pagination">
                       <button
                         className="quiet-button"
                         type="button"
                         disabled={!statementMeta.hasPrevPage || statementLoading}
                         onClick={() => setStatementPage((prev) => Math.max(1, prev - 1))}
-                        style={{ opacity: !statementMeta.hasPrevPage ? 0.5 : 1, cursor: !statementMeta.hasPrevPage ? 'not-allowed' : 'pointer' }}
                       >
                         Anterior
                       </button>
-                      <span style={{ fontSize: '11px', color: 'var(--muted)', fontWeight: 600 }}>
+                      <span>
                         Página {statementMeta.page} de {statementMeta.totalPages} ({statementMeta.totalItems} transações)
                       </span>
                       <button
@@ -713,7 +963,6 @@ function App() {
                         type="button"
                         disabled={!statementMeta.hasNextPage || statementLoading}
                         onClick={() => setStatementPage((prev) => prev + 1)}
-                        style={{ opacity: !statementMeta.hasNextPage ? 0.5 : 1, cursor: !statementMeta.hasNextPage ? 'not-allowed' : 'pointer' }}
                       >
                         Próxima
                       </button>
@@ -725,10 +974,10 @@ function App() {
           )}
 
           {activeTab === 'settings' && (
-            <section className="subpage">
+            <section className="subpage settings-page">
               <div className="page-heading"><div><span className="eyebrow">PERSONALIZE</span><h1>Ajustes da conta</h1><p>Gerencie suas preferências do Maze Bank.</p></div></div>
               <div className="settings-list">
-                <div className="setting-row"><span className="setting-icon"><Moon size={19} /></span><span className="setting-copy"><strong>Modo escuro</strong><small>Preferência salva na sua conta</small></span><button className={`switch${darkMode ? ' is-on' : ''}`} type="button" role="switch" aria-checked={darkMode} aria-label="Ativar modo escuro" disabled={themeUpdating || loading} onClick={() => void toggleUserTheme()}><span /></button></div>
+                <div className="setting-row"><span className="setting-icon"><Moon size={19} /></span><span className="setting-copy"><strong>Modo escuro</strong><small>Preferência salva na sua conta</small></span><button className={`switch${darkMode ? ' is-on' : ''}`} type="button" role="switch" aria-checked={darkMode} aria-label={darkMode ? 'Desativar modo escuro' : 'Ativar modo escuro'} disabled={themeUpdating || loading} onClick={() => void toggleUserTheme()}><span /></button></div>
                 <div className="setting-row">
                   <span className="setting-icon"><LogOut size={19} /></span>
                   <span className="setting-copy"><strong>Sessão da conta</strong><small>Encerre sua sessão neste dispositivo.</small></span>
@@ -751,8 +1000,8 @@ function App() {
 
       <nav className="mobile-nav" aria-label="Navegação principal">
         {navigation.map(({ id, label, icon: Icon }) => {
-          const isActive = activeTab === id || (activeTab === 'pix' && id === 'home')
-          return <button className={isActive ? 'active' : ''} key={id} onClick={() => setActiveTab(id)} type="button" aria-current={isActive ? 'page' : undefined}><Icon size={19} /><span>{label}</span></button>
+          const isActive = activeTab === id || (activeTab === 'pix' && id === 'home') || (activeTab === 'transfer' && transferReturnTab === id)
+          return <button className={isActive ? 'active' : ''} key={id} onClick={() => goToTab(id)} type="button" aria-current={isActive ? 'page' : undefined}><Icon size={19} /><span>{label}</span></button>
         })}
       </nav>
     </div>
@@ -763,7 +1012,7 @@ function App() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
-      <Route path="/dashboard" element={dashboard} />
+      <Route path="/dashboard/*" element={dashboard} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

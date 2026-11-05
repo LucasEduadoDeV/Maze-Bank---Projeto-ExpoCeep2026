@@ -134,35 +134,44 @@ export async function payBillWithAccountBalanceRepository(billId: string, userId
     const result = await prisma.$transaction( async (tx) => {
       const receiver = await tx.bills.findUnique({
       where: { billId },
-      select: { billId: true },
+      select: { billId: true, userId: true, status: true },
     });
 
     if (!receiver) {
       throw new AppError("Conta não encontrada", 404)
     }
 
+    if (receiver.userId !== userId) {
+      throw new AppError("Conta não encontrada", 404)
+    }
+
+    if (receiver.status !== "EM_ABERTO") {
+      throw new AppError("Essa conta não está disponível para pagamento.", 409)
+    }
+
       const debit = await tx.user.updateMany({
       where: {
-        id: userId
+        id: userId,
+        balance: { gte: amount },
       },
       data: {
         balance: { decrement: amount }
       },
     });
 
-      if (debit.count === 0) {
+      if (debit.count !== 1) {
         throw new AppError("Saldo insuficiente", 402);
       }
 
-      await tx.bills.update({
-      where: { billId },
+      const billUpdate = await tx.bills.updateMany({
+      where: { billId, userId, status: "EM_ABERTO" },
       data: {
         status: { set: "PAGO" }
       },
     });
 
-      if (debit.count === 0) {
-        throw new AppError("Saldo insuficiente", 402);
+      if (billUpdate.count !== 1) {
+        throw new AppError("Essa conta não está disponível para pagamento.", 409);
       }
   })
   return result;

@@ -12,6 +12,7 @@ export interface AccountUser {
 
 export interface ActivityUser {
   name: string
+  cpf?: string
 }
 
 export interface Activity {
@@ -714,6 +715,11 @@ export interface StatementResponse {
   meta: PaginationMeta
 }
 
+export type TransactionDetails = Activity & {
+  sender: ActivityUser
+  receiver: ActivityUser
+}
+
 export interface BillsResponse {
   data: Bill[]
   meta: PaginationMeta
@@ -896,4 +902,34 @@ export async function getStatement(page = 1, limit = 10): Promise<StatementRespo
   if (!response.ok) throw new Error('STATEMENT_REQUEST_FAILED')
 
   return (await response.json()) as StatementResponse
+}
+
+export async function getTransactionDetails(transactionId: string): Promise<TransactionDetails> {
+  const response = await fetch(`/api/transaction/${encodeURIComponent(transactionId)}`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+  })
+
+  const data = await response.json().catch(() => ({})) as Partial<TransactionDetails> & ApiErrorResponse
+  if (response.status === 401) throw new Error('UNAUTHORIZED')
+  if (!response.ok) {
+    throw new Error(data.message ?? 'Não foi possível carregar os detalhes desta transferência.')
+  }
+  if (
+    typeof data.id !== 'string'
+    || typeof data.amount !== 'string' && typeof data.amount !== 'number'
+    || typeof data.createdAt !== 'string'
+    || typeof data.description !== 'string'
+    || typeof data.type !== 'string'
+    || typeof data.senderId !== 'string'
+    || typeof data.receiverId !== 'string'
+    || !data.sender
+    || typeof data.sender.name !== 'string'
+    || typeof data.receiver?.name !== 'string'
+  ) {
+    throw new Error('A resposta do servidor com os detalhes da transferência é inválida.')
+  }
+
+  return data as TransactionDetails
 }
