@@ -28,3 +28,6 @@ jobs:
       - name: Type check
         working-directory: BackEnd
         run: npx tsc --noEmit
+
+      - name: Docker build check
+        run: docker buld -t maze-backend:ci ./BackEnd
