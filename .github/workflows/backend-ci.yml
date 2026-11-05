@@ -1,11 +1,11 @@
-name: Backend CI
+name: MazeBank CI
 
 on:
   push:
     branches: [master]
 
 jobs:
-  test:
+  backend-ci:
     runs-on: ubuntu-latest
 
     steps:
@@ -15,7 +15,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 26
+          node-version: 26.13
 
       - name: Install dependencies
         working-directory: BackEnd
@@ -31,7 +31,23 @@ jobs:
 
       - name: Docker build check
         run: docker build -t maze-backend:ci ./BackEnd
+  
+  frontend-ci:
+    runs-on: ubuntu-latest
 
-      - name: React build check
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26.13
+
+      - name: Install dependencies
+        working-directory: FrontEnd
+        run: npm ci
+
+      - name: Build frontend
         working-directory: FrontEnd/react
         run: npm run build
