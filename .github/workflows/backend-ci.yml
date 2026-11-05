@@ -24,3 +24,7 @@ jobs:
       - name: Run tests
         working-directory: BackEnd
         run: npm test
+
+      - name: Type check
+        working-directory: BackEnd
+        run: npx tsc --noEmit
