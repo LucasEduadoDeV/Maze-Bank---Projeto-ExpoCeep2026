@@ -33,6 +33,7 @@ jobs:
         run: docker build -t maze-backend:ci ./BackEnd
   
   frontend-ci:
+    needs: backend-ci
     runs-on: ubuntu-latest
 
     steps:
@@ -45,7 +46,7 @@ jobs:
           node-version: 26.13
 
       - name: Install dependencies
-        working-directory: FrontEnd
+        working-directory: FrontEnd/react
         run: npm ci
 
       - name: Build frontend
