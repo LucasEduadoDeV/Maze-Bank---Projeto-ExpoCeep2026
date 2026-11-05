@@ -30,4 +30,4 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Docker build check
-        run: docker buld -t maze-backend:ci ./BackEnd
+        run: docker build -t maze-backend:ci ./BackEnd
