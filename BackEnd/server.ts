@@ -23,6 +23,22 @@ import swaggerSpec from './src/config/swagger'
 const allowedOrigins = [
   'https://maze-bank-projeto-expoceep2026.onrender.com'
 ];
+const configuredOrigins = (process.env.FRONTEND_URLS ?? process.env.FRONTEND_URL ?? '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean)
+  .map((origin) => {
+    try {
+      const parsedOrigin = new URL(origin);
+      if (parsedOrigin.origin !== origin) {
+        throw new Error();
+      }
+      return parsedOrigin.origin;
+    } catch {
+      throw new Error(`Origem inválida em FRONTEND_URLS: ${origin}`);
+    }
+  });
+const allowedProductionOrigins = new Set([...allowedOrigins, ...configuredOrigins]);
 
 app.use(cors({
   origin(origin, callback) {
@@ -40,7 +56,7 @@ app.use(cors({
       isLocalDevelopmentOrigin = false;
     }
 
-    callback(null, allowedOrigins.includes(origin) || isLocalDevelopmentOrigin ? origin : false);
+    callback(null, allowedProductionOrigins.has(origin) || isLocalDevelopmentOrigin ? origin : false);
   },
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   credentials: true

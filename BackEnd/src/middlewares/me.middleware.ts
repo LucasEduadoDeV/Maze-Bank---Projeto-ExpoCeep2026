@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { sessionCookieOptions } from "../config/sessionCookie";
 
 export function auth(req: Request, res: Response, next: NextFunction) {  
   const secret = process.env.JWT_SECRET;
@@ -20,12 +21,7 @@ export function auth(req: Request, res: Response, next: NextFunction) {
     });
 
     if (typeof payload === "string" || typeof payload.sub !== "string") {
-      res.clearCookie("__user__token__", {
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
-        path: "/",
-      });
+      res.clearCookie("__user__token__", sessionCookieOptions);
       return res.status(401).json({ message: "Token inválido" });
     }
 
@@ -34,22 +30,12 @@ export function auth(req: Request, res: Response, next: NextFunction) {
   } catch (error) {
 
     if (error instanceof jwt.TokenExpiredError) {
-      res.clearCookie("__user__token__", {
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
-        path: "/",
-      });
+      res.clearCookie("__user__token__", sessionCookieOptions);
       return res.status(401).json({ message: "Token expirado" })
     }
     
     if (error instanceof jwt.JsonWebTokenError) {
-      res.clearCookie("__user__token__", {
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
-        path: "/",
-      });
+      res.clearCookie("__user__token__", sessionCookieOptions);
       return res.status(401).json({ message: "Token inválido ou expirado" });
     }
 

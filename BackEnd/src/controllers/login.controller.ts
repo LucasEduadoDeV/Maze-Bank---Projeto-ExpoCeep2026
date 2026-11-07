@@ -5,6 +5,7 @@ import { signToken } from "../services/login.service";
 //Repositories
 import { getPasswordHash } from "../repositories/login.repository";
 import { AppError } from "../errors/AppError";
+import { sessionCookieOptions } from "../config/sessionCookie";
 
 export async function loginController(req: Request, res: Response, next: NextFunction) {
     const { email, password } = req.body;
@@ -17,11 +18,8 @@ export async function loginController(req: Request, res: Response, next: NextFun
         const token = await signToken(user);
 
         res.cookie('__user__token__', token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "lax",
-            maxAge: 60 * 60 * 1000,
-            path: "/",
+            ...sessionCookieOptions,
+            maxAge: 30 * 60 * 1000,
         })
 
         res.status(200).json(`Login feito com sucesso`);    
