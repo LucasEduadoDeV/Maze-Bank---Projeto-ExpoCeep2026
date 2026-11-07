@@ -21,7 +21,7 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './src/config/swagger'
 
 app.use(cors({
-  origin: 'http://localhost:5500',
+  origin: 'https://maze-bank-projeto-expoceep2026.onrender.com',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));

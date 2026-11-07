@@ -18,7 +18,7 @@ export async function loginController(req: Request, res: Response, next: NextFun
 
         res.cookie('__user__token__', token, {
             httpOnly: true,
-            secure: false,
+            secure: true,
             sameSite: "lax",
             maxAge: 60 * 60 * 1000,
             path: "/",
