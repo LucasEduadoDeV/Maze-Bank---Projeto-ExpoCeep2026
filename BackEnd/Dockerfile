@@ -8,8 +8,8 @@ RUN npm ci
 
 COPY . .
 
-CMD [ "npm", "run", "dev" ]
+RUN npm run db:generate
 
 EXPOSE 3000
 
-RUN npm run db:generate
+CMD ["npm", "run", "dev"]
