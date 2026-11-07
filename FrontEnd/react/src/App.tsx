@@ -44,6 +44,7 @@ import InvoiceHistoryPage from './InvoiceHistoryPage'
 import SimulateInvoicePage from './SimulateInvoicePage'
 import TransferDetailPage from './TransferDetailPage'
 import type { Bill } from './bills'
+import { API_URL } from './services/api'
 
 type Tab = 'home' | 'statement' | 'settings' | 'profile' | 'pix' | 'cards' | 'bills' | 'pay' | 'invoice' | 'invoices' | 'transfer'
 
@@ -102,6 +103,7 @@ function getUserInitials(name: string) {
 function App() {
   const location = useLocation()
   const navigate = useNavigate()
+  const isDashboardRoute = location.pathname.startsWith('/dashboard')
   const activeTab = getTabFromPath(location.pathname)
   const transferReturnTab = new URLSearchParams(location.search).get('from') === 'statement' ? 'statement' : 'home'
   const selectedTransferId = activeTab === 'transfer'
@@ -204,7 +206,7 @@ function App() {
   }, [location.pathname, activeTab, statementPage, statementRefresh, navigate])
 
   useEffect(() => {
-    if (!location.pathname.startsWith('/dashboard')) return
+    if (!isDashboardRoute) return
 
     let active = true
 
@@ -231,10 +233,10 @@ function App() {
     return () => {
       active = false
     }
-  }, [location.pathname, navigate])
+  }, [isDashboardRoute, navigate])
 
   useEffect(() => {
-    if (!location.pathname.startsWith('/dashboard')) return
+    if (!isDashboardRoute) return
 
     let active = true
 
@@ -260,7 +262,7 @@ function App() {
     return () => {
       active = false
     }
-  }, [location.pathname, navigate])
+  }, [isDashboardRoute, navigate])
 
   const mainCard = accountCards.find((card) => card.id === mainCardId) ?? null
   const mainCardTheme = mainCard?.theme ?? 0
@@ -293,6 +295,7 @@ function App() {
     setActivities(data.activities)
     setLoadError('')
   }, [])
+  const handleOpenCardHandled = useCallback(() => setOpenCardId(null), [])
 
   const loadBills = useCallback(async (page: number) => {
     const requestId = billsRequestId.current + 1
@@ -369,9 +372,12 @@ function App() {
     function connect() {
       if (!active) return
       setRealtimeStatus('connecting')
-      const socketUrl = new URL('/ws', window.location.href)
-      socketUrl.protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-      socket = new WebSocket(socketUrl)
+      const socketUrl = new URL('/ws', API_URL);
+
+      socketUrl.protocol =
+      socketUrl.protocol === 'https:' ? 'wss:' : 'ws:';
+
+      socket = new WebSocket(socketUrl);
 
       socket.onopen = () => {
         if (!active) return
@@ -751,7 +757,7 @@ function App() {
             <CardsPage
               onBack={() => goToTab('home')}
               openCardId={openCardId}
-              onOpenCardHandled={() => setOpenCardId(null)}
+              onOpenCardHandled={handleOpenCardHandled}
               mainCardId={mainCardId}
               onSetMainCard={(card) => {
                 setMainCardId(card.id)

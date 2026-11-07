@@ -20,22 +20,42 @@ app.set('trust proxy', 1);
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './src/config/swagger'
 
+const allowedOrigins = [
+  'https://maze-bank-projeto-expoceep2026.onrender.com'
+];
+
 app.use(cors({
-  origin: 'https://maze-bank-projeto-expoceep2026.onrender.com',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  origin(origin, callback) {
+    if (!origin) {
+      callback(null, true);
+      return;
+    }
+
+    let isLocalDevelopmentOrigin = false;
+    try {
+      const url = new URL(origin);
+      isLocalDevelopmentOrigin = url.protocol === 'http:'
+        && ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname);
+    } catch {
+      isLocalDevelopmentOrigin = false;
+    }
+
+    callback(null, allowedOrigins.includes(origin) || isLocalDevelopmentOrigin ? origin : false);
+  },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   credentials: true
 }));
 app.use(express.json());
 app.use(cookieParser())
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-app.use("/register", RegisterRoutes);
-app.use("/login", LoginRoutes);
-app.use("/logout", LogoutRoutes);
-app.use("/me", MeRoutes);
-app.use("/transaction", TransactionRoutes);
-app.use("/cards", CardsRoutes);
-app.use("/bills", BillsRoutes);
-app.use("/invoices", InvoicesRoutes);
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use("/api/register", RegisterRoutes);
+app.use("/api/login", LoginRoutes);
+app.use("/api/logout", LogoutRoutes);
+app.use("/api/me", MeRoutes);
+app.use("/api/transaction", TransactionRoutes);
+app.use("/api/cards", CardsRoutes);
+app.use("/api/bills", BillsRoutes);
+app.use("/api/invoices", InvoicesRoutes);
 app.use(errorHandler);
 const server = createServer(app);
 attachRealtime(server);

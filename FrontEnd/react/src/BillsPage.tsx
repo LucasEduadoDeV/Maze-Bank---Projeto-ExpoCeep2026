@@ -54,17 +54,25 @@ function BillsPage({ bills, meta, page, loading, error, onBack, onPageChange, on
         <div>
           <span className="eyebrow">PAGAMENTOS</span>
           <h1 id="bills-title">Contas</h1>
-          <p>Escolha uma conta para conferir os detalhes do pagamento.</p>
+          <p>{loading
+            ? 'Carregando suas contas cadastradas.'
+            : error
+              ? 'Não foi possível consultar suas contas.'
+              : bills.length === 0
+                ? 'Nenhuma conta cadastrada no momento.'
+                : 'Escolha uma conta para conferir os detalhes do pagamento.'}</p>
         </div>
         <button className="bills-back-button" type="button" onClick={onBack}>
           <ArrowLeft size={16} /> Voltar
         </button>
       </div>
 
-      <div className="bills-demo-notice" role="note">
-        <Info size={17} />
-        <span><strong>Contas cadastradas.</strong> Selecione uma conta para consultar os dados antes de continuar.</span>
-      </div>
+      {bills.length > 0 && !error && (
+        <div className="bills-demo-notice" role="note">
+          <Info size={17} />
+          <span><strong>Contas cadastradas.</strong> Selecione uma conta para consultar os dados antes de continuar.</span>
+        </div>
+      )}
 
       <div className="bills-overview">
         <span className="bills-overview-icon"><FileText size={19} /></span>
@@ -78,10 +86,12 @@ function BillsPage({ bills, meta, page, loading, error, onBack, onPageChange, on
         </span>
       </div>
 
-      <div className="bills-list-heading">
-        <div><h2>Suas contas</h2><p>Selecione uma conta para consultar os detalhes</p></div>
-        <span>{meta?.totalItems ?? 0} disponíveis</span>
-      </div>
+      {bills.length > 0 && (
+        <div className="bills-list-heading">
+          <div><h2>Suas contas</h2><p>Selecione uma conta para consultar os detalhes</p></div>
+          <span>{meta?.totalItems ?? 0} disponíveis</span>
+        </div>
+      )}
 
       {error && (
         <div className="bills-state bills-error" role="alert">

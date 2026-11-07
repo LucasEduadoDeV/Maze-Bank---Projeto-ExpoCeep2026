@@ -1,3 +1,5 @@
+export const API_URL = import.meta.env.VITE_API_URL;
+
 import type { Bill, BillCategory, BillStatus } from '../bills'
 
 export interface AccountUser {
@@ -141,7 +143,7 @@ export async function unblockCard(cardId: string, password: string): Promise<'AT
 }
 
 export async function deleteCard(cardId: string, password: string): Promise<void> {
-  const response = await fetch(`/api/cards/${encodeURIComponent(cardId)}/delete`, {
+  const response = await fetch(`${API_URL}/api/cards/${encodeURIComponent(cardId)}/delete`, {
     method: 'DELETE',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -162,7 +164,7 @@ export async function deleteCard(cardId: string, password: string): Promise<void
 }
 
 export async function setMainCard(cardId: string): Promise<void> {
-  const response = await fetch(`/api/cards/${encodeURIComponent(cardId)}/main`, {
+  const response = await fetch(`${API_URL}/api/cards/${encodeURIComponent(cardId)}/main`, {
     method: 'PATCH',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -184,7 +186,7 @@ async function updateCardStatus<TStatus extends 'ATIVO' | 'BLOQUEADO'>(
   expectedStatus: TStatus,
   password: string,
 ): Promise<TStatus> {
-  const response = await fetch(`/api/cards/${encodeURIComponent(cardId)}/${action}`, {
+  const response = await fetch(`${API_URL}/api/cards/${encodeURIComponent(cardId)}/${action}`, {
     method: 'PATCH',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -209,7 +211,7 @@ async function updateCardStatus<TStatus extends 'ATIVO' | 'BLOQUEADO'>(
 }
 
 export async function getMe(): Promise<DashboardData> {
-  const response = await fetch('/me', {
+  const response = await fetch(`${API_URL}/api/me`, {
     method: 'GET',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -226,7 +228,7 @@ export async function getMe(): Promise<DashboardData> {
 }
 
 export async function changeUserTheme(): Promise<'LIGHT' | 'DARK'> {
-  const response = await fetch('/me/theme', {
+  const response = await fetch(`${API_URL}/api/me/theme`, {
     method: 'GET',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -250,7 +252,7 @@ export async function changeUserTheme(): Promise<'LIGHT' | 'DARK'> {
 }
 
 export async function registerAccount(payload: RegisterPayload): Promise<void> {
-  const response = await fetch('/api/register', {
+  const response = await fetch(`${API_URL}/api/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
@@ -266,7 +268,7 @@ export async function registerAccount(payload: RegisterPayload): Promise<void> {
 }
 
 export async function loginAccount(payload: LoginPayload): Promise<void> {
-  const response = await fetch('/api/login', {
+  const response = await fetch(`${API_URL}/api/login`, {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -282,7 +284,7 @@ export async function loginAccount(payload: LoginPayload): Promise<void> {
 }
 
 export async function logoutAccount(): Promise<void> {
-  const response = await fetch('/api/logout', {
+  const response = await fetch(`${API_URL}/api/logout`, {
     method: 'POST',
     credentials: 'include',
   })
@@ -297,7 +299,7 @@ export async function logoutAccount(): Promise<void> {
 }
 
 export async function createPixTransfer(payload: PixTransferPayload): Promise<void> {
-  const response = await fetch('/api/transaction', {
+  const response = await fetch(`${API_URL}/api/transaction`, {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -314,7 +316,7 @@ export async function createPixTransfer(payload: PixTransferPayload): Promise<vo
 }
 
 export async function createInvoice(cardId: string, payload: CreateInvoicePayload): Promise<CreatedInvoice> {
-  const response = await fetch(`/api/invoices/${encodeURIComponent(cardId)}`, {
+  const response = await fetch(`${API_URL}/api/invoices/${encodeURIComponent(cardId)}`, {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -357,7 +359,7 @@ export async function createInvoice(cardId: string, payload: CreateInvoicePayloa
 }
 
 export async function deleteInvoice(invoiceId: string): Promise<void> {
-  const response = await fetch(`/api/invoices/${encodeURIComponent(invoiceId)}/delete`, {
+  const response = await fetch(`${API_URL}/api/invoices/${encodeURIComponent(invoiceId)}/delete`, {
     method: 'DELETE',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -380,7 +382,7 @@ export interface InvoiceBalancePayment {
 }
 
 export async function payInvoiceWithBalance(invoiceId: string, password: string): Promise<InvoiceBalancePayment> {
-  const response = await fetch(`/api/invoices/invoice/${encodeURIComponent(invoiceId)}/payment`, {
+  const response = await fetch(`${API_URL}/api/invoices/invoice/${encodeURIComponent(invoiceId)}/payment`, {
     method: 'PATCH',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -539,7 +541,7 @@ function parseInvoiceItemsJson(value: string): InvoiceItem[] {
 export async function getInvoices(page = 1, limit = 5, cardId?: string): Promise<InvoicesResponse> {
   const query = new URLSearchParams({ page: String(page), limit: String(limit) })
   if (cardId) query.set('cardId', cardId)
-  const response = await fetch(`/api/invoices?${query}`, {
+  const response = await fetch(`${API_URL}/api/invoices?${query}`, {
     method: 'GET',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -574,7 +576,7 @@ export async function getInvoices(page = 1, limit = 5, cardId?: string): Promise
 }
 
 export async function createCard(payload: CreateCardPayload): Promise<CreatedCard> {
-  const response = await fetch('/api/cards', {
+  const response = await fetch(`${API_URL}/api/cards`, {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -619,61 +621,73 @@ export async function createCard(payload: CreateCardPayload): Promise<CreatedCar
   }
 }
 
-export async function getCards(): Promise<AccountCard[]> {
-  const response = await fetch('/api/cards', {
-    method: 'GET',
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
-  })
+let pendingCardsRequest: Promise<AccountCard[]> | null = null
 
-  if (response.status === 401) throw new Error('UNAUTHORIZED')
+export function getCards(): Promise<AccountCard[]> {
+  if (pendingCardsRequest) return pendingCardsRequest
 
-  const data = await response.json().catch(() => null) as unknown
-  if (!response.ok) {
-    const message = typeof data === 'object' && data !== null && 'message' in data
-      && typeof data.message === 'string'
-      ? data.message
-      : 'Não foi possível carregar seus cartões.'
-    throw new Error(message)
-  }
+  const request = (async () => {
+    const response = await fetch(`${API_URL}/api/cards`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+    })
 
-  if (!Array.isArray(data)) {
-    throw new Error('A resposta do servidor ao carregar os cartões é inválida.')
-  }
+    if (response.status === 401) throw new Error('UNAUTHORIZED')
 
-  return data.map((card: unknown) => {
-    if (
-      typeof card !== 'object'
-      || card === null
-      || !('id' in card) || typeof card.id !== 'string'
-      || !('name' in card) || typeof card.name !== 'string'
-      || !('lastFour' in card) || typeof card.lastFour !== 'string'
-      || !('validateDate' in card) || typeof card.validateDate !== 'string'
-      || !('totalLimit' in card) || typeof card.totalLimit !== 'string'
-      || !('freeLimit' in card) || typeof card.freeLimit !== 'string'
-      || !('status' in card) || (card.status !== 'ATIVO' && card.status !== 'BLOQUEADO')
-      || !('theme' in card) || (card.theme !== 0 && card.theme !== 1 && card.theme !== 2)
-      || ('main' in card && typeof card.main !== 'boolean')
-    ) {
-      throw new Error('A resposta do servidor contém um cartão inválido.')
+    const data = await response.json().catch(() => null) as unknown
+    if (!response.ok) {
+      const message = typeof data === 'object' && data !== null && 'message' in data
+        && typeof data.message === 'string'
+        ? data.message
+        : 'Não foi possível carregar seus cartões.'
+      throw new Error(message)
     }
 
-    return {
-      id: card.id,
-      name: card.name,
-      lastFour: card.lastFour,
-      validateDate: card.validateDate,
-      totalLimit: card.totalLimit,
-      freeLimit: card.freeLimit,
-      status: card.status,
-      main: 'main' in card && card.main === true,
-      theme: card.theme,
+    if (!Array.isArray(data)) {
+      throw new Error('A resposta do servidor ao carregar os cartões é inválida.')
     }
+
+    return data.map((card: unknown): AccountCard => {
+      if (
+        typeof card !== 'object'
+        || card === null
+        || !('id' in card) || typeof card.id !== 'string'
+        || !('name' in card) || typeof card.name !== 'string'
+        || !('lastFour' in card) || typeof card.lastFour !== 'string'
+        || !('validateDate' in card) || typeof card.validateDate !== 'string'
+        || !('totalLimit' in card) || typeof card.totalLimit !== 'string'
+        || !('freeLimit' in card) || typeof card.freeLimit !== 'string'
+        || !('status' in card) || (card.status !== 'ATIVO' && card.status !== 'BLOQUEADO')
+        || !('theme' in card) || (card.theme !== 0 && card.theme !== 1 && card.theme !== 2)
+        || ('main' in card && typeof card.main !== 'boolean')
+      ) {
+        throw new Error('A resposta do servidor contém um cartão inválido.')
+      }
+
+      return {
+        id: card.id,
+        name: card.name,
+        lastFour: card.lastFour,
+        validateDate: card.validateDate,
+        totalLimit: card.totalLimit,
+        freeLimit: card.freeLimit,
+        status: card.status,
+        main: 'main' in card && card.main === true,
+        theme: card.theme,
+      }
+    })
+  })()
+
+  const sharedRequest = request.finally(() => {
+    if (pendingCardsRequest === sharedRequest) pendingCardsRequest = null
   })
+  pendingCardsRequest = sharedRequest
+  return sharedRequest
 }
 
 export async function revealCardSensitiveDetails(cardId: string, password: string): Promise<CardSensitiveDetails> {
-  const response = await fetch(`/api/cards/${encodeURIComponent(cardId)}/details`, {
+  const response = await fetch(`${API_URL}/api/cards/${encodeURIComponent(cardId)}/details`, {
     method: 'POST',
     credentials: 'include',
     cache: 'no-store',
@@ -787,7 +801,7 @@ function parseBill(value: unknown): Bill {
 }
 
 export async function getBills(page = 1, limit = 5): Promise<BillsResponse> {
-  const response = await fetch(`/api/bills?page=${page}&limit=${limit}`, {
+  const response = await fetch(`${API_URL}/api/bills?page=${page}&limit=${limit}`, {
     method: 'GET',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -823,7 +837,7 @@ export async function getBills(page = 1, limit = 5): Promise<BillsResponse> {
 }
 
 export async function deleteSettledBill(billId: string): Promise<void> {
-  const response = await fetch(`/api/bills/${encodeURIComponent(billId)}/delete`, {
+  const response = await fetch(`${API_URL}/api/bills/${encodeURIComponent(billId)}/delete`, {
     method: 'DELETE',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -844,7 +858,7 @@ export async function deleteSettledBill(billId: string): Promise<void> {
 
 export async function payBillWithCard(cardId: string, billId: string, password: string): Promise<void> {
   const response = await fetch(
-    `/api/bills/cards/${encodeURIComponent(cardId)}/bills/${encodeURIComponent(billId)}`,
+    `${API_URL}/api/bills/cards/${encodeURIComponent(cardId)}/bills/${encodeURIComponent(billId)}`,
     {
       method: 'PATCH',
       credentials: 'include',
@@ -869,7 +883,7 @@ export async function payBillWithCard(cardId: string, billId: string, password: 
 }
 
 export async function payBillWithBalance(billId: string, password: string): Promise<void> {
-  const response = await fetch(`/api/bills/${encodeURIComponent(billId)}`, {
+  const response = await fetch(`${API_URL}/api/bills/${encodeURIComponent(billId)}`, {
     method: 'PATCH',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -892,7 +906,7 @@ export async function payBillWithBalance(billId: string, password: string): Prom
 }
 
 export async function getStatement(page = 1, limit = 10): Promise<StatementResponse> {
-  const response = await fetch(`/api/transaction?page=${page}&limit=${limit}`, {
+  const response = await fetch(`${API_URL}/api/transaction?page=${page}&limit=${limit}`, {
     method: 'GET',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -905,7 +919,7 @@ export async function getStatement(page = 1, limit = 10): Promise<StatementRespo
 }
 
 export async function getTransactionDetails(transactionId: string): Promise<TransactionDetails> {
-  const response = await fetch(`/api/transaction/${encodeURIComponent(transactionId)}`, {
+  const response = await fetch(`${API_URL}/api/transaction/${encodeURIComponent(transactionId)}`, {
     method: 'GET',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },

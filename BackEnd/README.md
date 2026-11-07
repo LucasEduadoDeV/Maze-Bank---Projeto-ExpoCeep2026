@@ -1,5 +1,9 @@
 # Backend
 
+## API HTTP
+
+As rotas HTTP da API usam o prefixo `/api` (por exemplo, `/api/me` e `/api/bills`). Em desenvolvimento, o CORS aceita origens HTTP locais em `localhost`, `127.0.0.1` e `[::1]`, independentemente da porta do Vite. Os métodos `GET`, `POST`, `PUT`, `PATCH` e `DELETE` são permitidos. O proxy de desenvolvimento encaminha `/api` ao backend sem remover o prefixo.
+
 ## Atualizações em tempo real
 
 O backend expõe o WebSocket autenticado em `/ws`. Ele usa o cookie de sessão existente e envia apenas avisos de que os dados da conta mudaram; o frontend então consulta novamente os endpoints HTTP autenticados.

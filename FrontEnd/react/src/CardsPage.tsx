@@ -122,11 +122,6 @@ export default function CardsPage({ onBack, openCardId, onOpenCardHandled, mainC
         setSelectedCard((current) => current
           ? cardItems.find((card) => card.id === current.id) ?? null
           : null)
-        if (openCardId) {
-          const cardToOpen = cardItems.find((card) => card.id === openCardId)
-          if (cardToOpen) setSelectedCard(cardToOpen)
-          onOpenCardHandled()
-        }
       })
       .catch((error: unknown) => {
         if (!active) return
@@ -143,7 +138,7 @@ export default function CardsPage({ onBack, openCardId, onOpenCardHandled, mainC
     return () => {
       active = false
     }
-  }, [cardsReload, navigate, openCardId, onOpenCardHandled])
+  }, [cardsReload, navigate])
 
   useEffect(() => {
     if (!showNewModal) return
@@ -188,6 +183,7 @@ export default function CardsPage({ onBack, openCardId, onOpenCardHandled, mainC
 
   function closeCardDetails() {
     setSelectedCard(null)
+    onOpenCardHandled()
     scrollToTop()
   }
 
@@ -337,8 +333,10 @@ export default function CardsPage({ onBack, openCardId, onOpenCardHandled, mainC
     setShowNewModal(true)
   }
 
+  const cardToDisplay = selectedCard ?? cards.find((card) => card.id === openCardId) ?? null
+
   if (showBenefits) return <CardBenefitsPage onBack={closeBenefits} />
-  if (selectedCard) return <CardDetailsPage card={selectedCard} onBack={closeCardDetails} />
+  if (cardToDisplay) return <CardDetailsPage card={cardToDisplay} onBack={closeCardDetails} />
 
   return (
     <section className={`cards-page${showNewModal ? ' cards-modal-open' : ''}`} aria-labelledby="cards-title">
