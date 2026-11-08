@@ -10,7 +10,7 @@ No Render, configure `FRONTEND_URLS` no backend com a origem exata do frontend (
 
 O backend expõe o WebSocket autenticado em `/ws`. Ele usa o cookie de sessão existente e envia apenas avisos de que os dados da conta mudaram; o frontend então consulta novamente os endpoints HTTP autenticados.
 
-Em desenvolvimento, são aceitas as origens locais `localhost` e `127.0.0.1` nas portas 5173 e 5174, além de `localhost:5500`. Para outros endereços e produção, configure `WS_ALLOWED_ORIGINS` com as origens completas separadas por vírgula, por exemplo:
+Em desenvolvimento, são aceitas as origens locais `localhost` e `127.0.0.1` nas portas 5173 e 5174, além de `localhost:5500`. Em produção, as origens definidas em `FRONTEND_URLS` (ou `FRONTEND_URL`) também são aceitas pelo WebSocket. A origem padrão `https://maze-bank-projeto-expoceep2026.onrender.com` já é permitida. Para autorizar origens adicionais apenas para o WebSocket, configure `WS_ALLOWED_ORIGINS` com as origens completas separadas por vírgula, por exemplo:
 
 ```text
 WS_ALLOWED_ORIGINS=https://maze.example.com

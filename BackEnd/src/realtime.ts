@@ -4,6 +4,9 @@ import { WebSocket, WebSocketServer } from "ws";
 
 const TOKEN_COOKIE = "__user__token__";
 const DEVELOPMENT_HOSTS = new Set(["localhost", "127.0.0.1", "[::1]"]);
+const DEFAULT_FRONTEND_ORIGINS = new Set([
+  "https://maze-bank-projeto-expoceep2026.onrender.com",
+]);
 
 interface AuthenticatedSocket extends WebSocket {
   userId: string;
@@ -20,15 +23,26 @@ function getCookieValue(request: IncomingMessage, name: string) {
   return cookie ? cookie.slice(name.length + 1) : null;
 }
 
-function isAllowedOrigin(origin: string | undefined) {
+export function isAllowedOrigin(origin: string | undefined) {
   if (!origin) return false;
 
-  const configuredOrigins = process.env.WS_ALLOWED_ORIGINS
+  const configuredWebSocketOrigins = process.env.WS_ALLOWED_ORIGINS
     ?.split(",")
     .map((value) => value.trim())
     .filter(Boolean);
+  const configuredFrontendOrigins = (process.env.FRONTEND_URLS ?? process.env.FRONTEND_URL ?? "")
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean);
 
-  if (configuredOrigins?.length) return configuredOrigins.includes(origin);
+  if (
+    DEFAULT_FRONTEND_ORIGINS.has(origin)
+    || configuredFrontendOrigins.includes(origin)
+    || configuredWebSocketOrigins?.includes(origin)
+  ) {
+    return true;
+  }
+  if (configuredWebSocketOrigins?.length) return false;
 
   try {
     const parsedOrigin = new URL(origin);
