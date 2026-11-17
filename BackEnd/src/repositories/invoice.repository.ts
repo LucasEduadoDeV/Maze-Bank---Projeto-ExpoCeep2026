@@ -254,3 +254,11 @@ function getEffectivePredictedAmount(totalAmount: Decimal, totalPredicted: Decim
   const nonNegativeLegacyPredicted = legacyPredicted.greaterThan(0) ? legacyPredicted : new Decimal(0)
   return totalPredicted.greaterThan(nonNegativeLegacyPredicted) ? totalPredicted : nonNegativeLegacyPredicted
 }
+
+export async function checkInvoiceStatusRepository(invoiceId: string, userId: string) {
+  const invoice = await prisma.invoices.findFirst({
+    where: { invoiceId, userId },
+    select: { status: true },
+  })
+  return invoice!.status
+}

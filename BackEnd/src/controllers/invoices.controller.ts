@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import z from "zod";
+import z, { check } from "zod";
 
 //Types
 import { CardIdParams } from "../types/CardIdParamsForInvoice.type";
@@ -14,6 +14,7 @@ import { comparePasswordHash } from "../services/login.service";
 //Repositories
 import { getPasswordHashWithIdReturningOnlyPasswordHash } from "../repositories/login.repository";
 import { notifyUserAccountUpdated } from "../realtime";
+import { checkInvoiceStatusRepository } from "../repositories/invoice.repository";
 
 export async function createInvoiceController(req: Request<CardIdParams>, res: Response, next: NextFunction) {
     const userId = req.user?.userId
@@ -70,6 +71,7 @@ export async function deleteInvoiceController(req: Request<InvoiceIdParams>, res
     res.setHeader("Pragma", "no-cache")
     const { invoiceId } = req.params
     const invoiceIdResult = z.uuid().safeParse(invoiceId)
+    const checkInvoiceStatus = await checkInvoiceStatusRepository(invoiceId, userId!)
 
     if (!userId) {
         return res.status(401).json({ message: "Sessão inválida." });
@@ -77,6 +79,10 @@ export async function deleteInvoiceController(req: Request<InvoiceIdParams>, res
     if (!invoiceIdResult.success) {
         return res.status(400).json({ message: "Selecione uma fatura válida." })
     }
+    if (checkInvoiceStatus === "EM_ABERTO") {
+        return res.status(400).json({ message: "Não é possível excluir uma fatura em aberto." })
+    }
+
 
     try {
         const deleted = await deleteInvoiceService(userId, invoiceId)
