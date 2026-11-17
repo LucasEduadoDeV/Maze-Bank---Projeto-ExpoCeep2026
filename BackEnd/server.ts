@@ -11,6 +11,7 @@ import TransactionRoutes from "./src/routes/transaction.routes";
 import CardsRoutes from "./src/routes/cards.routes";
 import BillsRoutes from "./src/routes/bills.routes";
 import InvoicesRoutes from "./src/routes/invoices.routes";
+import MoneyRoutes from "./src/routes/money.routes";
 //Middlewares
 import { errorHandler } from "./src/middlewares/erroHandler";
 import { attachRealtime } from "./src/realtime";
@@ -72,6 +73,7 @@ app.use("/api/transaction", TransactionRoutes);
 app.use("/api/cards", CardsRoutes);
 app.use("/api/bills", BillsRoutes);
 app.use("/api/invoices", InvoicesRoutes);
+app.use("/api/money", MoneyRoutes);
 app.use(errorHandler);
 const server = createServer(app);
 attachRealtime(server);
