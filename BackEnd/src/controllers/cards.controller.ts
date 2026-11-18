@@ -12,6 +12,7 @@ import { desblockCardRepository } from "../repositories/cards.repository";
 import { deleteCardRepository } from "../repositories/cards.repository";
 import { getPasswordHashWithId } from "../repositories/login.repository";
 import { notifyUserAccountUpdated } from "../realtime";
+import { checkIfCardIsUsed } from "../repositories/invoice.repository";
 
 export async function createCardController(req: Request, res: Response, next: NextFunction) {
     const { name, monthlyIncome, theme } = req.body;
@@ -183,6 +184,12 @@ export async function deleteCardController(req: Request, res: Response, next: Ne
         }
 
         await comparePasswordHash(bodyResult.data.password, passwordHash.passwordHash);
+
+        const checkCard = await checkIfCardIsUsed(cardIdResult)
+
+        if (checkCard) {
+            return res.status(409).json({ message: "Cartão está com transações registradas." })
+        }
 
         const result = await deleteCardRepository(userId, cardIdResult.data)
         if (!result) {

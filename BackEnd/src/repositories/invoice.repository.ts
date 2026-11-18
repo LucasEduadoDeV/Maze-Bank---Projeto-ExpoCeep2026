@@ -262,3 +262,11 @@ export async function checkInvoiceStatusRepository(invoiceId: string, userId: st
   })
   return invoice!.status
 }
+
+export async function checkIfCardIsUsed(cardId: string) {
+    const result = await prisma.invoices.findFirst({
+        where: { cardId, status: "EM_ABERTO" },
+        select: { status: true },
+    })
+    return result;
+}
