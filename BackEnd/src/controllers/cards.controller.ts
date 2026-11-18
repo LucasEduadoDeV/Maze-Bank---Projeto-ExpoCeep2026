@@ -185,7 +185,7 @@ export async function deleteCardController(req: Request, res: Response, next: Ne
 
         await comparePasswordHash(bodyResult.data.password, passwordHash.passwordHash);
 
-        const checkCard = await checkIfCardIsUsed(cardIdResult)
+        const checkCard = await checkIfCardIsUsed(cardIdResult.data)
 
         if (checkCard) {
             return res.status(409).json({ message: "Cartão está com transações registradas." })
