@@ -119,8 +119,3 @@ export async function checkIfCardIsAvailable(cardId: string) {
     return result;
 }
 
-export async function checkIfCardUsed(cardId: string) {
-    const result = await prisma.creditCards.findFirst({
-        where: { idCard: cardId }
-    })
-}

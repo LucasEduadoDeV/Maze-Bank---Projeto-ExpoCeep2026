@@ -155,6 +155,9 @@ export async function deleteCard(cardId: string, password: string): Promise<void
     throw new Error('Senha incorreta. Confira e tente novamente.')
   }
   if (response.status === 401) throw new Error('UNAUTHORIZED')
+  if (response.status === 409 && data.message === "Cartão está com transações registradas.") {
+    throw new Error('Cartão tem transações pendentes.');
+  }
   if (!response.ok) {
     throw new Error(typeof data.message === 'string' ? data.message : 'Não foi possível excluir o cartão.')
   }
